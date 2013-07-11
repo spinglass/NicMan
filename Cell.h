@@ -3,29 +3,25 @@
 class Cell
 {
 public:
-    enum Type
-    {
-        Space,
-        Wall,
-        GhostBase,
-    };
+    Cell(char c);
 
-    Cell();
-    static Cell Parse(char c);
+    static bool IsCell(char c);
 
-    Type GetType() const { return m_Type; }
     bool GetPill() const { return m_Pill; }
     bool GetPowerPill() const { return m_PowerPill; }
+    bool IsGhostBase() const { return m_GhostBase; }
 
     void Nom();
     void Reset();
 
 private:
-    Type m_Type;
+    void Parse(char c);
 
     bool m_Pill;
     bool m_WasPill;
 
     bool m_PowerPill;
     bool m_WasPowerPill;
+
+    bool m_GhostBase;
 };

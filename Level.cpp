@@ -38,6 +38,7 @@ void Level::Parse(std::vector<char> const& data)
 {
     int numCols = 0;
     int numRows = 0;
+    int numCells = 0;
 
     // Get row length
     for (int i = 0; i < data.size(); ++i)
@@ -51,7 +52,7 @@ void Level::Parse(std::vector<char> const& data)
 
     if (numCols > 0)
     {
-        // Get number of rows and check all lengths
+        // Get number of rows and check all lengths and count cells        
         int rowPos = 0;
         for (int i = 0; i < data.size(); ++i)
         {
@@ -70,13 +71,19 @@ void Level::Parse(std::vector<char> const& data)
             }
             else
             {
+                if (Cell::IsCell(data[i]))
+                {
+                    ++numCells;
+                }
                 ++rowPos;
             }
         }
     }
 
-    if (numCols > 0 && numRows > 0)
+    if (numCols > 0 && numRows > 0 && numCells > 0)
     {
+        m_CellStorage.reserve(numCells);
+
         // Prepare the cells
         m_Cells.resize(numCols);
         for (int col = 0; col < numCols; ++col)
@@ -90,7 +97,11 @@ void Level::Parse(std::vector<char> const& data)
         {
             for (int col = 0; col < numCols; ++col)
             {
-                m_Cells[col][row] = Cell::Parse(data[i]);
+                if (Cell::IsCell(data[i]))
+                {
+                    m_CellStorage.emplace_back(data[i]);
+                    m_Cells[col][row] = &m_CellStorage.back();
+                }
                 ++i;
             }
             ++i;
@@ -135,7 +146,7 @@ void Level::Draw(sf::RenderTarget& target)
     powerPill.setOrigin(sf::Vector2f(k_PowerPillSize, k_PowerPillSize));
     powerPill.setFillColor(sf::Color::White);
 
-    bool const k_ShowPath = false;
+    bool const k_ShowCell = false;
     sf::RectangleShape path(sf::Vector2f(k_CellSize, k_CellSize));
     path.setOrigin(0.5f * path.getSize());
     path.setOutlineThickness(-1.0f);
@@ -156,42 +167,34 @@ void Level::Draw(sf::RenderTarget& target)
             float const rowCentre = row + 0.5f;
             sf::Vector2f const cellPosition = transform.transformPoint(colCentre, rowCentre);
 
-            Cell const& cell = m_Cells[col][row];
-            switch(cell.GetType())
+            if (Cell const* cell = m_Cells[col][row])
             {
-            default:
-                break;
-            case Cell::Space:
-            case Cell::GhostBase:
-                if (k_ShowPath)
+                if (k_ShowCell)
                 {
                     path.setPosition(cellPosition);
                     target.draw(path);
                 }
-                if (cell.GetPill())
+                if (cell->GetPill())
                 {
                     pill.setPosition(cellPosition);
                     target.draw(pill);
                 }
-                else if (cell.GetPowerPill())
+                else if (cell->GetPowerPill())
                 {
                     powerPill.setPosition(cellPosition);
                     target.draw(powerPill);
                 }
-                break;
-            case Cell::Wall:
-                if (k_ShowWall)
-                {
-                    wall.setPosition(cellPosition + sf::Vector2f(-0.25f * k_CellSize, -0.25f * k_CellSize));
-                    target.draw(wall);
-                    wall.setPosition(cellPosition + sf::Vector2f(-0.25f * k_CellSize, 0.25f * k_CellSize));
-                    target.draw(wall);
-                    wall.setPosition(cellPosition + sf::Vector2f(0.25f * k_CellSize, -0.25f * k_CellSize));
-                    target.draw(wall);
-                    wall.setPosition(cellPosition + sf::Vector2f(0.25f * k_CellSize, 0.25f * k_CellSize));
-                    target.draw(wall);
-                    break;
-                }
+            }
+            else if (k_ShowWall)
+            {
+                wall.setPosition(cellPosition + sf::Vector2f(-0.25f * k_CellSize, -0.25f * k_CellSize));
+                target.draw(wall);
+                wall.setPosition(cellPosition + sf::Vector2f(-0.25f * k_CellSize, 0.25f * k_CellSize));
+                target.draw(wall);
+                wall.setPosition(cellPosition + sf::Vector2f(0.25f * k_CellSize, -0.25f * k_CellSize));
+                target.draw(wall);
+                wall.setPosition(cellPosition + sf::Vector2f(0.25f * k_CellSize, 0.25f * k_CellSize));
+                target.draw(wall);
             }
         }
     }

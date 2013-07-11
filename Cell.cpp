@@ -1,43 +1,41 @@
 #include "stdafx.h"
 #include "Cell.h"
 
-Cell::Cell() :
-    m_Type(Space),
+Cell::Cell(char c) :
+    m_GhostBase(false),
     m_Pill(false),
     m_WasPill(false),
     m_PowerPill(false),
     m_WasPowerPill(false)
 {
+    Parse(c);
 }
 
-Cell Cell::Parse(char c)
+bool Cell::IsCell(char c)
 {
-    Cell cell;
+    return (c == '+' || c == 'o' || c == '#' || c == 'x');
+}
+
+void Cell::Parse(char c)
+{
     switch(c)
     {
     default:
-    case ' ':
-        cell.m_Type = Space;
-        break;
-    case '.':
-        cell.m_Type = Space;
-        cell.m_Pill = true;
-        cell.m_WasPill = true;
-        break;
     case '+':
-        cell.m_Type = Space;
-        cell.m_PowerPill = true;
-        cell.m_WasPowerPill = true;
+        // Empty cell
+        break;
+    case 'o':
+        m_Pill = true;
+        m_WasPill = true;
         break;
     case '#':
-        cell.m_Type = Wall;
+        m_PowerPill = true;
+        m_WasPowerPill = true;
         break;
     case 'x':
-        cell.m_Type = GhostBase;
+        m_GhostBase = true;
         break;
     }
-
-    return cell;
 }
 
 void Cell::Nom()

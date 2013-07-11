@@ -17,7 +17,8 @@ public:
 private:
     void Parse(std::vector<char> const& data);
 
-    std::vector<std::vector<Cell>> m_Cells;
+    std::vector<Cell> m_CellStorage;
+    std::vector<std::vector<Cell const*>> m_Cells;
     int m_NumCols;
     int m_NumRows;
 
