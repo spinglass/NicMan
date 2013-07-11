@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Cell.h"
+#include "Sprite.h"
+#include "Entities/Player.h"
 
 class Level
 {
@@ -19,6 +21,6 @@ private:
     int m_NumCols;
     int m_NumRows;
 
-    sf::Texture m_BGTexture;
-    sf::Sprite m_BGSprite;
+    Sprite m_Background;
+    Player m_Player;
 };

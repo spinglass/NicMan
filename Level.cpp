@@ -28,10 +28,10 @@ void Level::Load(char* filename)
         Parse(data);
     }
 
-    if (m_BGTexture.loadFromFile("Resources/level01_bg.png"))
-    {
-        m_BGSprite.setTexture(m_BGTexture, true);
-    }
+    m_Background.Load("Resources/level01_bg.png");
+    m_Player.Load();
+    m_Player.SetPosition(14.0f, 23.5f);
+
 }
 
 void Level::Parse(std::vector<char> const& data)
@@ -114,8 +114,8 @@ void Level::Draw(sf::RenderTarget& target)
     border.setFillColor(sf::Color::Transparent);
     target.draw(border);
 
-    m_BGSprite.setPosition(k_LeftBorder, k_TopBorder);
-    target.draw(m_BGSprite);
+    m_Background.SetPosition(k_LeftBorder, k_TopBorder);
+    m_Background.Draw(target);
 
     bool const k_ShowWall = false;
     sf::RectangleShape wall(k_HalfCell);
@@ -141,10 +141,19 @@ void Level::Draw(sf::RenderTarget& target)
     path.setOutlineColor(sf::Color(50, 50, 50));
     path.setFillColor(sf::Color(25, 25, 25));
 
+    sf::Transform transform;
+    transform.translate(k_LeftBorder, k_TopBorder);
+    transform.scale(k_CellSize, k_CellSize);
+
     for (int col = 0; col < m_NumCols; ++col)
     {
+        float const colCentre = col + 0.5f;
+
         for (int row = 0; row < m_NumRows; ++row)
         {
+            float const rowCentre = row + 0.5f;
+            sf::Vector2f const cellPosition = transform.transformPoint(colCentre, rowCentre);
+
             Cell const& cell = m_Cells[col][row];
             switch(cell.GetType())
             {
@@ -154,34 +163,36 @@ void Level::Draw(sf::RenderTarget& target)
             case Cell::GhostBase:
                 if (k_ShowPath)
                 {
-                    path.setPosition(k_LeftBorder + (col + 0.5f) * k_CellSize, k_TopBorder + (row + 0.5f) * k_CellSize);
+                    path.setPosition(cellPosition);
                     target.draw(path);
                 }
                 if (cell.GetPill())
                 {
-                    pill.setPosition(k_LeftBorder + (col + 0.5f) * k_CellSize, k_TopBorder + (row + 0.5f) * k_CellSize);
+                    pill.setPosition(cellPosition);
                     target.draw(pill);
                 }
                 else if (cell.GetPowerPill())
                 {
-                    powerPill.setPosition(k_LeftBorder + (col + 0.5f) * k_CellSize, k_TopBorder + (row + 0.5f) * k_CellSize);
+                    powerPill.setPosition(cellPosition);
                     target.draw(powerPill);
                 }
                 break;
             case Cell::Wall:
                 if (k_ShowWall)
                 {
-                    wall.setPosition(k_LeftBorder + (col + 0.25f) * k_CellSize, k_TopBorder + (row + 0.25f) * k_CellSize);
+                    wall.setPosition(cellPosition + sf::Vector2f(-0.25f * k_CellSize, -0.25f * k_CellSize));
                     target.draw(wall);
-                    wall.setPosition(k_LeftBorder + (col + 0.25f) * k_CellSize, k_TopBorder + (row + 0.75f) * k_CellSize);
+                    wall.setPosition(cellPosition + sf::Vector2f(-0.25f * k_CellSize, 0.25f * k_CellSize));
                     target.draw(wall);
-                    wall.setPosition(k_LeftBorder + (col + 0.75f) * k_CellSize, k_TopBorder + (row + 0.25f) * k_CellSize);
+                    wall.setPosition(cellPosition + sf::Vector2f(0.25f * k_CellSize, -0.25f * k_CellSize));
                     target.draw(wall);
-                    wall.setPosition(k_LeftBorder + (col + 0.75f) * k_CellSize, k_TopBorder + (row + 0.75f) * k_CellSize);
+                    wall.setPosition(cellPosition + sf::Vector2f(0.25f * k_CellSize, 0.25f * k_CellSize));
                     target.draw(wall);
                     break;
                 }
             }
         }
     }
+
+    m_Player.Draw(target, transform);
 }

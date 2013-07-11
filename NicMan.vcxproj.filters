@@ -6,16 +6,40 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="Entities\Entity.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Player.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="Entities\Entity.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Player.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resources">
       <UniqueIdentifier>{ac24b216-4509-45c2-b9ea-6546f2b555ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entities">
+      <UniqueIdentifier>{3bda2118-01a2-4c4d-95b8-ff5df600944d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{d1c9c855-e945-42a2-a3f7-068362faa7b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
