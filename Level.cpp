@@ -30,7 +30,7 @@ void Level::Load(char* filename)
 
     m_Background.Load("Resources/level01_bg.png");
     m_Player.Load();
-    m_Player.SetPosition(14.0f, 23.5f);
+    m_Player.SetPosition(14.0f, 7.5f);
 
 }
 
@@ -85,7 +85,8 @@ void Level::Parse(std::vector<char> const& data)
         }
 
         int i = 0;
-        for (int row = 0; row < numRows; ++row)
+        // Not reverse iteration through rows, to get [0,0] to the bottom-left
+        for (int row = numRows - 1; row >= 0; --row)
         {
             for (int col = 0; col < numCols; ++col)
             {
@@ -141,9 +142,10 @@ void Level::Draw(sf::RenderTarget& target)
     path.setOutlineColor(sf::Color(50, 50, 50));
     path.setFillColor(sf::Color(25, 25, 25));
 
+    // Transform from level-space to screen-space
     sf::Transform transform;
-    transform.translate(k_LeftBorder, k_TopBorder);
-    transform.scale(k_CellSize, k_CellSize);
+    transform.translate(k_LeftBorder, target.getSize().y - k_TopBorder);
+    transform.scale(k_CellSize, -k_CellSize);
 
     for (int col = 0; col < m_NumCols; ++col)
     {
