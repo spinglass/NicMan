@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Level.h"
 
+#include "Cell.h"
+
 Level::Level()
 {
 }
@@ -85,11 +87,7 @@ void Level::Parse(std::vector<char> const& data)
         m_CellStorage.reserve(numCells);
 
         // Prepare the cells
-        m_Cells.resize(numCols);
-        for (int col = 0; col < numCols; ++col)
-        {
-            m_Cells[col].resize(numRows);
-        }
+        m_Grid.Initialise(numCols, numRows);
 
         int i = 0;
         // Not reverse iteration through rows, to get [0,0] to the bottom-left
@@ -100,7 +98,7 @@ void Level::Parse(std::vector<char> const& data)
                 if (Cell::IsCell(data[i]))
                 {
                     m_CellStorage.emplace_back(data[i]);
-                    m_Cells[col][row] = &m_CellStorage.back();
+                    m_Grid.AddCell(col, row, m_CellStorage.back());
                 }
                 ++i;
             }
@@ -167,7 +165,7 @@ void Level::Draw(sf::RenderTarget& target)
             float const rowCentre = row + 0.5f;
             sf::Vector2f const cellPosition = transform.transformPoint(colCentre, rowCentre);
 
-            if (Cell const* cell = m_Cells[col][row])
+            if (Cell const* cell = m_Grid.GetCell(col, row))
             {
                 if (k_ShowCell)
                 {

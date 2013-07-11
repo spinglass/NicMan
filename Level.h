@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Cell.h"
+#include "Grid.h"
 #include "Sprite.h"
 #include "Entities/Player.h"
 
@@ -18,7 +18,7 @@ private:
     void Parse(std::vector<char> const& data);
 
     std::vector<Cell> m_CellStorage;
-    std::vector<std::vector<Cell const*>> m_Cells;
+    Grid m_Grid;
     int m_NumCols;
     int m_NumRows;
 
