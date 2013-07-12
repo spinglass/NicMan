@@ -9,21 +9,30 @@ Grid::~Grid()
 {
 }
 
-void Grid::Initialise(int cols, int rows)
+void Grid::Initialise(int width, int height)
 {
-    m_Cells.resize(cols);
-    for (int col = 0; col < cols; ++col)
+    m_Cells.resize(width);
+    for (int x = 0; x < width; ++x)
     {
-        m_Cells[col].resize(rows);
+        m_Cells[x].resize(height);
     }
+
+    m_Width = width;
+    m_Height = height;
 }
 
-void Grid::AddCell(int col, int row, Cell const& cell)
+void Grid::AddCell(int x, int y, Cell const& cell)
 {
-    m_Cells[col][row] = &cell;
+    m_Cells[x][y] = &cell;
 }
 
-Cell const* Grid::GetCell(int col, int row) const
+Cell const* Grid::GetCell(int x, int y) const
 {
-    return m_Cells[col][row];
+    Cell const* cell = nullptr;
+    if (0 <= x && x < m_Width && 0 <= y && y < m_Height)
+    {
+        cell = m_Cells[x][y];
+    }
+    return cell;
 }
+

@@ -16,6 +16,7 @@
     </ClCompile>
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="GridRef.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -32,6 +33,7 @@
     </ClInclude>
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="GridRef.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resources">

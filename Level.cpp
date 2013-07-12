@@ -32,7 +32,7 @@ void Level::Load(char* filename)
 
     m_Background.Load("Resources/level01_bg.png");
     m_Player.Load();
-    m_Player.SetPosition(14.0f, 7.5f);
+    m_Player.SetPosition(GridRef(&m_Grid, 14, 7), 0.0f, 0.5f);
 
 }
 
@@ -110,6 +110,11 @@ void Level::Parse(std::vector<char> const& data)
     m_NumRows = numRows;
 }
 
+void Level::Update(float dt)
+{
+    m_Player.Update(dt);
+}
+
 void Level::Draw(sf::RenderTarget& target)
 {
     float const k_LeftBorder = 260.0f;
@@ -127,7 +132,7 @@ void Level::Draw(sf::RenderTarget& target)
     m_Background.SetPosition(k_LeftBorder, k_TopBorder);
     m_Background.Draw(target);
 
-    bool const k_ShowWall = false;
+    static bool k_ShowWall = false;
     sf::RectangleShape wall(k_HalfCell);
     wall.setOrigin(0.5f * wall.getSize());
     wall.setOutlineColor(sf::Color(0, 0, 50));
@@ -144,7 +149,7 @@ void Level::Draw(sf::RenderTarget& target)
     powerPill.setOrigin(sf::Vector2f(k_PowerPillSize, k_PowerPillSize));
     powerPill.setFillColor(sf::Color::White);
 
-    bool const k_ShowCell = false;
+    static bool k_ShowCell = false;
     sf::RectangleShape path(sf::Vector2f(k_CellSize, k_CellSize));
     path.setOrigin(0.5f * path.getSize());
     path.setOutlineThickness(-1.0f);

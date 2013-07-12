@@ -18,6 +18,8 @@ Game::~Game()
 
 void Game::Run()
 {
+    sf::Clock frameTimer;
+
     bool running = true;
     while (running)
     {
@@ -30,6 +32,9 @@ void Game::Run()
                 running = false;
             }
         }
+
+        float const dt = std::min(frameTimer.restart().asSeconds(), 1.0f / 60.0f);
+        m_Level->Update(dt);
 
         m_Window->clear();
         m_Level->Draw(*m_Window);

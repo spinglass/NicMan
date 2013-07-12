@@ -10,6 +10,11 @@ int CALLBACK WinMain(
     _In_ LPSTR lpCmdLine,
     _In_ int nCmdShow)
 {
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+    (void)nCmdShow;
+
     {
         Game game;
         game.Run();

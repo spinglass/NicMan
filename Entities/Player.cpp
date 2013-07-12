@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Player.h"
 
-Player::Player()
+Player::Player() :
+    m_Direction(Direction::None),
+    m_NextDirection(Direction::None)
 {
 }
 
@@ -15,19 +17,321 @@ void Player::Load()
     m_Sprite.SetOriginToCentre();
 }
 
-void Player::SetPosition(float x, float y)
+void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
 {
-    m_Position.x = x;
-    m_Position.y = y;
+    assert(ref.Cell());
+
+    m_GridRef = ref;
+    m_Offset.x = offsetX;
+    m_Offset.y = offsetY;
+}
+
+void Player::Move(Direction dir, float dt)
+{
+    float const k_Speed = 8.0f;
+    float const delta = k_Speed * dt;
+
+    switch(dir)
+    {
+        case Direction::None:
+            break;
+        case Direction::North:
+        {
+            m_Offset.y += delta;
+            break;
+        }
+        case Direction::South:
+        {
+            m_Offset.y -= delta;
+            break;
+        }
+        case Direction::East:
+        {
+            m_Offset.x += delta;
+            break;
+        }
+        case Direction::West:
+        {
+            m_Offset.x -= delta;
+            break;
+        }
+    }
 }
 
 void Player::Update(float dt)
 {
+    GridRef const north = m_GridRef.North();
+    GridRef const south = m_GridRef.South();
+    GridRef const east = m_GridRef.East();
+    GridRef const west = m_GridRef.West();
+
+    bool const upPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+    bool const downPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+    bool const leftPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+    bool const rightPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+
+    if (m_Direction== Direction::None)
+    {
+        if (upPressed && north)
+        {
+            m_Direction = Direction::North;
+        }
+        else if (downPressed && south)
+        {
+            m_Direction = Direction::South;
+        }
+        else if (rightPressed && east)
+        {
+            m_Direction = Direction::East;
+        }
+        else if (leftPressed && west)
+        {
+            m_Direction = Direction::West;
+        }
+    }
+    else if (m_NextDirection == Direction::None)
+    {
+        // Check for direction change
+        switch (m_Direction)
+        {
+            case Direction::North:
+            {
+                if (downPressed && south)
+                {
+                    // Reverse
+                    m_Direction = Direction::South;
+                }
+                else if (m_Offset.y < 0.5f)
+                {
+                    // In first half of cell
+                    if (rightPressed && east)
+                    {
+                        m_NextDirection = Direction::East;
+                    }
+                    else if (leftPressed && west)
+                    {
+                        m_NextDirection = Direction::West;
+                    }
+                }
+                break;
+            }
+            case Direction::South:
+            {
+                if (upPressed && north)
+                {
+                    // Reverse
+                    m_Direction = Direction::North;
+                }
+                else if (m_Offset.y > 0.5f)
+                {
+                    // In first half of cell
+                    if (rightPressed && east)
+                    {
+                        m_NextDirection = Direction::East;
+                    }
+                    else if (leftPressed && west)
+                    {
+                        m_NextDirection = Direction::West;
+                    }
+                }
+                break;
+            }
+            case Direction::East:
+            {
+                if (leftPressed && west)
+                {
+                    // Reverse
+                    m_Direction = Direction::West;
+                }
+                else if (m_Offset.x < 0.5f)
+                {
+                    // In first half of cell
+                    if (upPressed && north)
+                    {
+                        m_NextDirection = Direction::North;
+                    }
+                    else if (downPressed && south)
+                    {
+                        m_NextDirection = Direction::South;
+                    }
+                }
+                break;
+            }
+            case Direction::West:
+            {
+                if (rightPressed && east)
+                {
+                    // Reverse
+                    m_Direction = Direction::East;
+                }
+                else if (m_Offset.x > 0.5f)
+                {
+                    // In first half of cell
+                    if (upPressed && north)
+                    {
+                        m_NextDirection = Direction::North;
+                    }
+                    else if (downPressed && south)
+                    {
+                        m_NextDirection = Direction::South;
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    // Move
+    Move(m_Direction, dt);
+    if (m_NextDirection == Direction::None)
+    {
+        // Check for next cell or a wall
+        switch (m_Direction)
+        {
+            case Direction::North:
+            {
+                if (north)
+                {
+                    if (m_Offset.y >= 1.0f)
+                    {
+                        // Next cell
+                        m_Offset.y -= 1.0f;
+                        m_GridRef = north;
+                    }
+                }
+                else
+                {
+                    if (m_Offset.y >= 0.5f)
+                    {
+                        // Stop
+                        m_Offset.y = 0.5f;
+                        m_Direction = Direction::None;
+                    }
+                }
+                break;
+            }
+            case Direction::South:
+            {
+                if (south)
+                {
+                    if (m_Offset.y < 0.0f)
+                    {
+                        // Next cell
+                        m_Offset.y += 1.0f;
+                        m_GridRef = south;
+                    }
+                }
+                else
+                {
+                    if (m_Offset.y <= 0.5f)
+                    {
+                        // Stop
+                        m_Offset.y = 0.5f;
+                        m_Direction = Direction::None;
+                    }
+                }
+                break;
+            }
+            case Direction::East:
+            {
+                if (east)
+                {
+                    if (m_Offset.x >= 1.0f)
+                    {
+                        // Next cell
+                        m_Offset.x -= 1.0f;
+                        m_GridRef = east;
+                    }
+                }
+                else
+                {
+                    if (m_Offset.x >= 0.5f)
+                    {
+                        // Stop
+                        m_Offset.x = 0.5f;
+                        m_Direction = Direction::None;
+                    }
+                }
+                break;
+            }
+            case Direction::West:
+            {
+                if (west)
+                {
+                    if (m_Offset.x < 0.0f)
+                    {
+                        // Next cell
+                        m_Offset.x += 1.0f;
+                        m_GridRef = west;
+                    }
+                }
+                else
+                {
+                    if (m_Offset.x <= 0.5f)
+                    {
+                        // Stop
+                        m_Offset.x = 0.5f;
+                        m_Direction = Direction::None;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    else
+    {
+        Move(m_NextDirection, dt);
+
+        switch (m_Direction)
+        {
+            case Direction::North:
+            {
+                if (m_Offset.y >= 0.5f)
+                {
+                    m_Offset.y = 0.5f;
+                    m_Direction = m_NextDirection;
+                    m_NextDirection = Direction::None;
+                }
+                break;
+            }
+            case Direction::South:
+            {
+                if (m_Offset.y <= 0.5f)
+                {
+                    m_Offset.y = 0.5f;
+                    m_Direction = m_NextDirection;
+                    m_NextDirection = Direction::None;
+                }
+                break;
+            }
+            case Direction::East:
+            {
+                if (m_Offset.x >= 0.5f)
+                {
+                    m_Offset.x = 0.5f;
+                    m_Direction = m_NextDirection;
+                    m_NextDirection = Direction::None;
+                }
+                break;
+            }
+            case Direction::West:
+            {
+                if (m_Offset.x <= 0.5f)
+                {
+                    m_Offset.x = 0.5f;
+                    m_Direction = m_NextDirection;
+                    m_NextDirection = Direction::None;
+                }
+                break;
+            }
+        }
+    }
 }
 
 void Player::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 {
-    sf::Vector2f pos = transform.transformPoint(m_Position);
+    sf::Vector2f gridPos = sf::Vector2f((float)m_GridRef.X(), (float)m_GridRef.Y()) + m_Offset;
+    sf::Vector2f pos = transform.transformPoint(gridPos);
     m_Sprite.SetPosition(pos);
     m_Sprite.Draw(target);
 }

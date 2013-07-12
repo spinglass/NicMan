@@ -10,11 +10,13 @@ public:
     Grid();
     virtual ~Grid();
 
-    void Initialise(int cols, int rows);
-    void AddCell(int col, int row, Cell const& cell);
+    void Initialise(int width, int height);
+    void AddCell(int x, int y, Cell const& cell);
 
-    Cell const* GetCell(int col, int row) const;
+    Cell const* GetCell(int x, int y) const;
 
 private:
     std::vector<std::vector<Cell const*>> m_Cells;
+    int m_Width;
+    int m_Height;
 };

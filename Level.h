@@ -12,6 +12,7 @@ public:
 
     void Load(char* filename);
 
+    void Update(float dt);
     void Draw(sf::RenderTarget& target);
 
 private:
