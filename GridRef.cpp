@@ -33,20 +33,40 @@ GridRef::operator bool() const
 
 GridRef GridRef::North() const
 {
-    return GridRef(m_Grid, m_X, m_Y + 1);
+    int y = (m_Y + 1);
+    if (m_Grid)
+    {
+        y = y % m_Grid->GetHeight();
+    }
+    return GridRef(m_Grid, m_X, y);
 }
 
 GridRef GridRef::South() const
 {
-    return GridRef(m_Grid, m_X, m_Y - 1);
+    int y = (m_Y - 1);
+    if (m_Grid)
+    {
+        y = (y + m_Grid->GetHeight()) % m_Grid->GetHeight();
+    }
+    return GridRef(m_Grid, m_X, y);
 }
 
 GridRef GridRef::East() const
 {
-    return GridRef(m_Grid, m_X + 1, m_Y);
+    int x = (m_X + 1);
+    if (m_Grid)
+    {
+        x = x % m_Grid->GetWidth();
+    }
+    return GridRef(m_Grid, x, m_Y);
 }
 
 GridRef GridRef::West() const
 {
-    return GridRef(m_Grid, m_X - 1, m_Y);
+    int x = (m_X - 1);
+    if (m_Grid)
+    {
+        x = (x + m_Grid->GetWidth()) % m_Grid->GetWidth();
+    }
+    return GridRef(m_Grid, x, m_Y);
 }

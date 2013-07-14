@@ -13,6 +13,8 @@ public:
     void Initialise(int width, int height);
     void AddCell(int x, int y, Cell const& cell);
 
+    int GetWidth() const { return m_Width; }
+    int GetHeight() const { return m_Height; }
     Cell const* GetCell(int x, int y) const;
 
 private:
