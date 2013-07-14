@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GridRef.h"
 
+#include "Cell.h"
 #include "Grid.h"
 
 GridRef::GridRef() :
@@ -21,15 +22,22 @@ GridRef::~GridRef()
 {
 }
 
-Cell const* GridRef::Cell() const
+Cell const* GridRef::GetCell() const
 {
     return m_Grid ? m_Grid->GetCell(m_X, m_Y) : nullptr;
 }
 
 GridRef::operator bool() const
 {
-    return (Cell() != nullptr);
+    return (GetCell() != nullptr);
 }
+
+bool GridRef::CanPlayerPass() const
+{
+    Cell const* cell = GetCell();
+    return cell ? !cell->IsGhostBase() : false;
+}
+
 
 GridRef GridRef::North() const
 {

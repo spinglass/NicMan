@@ -11,8 +11,9 @@ public:
     virtual ~GridRef();
 
     operator bool() const;
+    bool CanPlayerPass() const;
 
-    Cell const* Cell() const;
+    Cell const* GetCell() const;
     int X() const { return m_X; }
     int Y() const { return m_Y; }
 

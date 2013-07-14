@@ -19,7 +19,7 @@ void Player::Load()
 
 void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
 {
-    assert(ref.Cell());
+    assert(ref.CanPlayerPass());
 
     m_GridRef = ref;
     m_Offset.x = offsetX;
@@ -66,10 +66,15 @@ void Player::Move(Direction dir, float dt)
 
 void Player::UpdateMovement(float dt)
 {
-    GridRef const north = m_GridRef.North();
-    GridRef const south = m_GridRef.South();
-    GridRef const east = m_GridRef.East();
-    GridRef const west = m_GridRef.West();
+    GridRef const northRef = m_GridRef.North();
+    GridRef const southRef = m_GridRef.South();
+    GridRef const eastRef = m_GridRef.East();
+    GridRef const westRef = m_GridRef.West();
+
+    bool const north = northRef.CanPlayerPass();
+    bool const south = southRef.CanPlayerPass();
+    bool const east = eastRef.CanPlayerPass();
+    bool const west = westRef.CanPlayerPass();
 
     bool const upPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
     bool const downPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
@@ -203,7 +208,7 @@ void Player::UpdateMovement(float dt)
                     {
                         // Next cell
                         m_Offset.y -= 1.0f;
-                        m_GridRef = north;
+                        m_GridRef = northRef;
                     }
                 }
                 else
@@ -225,7 +230,7 @@ void Player::UpdateMovement(float dt)
                     {
                         // Next cell
                         m_Offset.y += 1.0f;
-                        m_GridRef = south;
+                        m_GridRef = southRef;
                     }
                 }
                 else
@@ -247,7 +252,7 @@ void Player::UpdateMovement(float dt)
                     {
                         // Next cell
                         m_Offset.x -= 1.0f;
-                        m_GridRef = east;
+                        m_GridRef = eastRef;
                     }
                 }
                 else
@@ -269,7 +274,7 @@ void Player::UpdateMovement(float dt)
                     {
                         // Next cell
                         m_Offset.x += 1.0f;
-                        m_GridRef = west;
+                        m_GridRef = westRef;
                     }
                 }
                 else
