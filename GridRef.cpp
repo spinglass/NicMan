@@ -22,7 +22,7 @@ GridRef::~GridRef()
 {
 }
 
-Cell const* GridRef::GetCell() const
+Cell* GridRef::GetCell() const
 {
     return m_Grid ? m_Grid->GetCell(m_X, m_Y) : nullptr;
 }

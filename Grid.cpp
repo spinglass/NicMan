@@ -21,14 +21,14 @@ void Grid::Initialise(int width, int height)
     m_Height = height;
 }
 
-void Grid::AddCell(int x, int y, Cell const& cell)
+void Grid::AddCell(int x, int y, Cell& cell)
 {
     m_Cells[x][y] = &cell;
 }
 
-Cell const* Grid::GetCell(int x, int y) const
+Cell* Grid::GetCell(int x, int y) const
 {
-    Cell const* cell = nullptr;
+    Cell* cell = nullptr;
     if (0 <= x && x < m_Width && 0 <= y && y < m_Height)
     {
         cell = m_Cells[x][y];

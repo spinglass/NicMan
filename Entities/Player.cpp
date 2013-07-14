@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Player.h"
 
+#include "Cell.h"
+
 Player::Player() :
     m_Direction(Direction::None),
     m_NextDirection(Direction::None)
@@ -27,12 +29,14 @@ void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
     m_GridRef = ref;
     m_Offset.x = offsetX;
     m_Offset.y = offsetY;
+    m_PreviousOffset = m_Offset;
 }
 
 
 void Player::Update(float dt)
 {
     UpdateMovement(dt);
+    UpdateNomming();
     UpdateSprite(dt);
 }
 
@@ -346,6 +350,40 @@ void Player::UpdateMovement(float dt)
     }
 }
 
+void Player::UpdateNomming()
+{
+    float const k_NomOffset = 0.25f;
+
+    if (m_GridRef.GetCell()->GetPill() || m_GridRef.GetCell()->GetPowerPill())
+    {
+        bool nom = false;
+        switch(m_Direction)
+        {
+            case Direction::None:
+                break;
+            case Direction::North:
+                nom = m_PreviousOffset.y < k_NomOffset && m_Offset.y >= k_NomOffset;
+                break;
+            case Direction::South:
+                nom = m_PreviousOffset.y > 1.0f - k_NomOffset && m_Offset.y <= 1.0f - k_NomOffset;
+                break;
+            case Direction::East:
+                nom = m_PreviousOffset.x < k_NomOffset && m_Offset.x >= k_NomOffset;
+                break;
+            case Direction::West:
+                nom = m_PreviousOffset.x > 1.0f - k_NomOffset && m_Offset.x <= 1.0f - k_NomOffset;
+                break;
+        }
+
+        if (nom)
+        {
+            m_GridRef.GetCell()->Nom();
+        }
+    }
+
+    m_PreviousOffset = m_Offset;
+}
+
 void Player::UpdateSprite(float dt)
 {
     if (m_Direction != Direction::None)
@@ -353,18 +391,18 @@ void Player::UpdateSprite(float dt)
         float rot = 0.0f;
         switch(m_Direction)
         {
-        case Direction::North:
-            rot = 270.0f;
-            break;
-        case Direction::South:
-            rot = 90.0f;
-            break;
-        case Direction::East:
-            rot = 0.0f;
-            break;
-        case Direction::West:
-            rot = 180.0f;
-            break;
+            case Direction::North:
+                rot = 270.0f;
+                break;
+            case Direction::South:
+                rot = 90.0f;
+                break;
+            case Direction::East:
+                rot = 0.0f;
+                break;
+            case Direction::West:
+                rot = 180.0f;
+                break;
         }
         m_Sprite.SetRotation(rot);
         m_Sprite.Update(dt);

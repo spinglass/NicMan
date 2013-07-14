@@ -11,14 +11,14 @@ public:
     virtual ~Grid();
 
     void Initialise(int width, int height);
-    void AddCell(int x, int y, Cell const& cell);
+    void AddCell(int x, int y, Cell& cell);
 
     int GetWidth() const { return m_Width; }
     int GetHeight() const { return m_Height; }
-    Cell const* GetCell(int x, int y) const;
+    Cell* GetCell(int x, int y) const;
 
 private:
-    std::vector<std::vector<Cell const*>> m_Cells;
+    std::vector<std::vector<Cell*>> m_Cells;
     int m_Width;
     int m_Height;
 };

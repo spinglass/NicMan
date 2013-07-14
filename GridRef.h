@@ -13,7 +13,7 @@ public:
     operator bool() const;
     bool CanPlayerPass() const;
 
-    Cell const* GetCell() const;
+    Cell* GetCell() const;
     int X() const { return m_X; }
     int Y() const { return m_Y; }
 
