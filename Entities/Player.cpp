@@ -22,7 +22,9 @@ void Player::Load()
     m_Sprite.SetSpeed(30.0f);
 
     m_PillSound.Load("Resources/player_pill.wav");
+    m_PillSound.SetVolume(30.0f);
     m_PowerPillSound.Load("Resources/player_powerpill.wav");
+    m_PowerPillSound.SetVolume(30.0f);
 }
 
 void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
