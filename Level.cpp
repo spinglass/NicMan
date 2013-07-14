@@ -30,7 +30,7 @@ void Level::Load(char* filename)
         Parse(data);
     }
 
-    m_Background.Load("Resources/level01_bg.png");
+    m_Background.Load("Resources/level01_bg");
     m_Player.Load();
     m_Player.SetPosition(GridRef(&m_Grid, 14, 7), 0.0f, 0.5f);
 

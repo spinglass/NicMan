@@ -11,7 +11,9 @@ Sprite::~Sprite()
 
 void Sprite::Load(char* filename)
 {
-    if (m_Texture.loadFromFile(filename))
+    std::string fullFilename = filename;
+    fullFilename += ".png";
+    if (m_Texture.loadFromFile(fullFilename))
     {
         m_Sprite.setTexture(m_Texture, true);
     }

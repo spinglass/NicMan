@@ -13,8 +13,11 @@ Player::~Player()
 
 void Player::Load()
 {
-    m_Sprite.Load("Resources/player_00.png");
+    m_Sprite.Load("Resources/player");
     m_Sprite.SetOriginToCentre();
+    m_Sprite.Play();
+    m_Sprite.SetShuttle(true);
+    m_Sprite.SetSpeed(30.0f);
 }
 
 void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
@@ -30,6 +33,7 @@ void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
 void Player::Update(float dt)
 {
     UpdateMovement(dt);
+    UpdateSprite(dt);
 }
 
 void Player::Move(Direction dir, float dt)
@@ -339,6 +343,31 @@ void Player::UpdateMovement(float dt)
                 break;
             }
         }
+    }
+}
+
+void Player::UpdateSprite(float dt)
+{
+    if (m_Direction != Direction::None)
+    {
+        float rot = 0.0f;
+        switch(m_Direction)
+        {
+        case Direction::North:
+            rot = 270.0f;
+            break;
+        case Direction::South:
+            rot = 90.0f;
+            break;
+        case Direction::East:
+            rot = 0.0f;
+            break;
+        case Direction::West:
+            rot = 180.0f;
+            break;
+        }
+        m_Sprite.SetRotation(rot);
+        m_Sprite.Update(dt);
     }
 }
 

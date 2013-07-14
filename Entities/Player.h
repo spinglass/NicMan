@@ -2,7 +2,7 @@
 
 #include "Entity.h"
 #include "GridRef.h"
-#include "Sprite.h"
+#include "AnimatedSprite.h"
 
 class Player : public Entity
 {
@@ -27,9 +27,10 @@ private:
     };
 
     void UpdateMovement(float dt);
+    void UpdateSprite(float dt);
     void Move(Direction dir, float dt);
 
-    Sprite m_Sprite;
+    AnimatedSprite m_Sprite;
     GridRef m_GridRef;
     sf::Vector2f m_Offset;
     Direction m_Direction;
