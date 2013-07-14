@@ -26,6 +26,12 @@ void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
     m_Offset.y = offsetY;
 }
 
+
+void Player::Update(float dt)
+{
+    UpdateMovement(dt);
+}
+
 void Player::Move(Direction dir, float dt)
 {
     float const k_Speed = 8.0f;
@@ -58,7 +64,7 @@ void Player::Move(Direction dir, float dt)
     }
 }
 
-void Player::Update(float dt)
+void Player::UpdateMovement(float dt)
 {
     GridRef const north = m_GridRef.North();
     GridRef const south = m_GridRef.South();
@@ -72,6 +78,7 @@ void Player::Update(float dt)
 
     if (m_Direction== Direction::None)
     {
+        // Not currently moving, check for starting
         if (upPressed && north)
         {
             m_Direction = Direction::North;
@@ -96,7 +103,7 @@ void Player::Update(float dt)
         {
             case Direction::North:
             {
-                if (downPressed && south)
+                if (downPressed && !upPressed && south)
                 {
                     // Reverse
                     m_Direction = Direction::South;
@@ -117,7 +124,7 @@ void Player::Update(float dt)
             }
             case Direction::South:
             {
-                if (upPressed && north)
+                if (upPressed && !downPressed && north)
                 {
                     // Reverse
                     m_Direction = Direction::North;
@@ -138,7 +145,7 @@ void Player::Update(float dt)
             }
             case Direction::East:
             {
-                if (leftPressed && west)
+                if (leftPressed && !rightPressed && west)
                 {
                     // Reverse
                     m_Direction = Direction::West;
@@ -159,7 +166,7 @@ void Player::Update(float dt)
             }
             case Direction::West:
             {
-                if (rightPressed && east)
+                if (rightPressed && !leftPressed && east)
                 {
                     // Reverse
                     m_Direction = Direction::East;
@@ -181,7 +188,7 @@ void Player::Update(float dt)
         }
     }
 
-    // Move
+    // Move in current direction
     Move(m_Direction, dt);
     if (m_NextDirection == Direction::None)
     {
@@ -280,8 +287,10 @@ void Player::Update(float dt)
     }
     else
     {
+        // Transitioning to new direction, move that way too
         Move(m_NextDirection, dt);
 
+        // Check for completing transition
         switch (m_Direction)
         {
             case Direction::North:

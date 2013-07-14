@@ -26,6 +26,7 @@ private:
         West,
     };
 
+    void UpdateMovement(float dt);
     void Move(Direction dir, float dt);
 
     Sprite m_Sprite;
