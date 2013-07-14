@@ -20,6 +20,9 @@
     <ClCompile Include="AnimatedSprite.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -38,6 +41,9 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GridRef.h" />
     <ClInclude Include="AnimatedSprite.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>

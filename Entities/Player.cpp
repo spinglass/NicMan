@@ -20,6 +20,9 @@ void Player::Load()
     m_Sprite.Play();
     m_Sprite.SetShuttle(true);
     m_Sprite.SetSpeed(30.0f);
+
+    m_PillSound.Load("Resources/player_pill.wav");
+    m_PowerPillSound.Load("Resources/player_powerpill.wav");
 }
 
 void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
@@ -377,6 +380,15 @@ void Player::UpdateNomming()
 
         if (nom)
         {
+            if (m_GridRef.GetCell()->GetPill())
+            {
+                m_PillSound.Play();
+            }
+            else
+            {
+                m_PowerPillSound.Play();
+            }
+
             m_GridRef.GetCell()->Nom();
         }
     }

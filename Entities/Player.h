@@ -1,8 +1,9 @@
 #pragma once
 
+#include "AnimatedSprite.h"
 #include "Entity.h"
 #include "GridRef.h"
-#include "AnimatedSprite.h"
+#include "Sound.h"
 
 class Player : public Entity
 {
@@ -39,4 +40,7 @@ private:
     Direction m_Direction;
     Direction m_NextDirection;
     sf::Vector2f m_Speed;
+
+    Sound m_PillSound;
+    Sound m_PowerPillSound;
 };
