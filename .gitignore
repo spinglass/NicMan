@@ -45,6 +45,7 @@ local.properties
 [Dd]ebug/
 [Rr]elease/
 *.exe
+*.dll
 *_i.c
 *_p.c
 *.ilk
