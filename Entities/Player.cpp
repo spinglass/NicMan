@@ -21,10 +21,10 @@ void Player::Load()
     m_Sprite.SetShuttle(true);
     m_Sprite.SetSpeed(30.0f);
 
-    m_PillSound.Load("Resources/player_pill.wav");
-    m_PillSound.SetVolume(30.0f);
-    m_PowerPillSound.Load("Resources/player_powerpill.wav");
-    m_PowerPillSound.SetVolume(30.0f);
+    //m_PillSound.Load("Resources/player_pill.wav");
+    //m_PillSound.SetVolume(30.0f);
+    //m_PowerPillSound.Load("Resources/player_powerpill.wav");
+    //m_PowerPillSound.SetVolume(30.0f);
 }
 
 void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
@@ -94,7 +94,7 @@ void Player::UpdateMovement(float dt)
     bool const leftPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
     bool const rightPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
 
-    if (m_Direction== Direction::None)
+    if (m_Direction == Direction::None)
     {
         // Not currently moving, check for starting
         if (upPressed && north)

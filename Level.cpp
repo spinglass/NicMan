@@ -31,9 +31,12 @@ void Level::Load(char* filename)
     }
 
     m_Background.Load("Resources/level01_bg");
+
     m_Player.Load();
     m_Player.SetPosition(GridRef(&m_Grid, 14, 7), 0.0f, 0.5f);
 
+    m_Ghost.Load();
+    m_Ghost.SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
 }
 
 void Level::Parse(std::vector<char> const& data)
@@ -112,6 +115,7 @@ void Level::Parse(std::vector<char> const& data)
 
 void Level::Update(float dt)
 {
+    m_Ghost.Update(dt);
     m_Player.Update(dt);
 }
 
@@ -203,4 +207,5 @@ void Level::Draw(sf::RenderTarget& target)
     }
 
     m_Player.Draw(target, transform);
+    m_Ghost.Draw(target, transform);
 }

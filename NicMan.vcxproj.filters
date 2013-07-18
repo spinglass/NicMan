@@ -23,6 +23,9 @@
     <ClCompile Include="Sound.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Entities\Ghost.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -45,6 +48,9 @@
     </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Ghost.h">
+      <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

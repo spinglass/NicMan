@@ -2,6 +2,7 @@
 
 #include "Grid.h"
 #include "Sprite.h"
+#include "Entities/Ghost.h"
 #include "Entities/Player.h"
 
 class Level
@@ -25,4 +26,5 @@ private:
 
     Sprite m_Background;
     Player m_Player;
+    Ghost m_Ghost;
 };
