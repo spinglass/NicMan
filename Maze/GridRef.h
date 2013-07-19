@@ -31,3 +31,5 @@ private:
     int m_X;
     int m_Y;
 };
+
+float DistanceSq(GridRef const& a, GridRef const& b);

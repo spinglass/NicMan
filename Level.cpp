@@ -37,6 +37,7 @@ void Level::Load(char* filename)
 
     m_Ghost.Load();
     m_Ghost.SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
+    m_Ghost.SetTarget(&m_Player.GetPosition());
 }
 
 void Level::Parse(std::vector<char> const& data)

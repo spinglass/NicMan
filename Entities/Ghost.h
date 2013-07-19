@@ -13,6 +13,7 @@ public:
 
     void Load();
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
+    void SetTarget(GridRef const* ref) { m_TargetGridRef = ref; }
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;
@@ -22,6 +23,8 @@ private:
 
     void UpdateMovement(float dt);
     void SelectNextDirection();
+
+    GridRef const* m_TargetGridRef;
 
     Sprite m_Sprite;
     GridRef m_GridRef;

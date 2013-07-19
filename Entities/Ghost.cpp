@@ -4,6 +4,7 @@
 #include "Maze/Direction.h"
 
 Ghost::Ghost() :
+    m_TargetGridRef(nullptr),
     m_Direction(Direction::None),
     m_ExitDirection(Direction::None),
     m_NextDirection(Direction::None)
@@ -75,26 +76,37 @@ void Ghost::Move(Direction dir, float dt)
 
 void Ghost::SelectNextDirection()
 {
+    assert(m_TargetGridRef);
+
     // Get the next cell we'll be entering, where the decision is required for exit.
     GridRef nextRef = m_GridRef.GetNext(m_ExitDirection);
     assert(nextRef.CanPlayerPass());
 
     // Find possible exit direction from the next cell
-    std::vector<Direction> exitOptions;
     Direction const enterDirection = Opposite(m_ExitDirection);
+    Direction nextDirection = Direction::None;
+    float minDistSq = FLT_MAX;
     for (DirectionIter iter = DirectionIter::Begin(); iter != DirectionIter::End(); ++iter)
     {
-        // If it's not back the way we came and we can pass, it's an option
-        if (*iter != enterDirection && nextRef.GetNext(*iter).CanPlayerPass())
+        // If it's not back the way we came...
+        if (*iter != enterDirection)
         {
-            exitOptions.push_back(*iter);
+            // ...and we can pass, it's an option
+            GridRef const optionRef = nextRef.GetNext(*iter);
+            if (optionRef.CanPlayerPass())
+            {
+                // Check the distance to the target
+                float const distSq = DistanceSq(*m_TargetGridRef, optionRef);
+                if (distSq < minDistSq)
+                {
+                    nextDirection = *iter;
+                    minDistSq = distSq;
+                }
+            }
         }
     }
-    assert(exitOptions.size() > 0);
-
-    // Randomly choose one
-    int const choice = rand() % exitOptions.size();
-    m_NextDirection = exitOptions[choice];
+    assert(nextDirection != Direction::None);
+    m_NextDirection = nextDirection;
 }
 
 void Ghost::UpdateMovement(float dt)

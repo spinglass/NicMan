@@ -90,3 +90,10 @@ GridRef GridRef::West() const
 { 
    return GetNext(Direction::West);
 }
+
+float DistanceSq(GridRef const& a, GridRef const& b)
+{
+    float const dx = (float)(a.X() - b.X());
+    float const dy = (float)(a.Y() - b.Y());
+    return (dx * dx) + (dy * dy);
+}

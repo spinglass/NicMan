@@ -13,6 +13,7 @@ public:
 
     void Load();
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
+    GridRef const& GetPosition() const { return m_GridRef; }
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;
