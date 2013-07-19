@@ -39,6 +39,15 @@ bool GridRef::CanPlayerPass() const
     return cell ? !cell->IsGhostBase() : false;
 }
 
+void GridRef::Wrap()
+{
+    if (m_Grid)
+    {
+        m_X = (m_X + m_Grid->GetWidth()) % m_Grid->GetWidth();
+        m_Y = (m_Y + m_Grid->GetHeight()) % m_Grid->GetHeight();
+    }
+}
+
 void GridRef::MoveWithoutWrap(Direction dir)
 {
     switch(dir)
@@ -61,12 +70,19 @@ void GridRef::MoveWithoutWrap(Direction dir)
 void GridRef::Move(Direction dir)
 {
     MoveWithoutWrap(dir);
-    if (m_Grid)
-    {
-        // Wrap
-        m_X = (m_X + m_Grid->GetWidth()) % m_Grid->GetWidth();
-        m_Y = (m_Y + m_Grid->GetHeight()) % m_Grid->GetHeight();
-    }
+    Wrap();
+}
+
+void GridRef::MoveWithoutWrap(int dx, int dy)
+{
+    m_X += dx;
+    m_Y += dy;
+}
+
+void GridRef::Move(int dx, int dy)
+{
+    MoveWithoutWrap(dx, dy);
+    Wrap();
 }
 
 GridRef GridRef::GetNextWithoutWrap(Direction dir) const

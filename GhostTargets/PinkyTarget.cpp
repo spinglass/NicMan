@@ -11,14 +11,16 @@ PinkyTarget::PinkyTarget(GridRef const& postion, Direction const& direction) :
 
 GridRef PinkyTarget::It()
 {
-    GridRef target = m_Position;
     int const k_TargetDistance = 4;
+
+    // Move target ahead
+    GridRef target = m_Position;
     for (int i = 0; i < k_TargetDistance; ++i)
     {
         target.MoveWithoutWrap(m_Direction);
     }
 
-    // Overflow bug from original pacman, if player is moving north, also aim west.
+    // Overflow bug from original pacman, if target is moving north, also aim west.
     if (m_Direction == Direction::North)
     {
         for (int i = 0; i < k_TargetDistance; ++i)

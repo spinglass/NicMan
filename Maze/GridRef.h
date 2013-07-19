@@ -21,6 +21,9 @@ public:
     void Move(Direction dir);
     void MoveWithoutWrap(Direction dir);
 
+    void Move(int dx, int dy);
+    void MoveWithoutWrap(int dx, int dy);
+
     GridRef GetNext(Direction dir) const;
     GridRef GetNextWithoutWrap(Direction dir) const;
     GridRef North() const;
@@ -29,6 +32,8 @@ public:
     GridRef West() const;
 
 private:
+    void Wrap();
+
     Grid const* m_Grid;
     int m_X;
     int m_Y;

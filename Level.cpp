@@ -51,7 +51,7 @@ void Level::Load(char* filename)
     m_Ghosts[1].SetTarget(std::make_shared<PinkyTarget>(m_Player.GetPosition(), m_Player.GetDirection()));
     m_Ghosts[1].SetPosition(GridRef(&m_Grid, 2, 22), 0.0f, 0.5f);
 
-    m_Ghosts[2].SetTarget(std::make_shared<InkyTarget>(m_Player.GetPosition()));
+    m_Ghosts[2].SetTarget(std::make_shared<InkyTarget>(m_Player.GetPosition(), m_Player.GetDirection(), m_Ghosts[0].GetPosition()));
     m_Ghosts[2].SetPosition(GridRef(&m_Grid, 26, 22), 0.0f, 0.5f);
 
     m_Ghosts[3].SetTarget(std::make_shared<ClydeTarget>(m_Player.GetPosition()));
