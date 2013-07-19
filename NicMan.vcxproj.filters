@@ -35,6 +35,9 @@
     <ClCompile Include="Maze\Direction.cpp">
       <Filter>Maze</Filter>
     </ClCompile>
+    <ClCompile Include="GhostTargets\BlinkyTarget.cpp">
+      <Filter>GhostTargets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -70,6 +73,12 @@
     <ClInclude Include="Maze\Direction.h">
       <Filter>Maze</Filter>
     </ClInclude>
+    <ClInclude Include="GhostTargets\IGhostTarget.h">
+      <Filter>GhostTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostTargets\BlinkyTarget.h">
+      <Filter>GhostTargets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resources">
@@ -83,6 +92,9 @@
     </Filter>
     <Filter Include="Maze">
       <UniqueIdentifier>{861831b4-259a-4feb-a26c-681c854f079d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GhostTargets">
+      <UniqueIdentifier>{d6bb607f-cf1a-4e14-b531-a09d2ebb023b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

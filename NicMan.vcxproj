@@ -92,6 +92,8 @@
     <ClInclude Include="Entities\Ghost.h" />
     <ClInclude Include="Entities\Player.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GhostTargets\BlinkyTarget.h" />
+    <ClInclude Include="GhostTargets\IGhostTarget.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Maze\Cell.h" />
     <ClInclude Include="Maze\Direction.h" />
@@ -107,6 +109,7 @@
     <ClCompile Include="Entities\Ghost.cpp" />
     <ClCompile Include="Entities\Player.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GhostTargets\BlinkyTarget.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Maze\Cell.cpp" />

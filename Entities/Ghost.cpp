@@ -2,9 +2,9 @@
 #include "Ghost.h"
 
 #include "Maze/Direction.h"
+#include "GhostTargets\IGhostTarget.h"
 
 Ghost::Ghost() :
-    m_TargetGridRef(nullptr),
     m_Direction(Direction::None),
     m_ExitDirection(Direction::None),
     m_NextDirection(Direction::None)
@@ -90,10 +90,11 @@ void Ghost::Move(Direction dir, float dt)
 
 void Ghost::SelectNextDirection()
 {
-    assert(m_TargetGridRef);
+    assert(m_Target);
+    GridRef const targetRef = m_Target->It();
 
     // Get the next cell we'll be entering, where the decision is required for exit.
-    GridRef nextRef = m_GridRef.GetNext(m_ExitDirection);
+    GridRef const nextRef = m_GridRef.GetNext(m_ExitDirection);
     assert(nextRef.CanPlayerPass());
 
     // Find possible exit direction from the next cell.
@@ -112,7 +113,7 @@ void Ghost::SelectNextDirection()
             if (optionRef.CanPlayerPass())
             {
                 // Check the distance to the target
-                float const distSq = DistanceSq(*m_TargetGridRef, optionRef);
+                float const distSq = DistanceSq(targetRef, optionRef);
                 if (distSq < minDistSq)
                 {
                     nextDirection = dir;

@@ -2,6 +2,7 @@
 #include "Level.h"
 
 #include "Maze/Cell.h"
+#include "GhostTargets/BlinkyTarget.h"
 
 Level::Level()
 {
@@ -39,7 +40,7 @@ void Level::Load(char* filename)
     for (int i = 0; i < m_Ghosts.size(); ++i)
     {
         m_Ghosts[i].Load(i);
-        m_Ghosts[i].SetTarget(&m_Player.GetPosition());
+        m_Ghosts[i].SetTarget(std::make_shared<BlinkyTarget>(m_Player.GetPosition()));
     }
 
     m_Ghosts[0].SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);

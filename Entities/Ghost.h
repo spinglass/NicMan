@@ -1,9 +1,13 @@
 #pragma once
 
+#include <memory>
+
 #include "Sprite.h"
 #include "Entity.h"
 #include "Maze/GridRef.h"
 #include "Sound.h"
+
+class IGhostTarget;
 
 class Ghost : public Entity
 {
@@ -13,7 +17,7 @@ public:
 
     void Load(int id);
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
-    void SetTarget(GridRef const* ref) { m_TargetGridRef = ref; }
+    void SetTarget(std::shared_ptr<IGhostTarget> const& target) { m_Target = target; }
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;
@@ -24,7 +28,7 @@ private:
     void UpdateMovement(float dt);
     void SelectNextDirection();
 
-    GridRef const* m_TargetGridRef;
+    std::shared_ptr<IGhostTarget> m_Target;
 
     Sprite m_Body;
     std::map<Direction, Sprite> m_Eyes;
