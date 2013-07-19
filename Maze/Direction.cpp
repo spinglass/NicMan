@@ -16,13 +16,3 @@ Direction Opposite(Direction dir)
     }
     return Direction::None;
 }
-
-DirectionIter DirectionIter::Begin()
-{
-    return DirectionIter((int)Direction::North);
-}
-
-DirectionIter DirectionIter::End()
-{
-    return DirectionIter((int)Direction::West + 1);
-}

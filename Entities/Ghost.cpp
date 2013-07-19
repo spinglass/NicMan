@@ -82,24 +82,26 @@ void Ghost::SelectNextDirection()
     GridRef nextRef = m_GridRef.GetNext(m_ExitDirection);
     assert(nextRef.CanPlayerPass());
 
-    // Find possible exit direction from the next cell
+    // Find possible exit direction from the next cell.
+    // Search order set for preferred direction in case of two equal options.
+    Direction const searchOrder[] = { Direction::North, Direction::West, Direction::South, Direction::East };
     Direction const enterDirection = Opposite(m_ExitDirection);
     Direction nextDirection = Direction::None;
     float minDistSq = FLT_MAX;
-    for (DirectionIter iter = DirectionIter::Begin(); iter != DirectionIter::End(); ++iter)
+    for (Direction dir : searchOrder)
     {
         // If it's not back the way we came...
-        if (*iter != enterDirection)
+        if (dir != enterDirection)
         {
             // ...and we can pass, it's an option
-            GridRef const optionRef = nextRef.GetNext(*iter);
+            GridRef const optionRef = nextRef.GetNext(dir);
             if (optionRef.CanPlayerPass())
             {
                 // Check the distance to the target
                 float const distSq = DistanceSq(*m_TargetGridRef, optionRef);
                 if (distSq < minDistSq)
                 {
-                    nextDirection = *iter;
+                    nextDirection = dir;
                     minDistSq = distSq;
                 }
             }
