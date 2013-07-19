@@ -47,6 +47,8 @@ void Ghost::Update(float dt)
 
 void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 {
+    static bool k_DebugDraw = false;
+
     sf::Vector2f gridPos = sf::Vector2f((float)m_GridRef.X(), (float)m_GridRef.Y()) + m_Offset;
     sf::Vector2f pos = transform.transformPoint(gridPos);
     m_Body.SetPosition(pos);
@@ -54,6 +56,18 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     Sprite& eyes = m_Eyes[m_Direction];
     eyes.SetPosition(pos);
     eyes.Draw(target);
+
+    if (k_DebugDraw)
+    {
+        sf::Vector2f targetGridPos = sf::Vector2f((float)m_TargetRef.X(), (float)m_TargetRef.Y());
+        sf::Vector2f targetPos = transform.transformPoint(targetGridPos);
+        sf::VertexArray lines(sf::LinesStrip, 2);
+        lines[0].position = pos;
+        lines[0].color = sf::Color::White;
+        lines[1].position = targetPos;
+        lines[1].color = sf::Color::White;
+        target.draw(lines);
+    }
 }
 
 void Ghost::Move(Direction dir, float dt)
@@ -91,7 +105,7 @@ void Ghost::Move(Direction dir, float dt)
 void Ghost::SelectNextDirection()
 {
     assert(m_Target);
-    GridRef const targetRef = m_Target->It();
+    m_TargetRef = m_Target->It();
 
     // Get the next cell we'll be entering, where the decision is required for exit.
     GridRef const nextRef = m_GridRef.GetNext(m_ExitDirection);
@@ -113,7 +127,7 @@ void Ghost::SelectNextDirection()
             if (optionRef.CanPlayerPass())
             {
                 // Check the distance to the target
-                float const distSq = DistanceSq(targetRef, optionRef);
+                float const distSq = DistanceSq(m_TargetRef, optionRef);
                 if (distSq < minDistSq)
                 {
                     nextDirection = dir;

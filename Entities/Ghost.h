@@ -35,6 +35,7 @@ private:
     Sprite m_Body;
     std::map<Direction, Sprite> m_Eyes;
     GridRef m_GridRef;
+    GridRef m_TargetRef;
     sf::Vector2f m_Offset;
     Direction m_Direction;
     Direction m_ExitDirection;
