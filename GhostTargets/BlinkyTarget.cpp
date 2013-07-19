@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "BlinkyTarget.h"
 
-BlinkyTarget::BlinkyTarget(GridRef const& player) :
-    m_Player(player)
+BlinkyTarget::BlinkyTarget(GridRef const& postion) :
+    m_Position(postion)
 {
 }
 
 GridRef BlinkyTarget::It()
 {
-    return m_Player;
+    return m_Position;
 }

@@ -39,7 +39,7 @@ bool GridRef::CanPlayerPass() const
     return cell ? !cell->IsGhostBase() : false;
 }
 
-void GridRef::Move(Direction dir)
+void GridRef::MoveWithoutWrap(Direction dir)
 {
     switch(dir)
     {
@@ -56,6 +56,11 @@ void GridRef::Move(Direction dir)
             --m_X;
             break;
     }
+}
+
+void GridRef::Move(Direction dir)
+{
+    MoveWithoutWrap(dir);
     if (m_Grid)
     {
         // Wrap
@@ -64,9 +69,16 @@ void GridRef::Move(Direction dir)
     }
 }
 
+GridRef GridRef::GetNextWithoutWrap(Direction dir) const
+{
+    GridRef gridRef(*this);
+    gridRef.MoveWithoutWrap(dir);
+    return gridRef;
+}
+
 GridRef GridRef::GetNext(Direction dir) const
 {
-    GridRef gridRef(m_Grid, m_X, m_Y);
+    GridRef gridRef(*this);
     gridRef.Move(dir);
     return gridRef;
 }

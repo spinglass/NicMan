@@ -3,7 +3,7 @@
 class BlinkyTarget : public IGhostTarget
 {
 public:
-    explicit BlinkyTarget(GridRef const& player);
+    explicit BlinkyTarget(GridRef const& postion);
 
     virtual GridRef It() override;
 
@@ -11,5 +11,5 @@ private:
     BlinkyTarget(BlinkyTarget&);
     BlinkyTarget& operator=(BlinkyTarget&);
 
-    GridRef const& m_Player;
+    GridRef const& m_Position;
 };

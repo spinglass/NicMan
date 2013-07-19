@@ -3,6 +3,9 @@
 
 #include "Maze/Cell.h"
 #include "GhostTargets/BlinkyTarget.h"
+#include "GhostTargets/PinkyTarget.h"
+#include "GhostTargets/InkyTarget.h"
+#include "GhostTargets/ClydeTarget.h"
 
 Level::Level()
 {
@@ -40,12 +43,18 @@ void Level::Load(char* filename)
     for (int i = 0; i < m_Ghosts.size(); ++i)
     {
         m_Ghosts[i].Load(i);
-        m_Ghosts[i].SetTarget(std::make_shared<BlinkyTarget>(m_Player.GetPosition()));
     }
 
+    m_Ghosts[0].SetTarget(std::make_shared<BlinkyTarget>(m_Player.GetPosition()));
     m_Ghosts[0].SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
+
+    m_Ghosts[1].SetTarget(std::make_shared<PinkyTarget>(m_Player.GetPosition(), m_Player.GetDirection()));
     m_Ghosts[1].SetPosition(GridRef(&m_Grid, 2, 22), 0.0f, 0.5f);
+
+    m_Ghosts[2].SetTarget(std::make_shared<InkyTarget>(m_Player.GetPosition()));
     m_Ghosts[2].SetPosition(GridRef(&m_Grid, 26, 22), 0.0f, 0.5f);
+
+    m_Ghosts[3].SetTarget(std::make_shared<ClydeTarget>(m_Player.GetPosition()));
     m_Ghosts[3].SetPosition(GridRef(&m_Grid, 14, 25), 0.0f, 0.5f);
 }
 

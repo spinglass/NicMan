@@ -38,6 +38,15 @@
     <ClCompile Include="GhostTargets\BlinkyTarget.cpp">
       <Filter>GhostTargets</Filter>
     </ClCompile>
+    <ClCompile Include="GhostTargets\PinkyTarget.cpp">
+      <Filter>GhostTargets</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostTargets\InkyTarget.cpp">
+      <Filter>GhostTargets</Filter>
+    </ClCompile>
+    <ClCompile Include="GhostTargets\ClydeTarget.cpp">
+      <Filter>GhostTargets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -77,6 +86,15 @@
       <Filter>GhostTargets</Filter>
     </ClInclude>
     <ClInclude Include="GhostTargets\BlinkyTarget.h">
+      <Filter>GhostTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostTargets\PinkyTarget.h">
+      <Filter>GhostTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostTargets\InkyTarget.h">
+      <Filter>GhostTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostTargets\ClydeTarget.h">
       <Filter>GhostTargets</Filter>
     </ClInclude>
   </ItemGroup>

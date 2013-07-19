@@ -19,8 +19,10 @@ public:
     int Y() const { return m_Y; }
 
     void Move(Direction dir);
+    void MoveWithoutWrap(Direction dir);
 
     GridRef GetNext(Direction dir) const;
+    GridRef GetNextWithoutWrap(Direction dir) const;
     GridRef North() const;
     GridRef South() const;
     GridRef East() const;
