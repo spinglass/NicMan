@@ -11,7 +11,7 @@ public:
     Ghost();
     virtual ~Ghost();
 
-    void Load();
+    void Load(int id);
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
     void SetTarget(GridRef const* ref) { m_TargetGridRef = ref; }
 
@@ -26,7 +26,8 @@ private:
 
     GridRef const* m_TargetGridRef;
 
-    Sprite m_Sprite;
+    Sprite m_Body;
+    std::map<Direction, Sprite> m_Eyes;
     GridRef m_GridRef;
     sf::Vector2f m_Offset;
     Direction m_Direction;

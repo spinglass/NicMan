@@ -15,10 +15,21 @@ Ghost::~Ghost()
 {
 }
 
-void Ghost::Load()
+void Ghost::Load(int id)
 {
-    m_Sprite.Load("Resources/ghost_00_body");
-    m_Sprite.SetOriginToCentre();
+    char bodyFilename[FILENAME_MAX];
+    sprintf_s(bodyFilename, "Resources/ghost_body_%02d", id);
+    m_Body.Load(bodyFilename);
+    m_Body.SetOriginToCentre();
+
+    m_Eyes[Direction::North].Load("Resources/ghost_eyes_north");
+    m_Eyes[Direction::North].SetOriginToCentre();
+    m_Eyes[Direction::South].Load("Resources/ghost_eyes_south");
+    m_Eyes[Direction::South].SetOriginToCentre();
+    m_Eyes[Direction::East].Load("Resources/ghost_eyes_east");
+    m_Eyes[Direction::East].SetOriginToCentre();
+    m_Eyes[Direction::West].Load("Resources/ghost_eyes_west");
+    m_Eyes[Direction::West].SetOriginToCentre();
 }
 
 void Ghost::SetPosition(GridRef const& ref, float offsetX, float offsetY)
@@ -38,8 +49,11 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 {
     sf::Vector2f gridPos = sf::Vector2f((float)m_GridRef.X(), (float)m_GridRef.Y()) + m_Offset;
     sf::Vector2f pos = transform.transformPoint(gridPos);
-    m_Sprite.SetPosition(pos);
-    m_Sprite.Draw(target);
+    m_Body.SetPosition(pos);
+    m_Body.Draw(target);
+    Sprite& eyes = m_Eyes[m_Direction];
+    eyes.SetPosition(pos);
+    eyes.Draw(target);
 }
 
 void Ghost::Move(Direction dir, float dt)

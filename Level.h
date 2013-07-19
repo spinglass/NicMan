@@ -26,5 +26,5 @@ private:
 
     Sprite m_Background;
     Player m_Player;
-    Ghost m_Ghost;
+    std::vector<Ghost> m_Ghosts;
 };

@@ -35,9 +35,17 @@ void Level::Load(char* filename)
     m_Player.Load();
     m_Player.SetPosition(GridRef(&m_Grid, 14, 7), 0.0f, 0.5f);
 
-    m_Ghost.Load();
-    m_Ghost.SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
-    m_Ghost.SetTarget(&m_Player.GetPosition());
+    m_Ghosts.resize(4);
+    for (int i = 0; i < m_Ghosts.size(); ++i)
+    {
+        m_Ghosts[i].Load(i);
+        m_Ghosts[i].SetTarget(&m_Player.GetPosition());
+    }
+
+    m_Ghosts[0].SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
+    m_Ghosts[1].SetPosition(GridRef(&m_Grid, 2, 22), 0.0f, 0.5f);
+    m_Ghosts[2].SetPosition(GridRef(&m_Grid, 26, 22), 0.0f, 0.5f);
+    m_Ghosts[3].SetPosition(GridRef(&m_Grid, 14, 25), 0.0f, 0.5f);
 }
 
 void Level::Parse(std::vector<char> const& data)
@@ -116,7 +124,10 @@ void Level::Parse(std::vector<char> const& data)
 
 void Level::Update(float dt)
 {
-    m_Ghost.Update(dt);
+    for (Ghost& ghost : m_Ghosts)
+    {
+        ghost.Update(dt);
+    }
     m_Player.Update(dt);
 }
 
@@ -208,5 +219,8 @@ void Level::Draw(sf::RenderTarget& target)
     }
 
     m_Player.Draw(target, transform);
-    m_Ghost.Draw(target, transform);
+    for (Ghost& ghost : m_Ghosts)
+    {
+        ghost.Draw(target, transform);
+    }
 }
