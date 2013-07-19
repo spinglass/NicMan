@@ -2,7 +2,7 @@
 
 #include "Sprite.h"
 #include "Entity.h"
-#include "GridRef.h"
+#include "Maze/GridRef.h"
 #include "Sound.h"
 
 class Ghost : public Entity
@@ -18,19 +18,10 @@ public:
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;
 
 private:
-    enum class Direction
-    {
-        None,
-        North,
-        East,
-        South,
-        West,
-    };
-
     void Move(Direction dir, float dt);
 
     void UpdateMovement(float dt);
-    void SelectNextExitDirection();
+    void SelectNextDirection();
 
     Sprite m_Sprite;
     GridRef m_GridRef;

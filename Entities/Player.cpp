@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Player.h"
 
-#include "Cell.h"
+#include "Maze/Cell.h"
+#include "Maze/Direction.h"
 
 Player::Player() :
     m_Direction(Direction::None),
@@ -84,10 +85,10 @@ void Player::UpdateMovement(float dt)
     GridRef const eastRef = m_GridRef.East();
     GridRef const westRef = m_GridRef.West();
 
-    bool const north = northRef.CanPlayerPass();
-    bool const south = southRef.CanPlayerPass();
-    bool const east = eastRef.CanPlayerPass();
-    bool const west = westRef.CanPlayerPass();
+    bool const canGoNorth = northRef.CanPlayerPass();
+    bool const canGoSouth = southRef.CanPlayerPass();
+    bool const canGoEast = eastRef.CanPlayerPass();
+    bool const canGoWest = westRef.CanPlayerPass();
 
     bool const upPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
     bool const downPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
@@ -97,19 +98,19 @@ void Player::UpdateMovement(float dt)
     if (m_Direction == Direction::None)
     {
         // Not currently moving, check for starting
-        if (upPressed && north)
+        if (upPressed && canGoNorth)
         {
             m_Direction = Direction::North;
         }
-        else if (downPressed && south)
+        else if (downPressed && canGoSouth)
         {
             m_Direction = Direction::South;
         }
-        else if (rightPressed && east)
+        else if (rightPressed && canGoEast)
         {
             m_Direction = Direction::East;
         }
-        else if (leftPressed && west)
+        else if (leftPressed && canGoWest)
         {
             m_Direction = Direction::West;
         }
@@ -121,7 +122,7 @@ void Player::UpdateMovement(float dt)
         {
             case Direction::North:
             {
-                if (downPressed && !upPressed && south)
+                if (downPressed && !upPressed && canGoSouth)
                 {
                     // Reverse
                     m_Direction = Direction::South;
@@ -129,11 +130,11 @@ void Player::UpdateMovement(float dt)
                 else if (m_Offset.y < 0.5f)
                 {
                     // In first half of cell
-                    if (rightPressed && east)
+                    if (rightPressed && canGoEast)
                     {
                         m_NextDirection = Direction::East;
                     }
-                    else if (leftPressed && west)
+                    else if (leftPressed && canGoWest)
                     {
                         m_NextDirection = Direction::West;
                     }
@@ -142,7 +143,7 @@ void Player::UpdateMovement(float dt)
             }
             case Direction::South:
             {
-                if (upPressed && !downPressed && north)
+                if (upPressed && !downPressed && canGoNorth)
                 {
                     // Reverse
                     m_Direction = Direction::North;
@@ -150,11 +151,11 @@ void Player::UpdateMovement(float dt)
                 else if (m_Offset.y > 0.5f)
                 {
                     // In first half of cell
-                    if (rightPressed && east)
+                    if (rightPressed && canGoEast)
                     {
                         m_NextDirection = Direction::East;
                     }
-                    else if (leftPressed && west)
+                    else if (leftPressed && canGoWest)
                     {
                         m_NextDirection = Direction::West;
                     }
@@ -163,7 +164,7 @@ void Player::UpdateMovement(float dt)
             }
             case Direction::East:
             {
-                if (leftPressed && !rightPressed && west)
+                if (leftPressed && !rightPressed && canGoWest)
                 {
                     // Reverse
                     m_Direction = Direction::West;
@@ -171,11 +172,11 @@ void Player::UpdateMovement(float dt)
                 else if (m_Offset.x < 0.5f)
                 {
                     // In first half of cell
-                    if (upPressed && north)
+                    if (upPressed && canGoNorth)
                     {
                         m_NextDirection = Direction::North;
                     }
-                    else if (downPressed && south)
+                    else if (downPressed && canGoSouth)
                     {
                         m_NextDirection = Direction::South;
                     }
@@ -184,7 +185,7 @@ void Player::UpdateMovement(float dt)
             }
             case Direction::West:
             {
-                if (rightPressed && !leftPressed && east)
+                if (rightPressed && !leftPressed && canGoEast)
                 {
                     // Reverse
                     m_Direction = Direction::East;
@@ -192,11 +193,11 @@ void Player::UpdateMovement(float dt)
                 else if (m_Offset.x > 0.5f)
                 {
                     // In first half of cell
-                    if (upPressed && north)
+                    if (upPressed && canGoNorth)
                     {
                         m_NextDirection = Direction::North;
                     }
-                    else if (downPressed && south)
+                    else if (downPressed && canGoSouth)
                     {
                         m_NextDirection = Direction::South;
                     }
@@ -215,7 +216,7 @@ void Player::UpdateMovement(float dt)
         {
             case Direction::North:
             {
-                if (north)
+                if (canGoNorth)
                 {
                     if (m_Offset.y >= 1.0f)
                     {
@@ -237,7 +238,7 @@ void Player::UpdateMovement(float dt)
             }
             case Direction::South:
             {
-                if (south)
+                if (canGoSouth)
                 {
                     if (m_Offset.y < 0.0f)
                     {
@@ -259,7 +260,7 @@ void Player::UpdateMovement(float dt)
             }
             case Direction::East:
             {
-                if (east)
+                if (canGoEast)
                 {
                     if (m_Offset.x >= 1.0f)
                     {
@@ -281,7 +282,7 @@ void Player::UpdateMovement(float dt)
             }
             case Direction::West:
             {
-                if (west)
+                if (canGoWest)
                 {
                     if (m_Offset.x < 0.0f)
                     {
@@ -309,6 +310,7 @@ void Player::UpdateMovement(float dt)
         Move(m_NextDirection, dt);
 
         // Check for completing transition
+        bool transitionComplete = false;
         switch (m_Direction)
         {
             case Direction::North:
@@ -316,8 +318,7 @@ void Player::UpdateMovement(float dt)
                 if (m_Offset.y >= 0.5f)
                 {
                     m_Offset.y = 0.5f;
-                    m_Direction = m_NextDirection;
-                    m_NextDirection = Direction::None;
+                    transitionComplete = true;
                 }
                 break;
             }
@@ -326,8 +327,7 @@ void Player::UpdateMovement(float dt)
                 if (m_Offset.y <= 0.5f)
                 {
                     m_Offset.y = 0.5f;
-                    m_Direction = m_NextDirection;
-                    m_NextDirection = Direction::None;
+                    transitionComplete = true;
                 }
                 break;
             }
@@ -336,8 +336,7 @@ void Player::UpdateMovement(float dt)
                 if (m_Offset.x >= 0.5f)
                 {
                     m_Offset.x = 0.5f;
-                    m_Direction = m_NextDirection;
-                    m_NextDirection = Direction::None;
+                    transitionComplete = true;
                 }
                 break;
             }
@@ -346,11 +345,15 @@ void Player::UpdateMovement(float dt)
                 if (m_Offset.x <= 0.5f)
                 {
                     m_Offset.x = 0.5f;
-                    m_Direction = m_NextDirection;
-                    m_NextDirection = Direction::None;
+                    transitionComplete = true;
                 }
                 break;
             }
+        }
+        if (transitionComplete)
+        {
+            m_Direction = m_NextDirection;
+            m_NextDirection = Direction::None;
         }
     }
 }

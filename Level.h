@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Grid.h"
 #include "Sprite.h"
 #include "Entities/Ghost.h"
 #include "Entities/Player.h"
+#include "Maze/Grid.h"
 
 class Level
 {

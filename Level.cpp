@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Level.h"
 
-#include "Cell.h"
+#include "Maze/Cell.h"
 
 Level::Level()
 {

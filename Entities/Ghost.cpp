@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Ghost.h"
 
+#include "Maze/Direction.h"
+
 Ghost::Ghost() :
     m_Direction(Direction::None),
     m_ExitDirection(Direction::None),
@@ -71,128 +73,41 @@ void Ghost::Move(Direction dir, float dt)
     }
 }
 
-void Ghost::SelectNextExitDirection()
+void Ghost::SelectNextDirection()
 {
-    GridRef nextRef;
-    switch(m_NextDirection)
+    // Get the next cell we'll be entering, where the decision is required for exit.
+    GridRef nextRef = m_GridRef.GetNext(m_ExitDirection);
+    assert(nextRef.CanPlayerPass());
+
+    // Find possible exit direction from the next cell
+    std::vector<Direction> exitOptions;
+    Direction const enterDirection = Opposite(m_ExitDirection);
+    for (DirectionIter iter = DirectionIter::Begin(); iter != DirectionIter::End(); ++iter)
     {
-        case Direction::North:
+        // If it's not back the way we came and we can pass, it's an option
+        if (*iter != enterDirection && nextRef.GetNext(*iter).CanPlayerPass())
         {
-            nextRef = m_GridRef.North();
-            assert(nextRef.CanPlayerPass());
-            break;
-        }
-        case Direction::South:
-        {
-            nextRef = m_GridRef.South();
-            assert(nextRef.CanPlayerPass());
-            break;
-        }
-        case Direction::East:
-        {
-            nextRef = m_GridRef.East();
-            assert(nextRef.CanPlayerPass());
-            break;
-        }
-        case Direction::West:
-        {
-            nextRef = m_GridRef.West();
-            assert(nextRef.CanPlayerPass());
-            break;
+            exitOptions.push_back(*iter);
         }
     }
+    assert(exitOptions.size() > 0);
 
-    bool const north = nextRef.North().CanPlayerPass();
-    bool const south = nextRef.South().CanPlayerPass();
-    bool const east = nextRef.East().CanPlayerPass();
-    bool const west = nextRef.West().CanPlayerPass();
-
-    std::vector<Direction> options;
-
-    switch(m_NextDirection)
-    {
-        case Direction::North:
-        {
-            if (north)
-            {
-                options.push_back(Direction::North);
-            }
-            if (east)
-            {
-                options.push_back(Direction::East);
-            }
-            if (west)
-            {
-                options.push_back(Direction::West);
-            }
-            break;
-        }
-        case Direction::South:
-        {
-            if (south)
-            {
-                options.push_back(Direction::South);
-            }
-            if (east)
-            {
-                options.push_back(Direction::East);
-            }
-            if (west)
-            {
-                options.push_back(Direction::West);
-            }
-            break;
-        }
-        case Direction::East:
-        {
-            if (north)
-            {
-                options.push_back(Direction::North);
-            }
-            if (east)
-            {
-                options.push_back(Direction::East);
-            }
-            if (south)
-            {
-                options.push_back(Direction::South);
-            }
-            break;
-        }
-        case Direction::West:
-        {
-            if (north)
-            {
-                options.push_back(Direction::North);
-            }
-            if (south)
-            {
-                options.push_back(Direction::South);
-            }
-            if (west)
-            {
-                options.push_back(Direction::West);
-            }
-            break;
-        }
-    }
-
-    int choice = rand() % options.size();
-    m_ExitDirection = options[choice];
+    // Randomly choose one
+    int const choice = rand() % exitOptions.size();
+    m_NextDirection = exitOptions[choice];
 }
 
 void Ghost::UpdateMovement(float dt)
 {
-    GridRef const northRef = m_GridRef.North();
-    GridRef const southRef = m_GridRef.South();
-    GridRef const eastRef = m_GridRef.East();
-    GridRef const westRef = m_GridRef.West();
-
     if (m_Direction == Direction::None)
     {
         m_Direction = Direction::West;
         m_ExitDirection = Direction::West;
-        m_NextDirection = Direction::West;
+    }
+    
+    if (m_NextDirection == Direction::None)
+    {
+        SelectNextDirection();
     }
 
     Move(m_Direction, dt);
@@ -203,13 +118,12 @@ void Ghost::UpdateMovement(float dt)
     {
         case Direction::North:
         {
-            if (m_NextDirection == Direction::North)
+            if (m_ExitDirection == Direction::North)
             {
                 if (m_Offset.y >= 1.0f)
                 {
                     // Next cell
                     m_Offset.y -= 1.0f;
-                    m_GridRef = northRef;
                     nextCell = true;
                 }
             }
@@ -219,20 +133,19 @@ void Ghost::UpdateMovement(float dt)
                 {
                     // Change direction
                     m_Offset.y = 0.5f;
-                    m_Direction = m_NextDirection;
+                    m_Direction = m_ExitDirection;
                 }
             }
             break;
         }
         case Direction::South:
         {
-            if (m_NextDirection == Direction::South)
+            if (m_ExitDirection == Direction::South)
             {
                 if (m_Offset.y <= 0.0f)
                 {
                     // Next cell
                     m_Offset.y += 1.0f;
-                    m_GridRef = southRef;
                     nextCell = true;
                 }
             }
@@ -242,20 +155,19 @@ void Ghost::UpdateMovement(float dt)
                 {
                     // Change direction
                     m_Offset.y = 0.5f;
-                    m_Direction = m_NextDirection;
+                    m_Direction = m_ExitDirection;
                 }
             }
             break;
         }
         case Direction::East:
         {
-            if (m_NextDirection == Direction::East)
+            if (m_ExitDirection == Direction::East)
             {
                 if (m_Offset.x >= 1.0f)
                 {
                     // Next cell
                     m_Offset.x -= 1.0f;
-                    m_GridRef = eastRef;
                     nextCell = true;
                 }
             }
@@ -265,20 +177,19 @@ void Ghost::UpdateMovement(float dt)
                 {
                     // Stop
                     m_Offset.x = 0.5f;
-                    m_Direction = m_NextDirection;
+                    m_Direction = m_ExitDirection;
                 }
             }
             break;
         }
         case Direction::West:
         {
-            if (m_NextDirection == Direction::West)
+            if (m_ExitDirection == Direction::West)
             {
                 if (m_Offset.x < 0.0f)
                 {
                     // Next cell
                     m_Offset.x += 1.0f;
-                    m_GridRef = westRef;
                     nextCell = true;
                 }
             }
@@ -288,7 +199,7 @@ void Ghost::UpdateMovement(float dt)
                 {
                     // Stop
                     m_Offset.x = 0.5f;
-                    m_Direction = m_NextDirection;
+                    m_Direction = m_ExitDirection;
                 }
             }
             break;
@@ -297,7 +208,8 @@ void Ghost::UpdateMovement(float dt)
 
     if (nextCell)
     {
-        m_NextDirection = m_ExitDirection;
-        SelectNextExitDirection();
+        m_GridRef.Move(m_Direction);
+        m_ExitDirection = m_NextDirection;
+        m_NextDirection = Direction::None;
     }
 }

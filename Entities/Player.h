@@ -2,7 +2,7 @@
 
 #include "AnimatedSprite.h"
 #include "Entity.h"
-#include "GridRef.h"
+#include "Maze/GridRef.h"
 #include "Sound.h"
 
 class Player : public Entity
@@ -18,15 +18,6 @@ public:
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;
 
 private:
-    enum class Direction
-    {
-        None,
-        North,
-        East,
-        South,
-        West,
-    };
-
     void Move(Direction dir, float dt);
 
     void UpdateMovement(float dt);

@@ -88,29 +88,31 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
-    <ClInclude Include="Cell.h" />
     <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Entities\Ghost.h" />
     <ClInclude Include="Entities\Player.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Grid.h" />
-    <ClInclude Include="GridRef.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="Maze\Cell.h" />
+    <ClInclude Include="Maze\Direction.h" />
+    <ClInclude Include="Maze\Grid.h" />
+    <ClInclude Include="Maze\GridRef.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
-    <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Entities\Ghost.cpp" />
     <ClCompile Include="Entities\Player.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="GridRef.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Maze\Cell.cpp" />
+    <ClCompile Include="Maze\Direction.cpp" />
+    <ClCompile Include="Maze\Grid.cpp" />
+    <ClCompile Include="Maze\GridRef.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">

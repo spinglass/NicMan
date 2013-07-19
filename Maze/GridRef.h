@@ -2,6 +2,7 @@
 
 class Cell;
 class Grid;
+enum class Direction;
 
 class GridRef
 {
@@ -17,6 +18,9 @@ public:
     int X() const { return m_X; }
     int Y() const { return m_Y; }
 
+    void Move(Direction dir);
+
+    GridRef GetNext(Direction dir) const;
     GridRef North() const;
     GridRef South() const;
     GridRef East() const;
