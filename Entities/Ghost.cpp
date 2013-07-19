@@ -59,7 +59,7 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 
     if (k_DebugDraw)
     {
-        sf::Vector2f targetGridPos = sf::Vector2f((float)m_TargetRef.X(), (float)m_TargetRef.Y());
+        sf::Vector2f targetGridPos = sf::Vector2f((float)m_TargetRef.X(), (float)m_TargetRef.Y()) + sf::Vector2f(0.5f, 0.5f);
         sf::Vector2f targetPos = transform.transformPoint(targetGridPos);
         sf::VertexArray lines(sf::LinesStrip, 2);
         lines[0].position = pos;
