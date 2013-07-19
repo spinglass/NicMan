@@ -3,7 +3,7 @@
 class ClydeTarget : public IGhostTarget
 {
 public:
-    explicit ClydeTarget(GridRef const& postion);
+    explicit ClydeTarget(GridRef const& postion, GridRef const& ownPostion, GridRef const& fleePosition);
 
     virtual GridRef It() override;
 
@@ -12,4 +12,6 @@ private:
     ClydeTarget& operator=(ClydeTarget&);
 
     GridRef const& m_Position;
+    GridRef const& m_OwnPosition;
+    GridRef m_FleePosition;
 };
