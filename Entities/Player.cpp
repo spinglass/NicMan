@@ -6,7 +6,8 @@
 
 Player::Player() :
     m_Direction(Direction::None),
-    m_NextDirection(Direction::None)
+    m_NextDirection(Direction::None),
+    m_StopTimer(0.0f)
 {
 }
 
@@ -41,8 +42,15 @@ void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
 
 void Player::Update(float dt)
 {
-    UpdateMovement(dt);
-    UpdateNomming();
+    if (m_StopTimer > 0.0f)
+    {
+        m_StopTimer -= dt;
+    }
+    else
+    {
+        UpdateMovement(dt);
+        UpdateNomming();
+    }
     UpdateSprite(dt);
 }
 
@@ -361,6 +369,8 @@ void Player::UpdateMovement(float dt)
 void Player::UpdateNomming()
 {
     float const k_NomOffset = 0.25f;
+    float const k_PillStopTime = 1.0f / 60.0f;
+    float const k_PowerPillStopTime = 3.0f / 60.0f;
 
     if (m_GridRef.GetCell()->GetPill() || m_GridRef.GetCell()->GetPowerPill())
     {
@@ -387,10 +397,12 @@ void Player::UpdateNomming()
         {
             if (m_GridRef.GetCell()->GetPill())
             {
+                m_StopTimer = k_PillStopTime;
                 m_PillSound.Play();
             }
             else
             {
+                m_StopTimer = k_PowerPillStopTime;
                 m_PowerPillSound.Play();
             }
 

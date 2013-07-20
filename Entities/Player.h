@@ -33,6 +33,7 @@ private:
     Direction m_Direction;
     Direction m_NextDirection;
     sf::Vector2f m_Speed;
+    float m_StopTimer;
 
     Sound m_PillSound;
     Sound m_PowerPillSound;

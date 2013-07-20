@@ -72,7 +72,7 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 
 void Ghost::Move(Direction dir, float dt)
 {
-    float const k_Speed = 8.0f;
+    float const k_Speed = 7.5f;
     float const delta = k_Speed * dt;
 
     switch(dir)
