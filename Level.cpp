@@ -50,13 +50,13 @@ void Level::Load(char* filename)
     m_Ghosts[0]->SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
 
     m_Ghosts[1]->SetTarget(std::make_shared<PinkyTarget>(m_Player.GetPosition(), m_Player.GetDirection()));
-    m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 2, 22), 0.0f, 0.6f);
+    m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 2, 22), 0.1f, 0.5f);
 
     m_Ghosts[2]->SetTarget(std::make_shared<InkyTarget>(m_Player.GetPosition(), m_Player.GetDirection(), m_Ghosts[0]->GetPosition()));
-    m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 26, 22), 0.0f, 0.7f);
+    m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 26, 22), 0.2f, 0.5f);
 
     m_Ghosts[3]->SetTarget(std::make_shared<ClydeTarget>(m_Player.GetPosition(), m_Ghosts[3]->GetPosition(), GridRef(&m_Grid, 1, -2)));
-    m_Ghosts[3]->SetPosition(GridRef(&m_Grid, 14, 25), 0.0f, 0.8f);
+    m_Ghosts[3]->SetPosition(GridRef(&m_Grid, 14, 25), 0.3f, 0.5f);
 }
 
 void Level::Parse(std::vector<char> const& data)

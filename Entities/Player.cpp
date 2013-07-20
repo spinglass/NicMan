@@ -89,9 +89,9 @@ void Player::UpdateControls()
     }
     else if (m_Movement.GetExitDirection() == Direction::None)
     {
-        sf::Vector2f offset = m_Movement.GetOffset();
+        // Not transitioning to another direction, check for direction change
 
-        // Check for direction change
+        sf::Vector2f offset = m_Movement.GetOffset();
         switch (m_Movement.GetDirection())
         {
             case Direction::North:

@@ -19,6 +19,9 @@ Movement::~Movement()
 
 void Movement::Reset(GridRef const& position, float x, float y)
 {
+    assert(position.GetCell());
+    assert(x == 0.5f || y == 0.5f);
+
     m_Position = position;
     m_Offset.x = x;
     m_Offset.y = y;
