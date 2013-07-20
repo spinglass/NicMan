@@ -8,7 +8,9 @@
 #include "GhostTargets/ClydeTarget.h"
 #include "GhostTargets/FixedTarget.h"
 
-Level::Level()
+Level::Level() :
+    m_CurrentBehaviour(0),
+    m_BehaviourTimer(0.0f)
 {
 }
 
@@ -61,7 +63,7 @@ void Level::Load(char* filename)
 
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
-        m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 2, 22), 0.1f, 0.5f);
+        m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 4, 22), 0.1f, 0.5f);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<InkyTarget>(m_Player.GetMovement(), m_Ghosts[0]->GetMovement());
@@ -69,7 +71,7 @@ void Level::Load(char* filename)
 
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
-        m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 26, 22), 0.2f, 0.5f);
+        m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 24, 22), 0.2f, 0.5f);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<ClydeTarget>(m_Player.GetMovement(), m_Ghosts[3]->GetMovement(), GridRef(&m_Grid, 0, -1));
@@ -79,6 +81,15 @@ void Level::Load(char* filename)
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[3]->SetPosition(GridRef(&m_Grid, 14, 25), 0.3f, 0.5f);
     }
+
+    // Setup chase/scatter cycle
+    m_BehaviourChanges.push_back(7.0f);
+    m_BehaviourChanges.push_back(20.0f);
+    m_BehaviourChanges.push_back(7.0f);
+    m_BehaviourChanges.push_back(20.0f);
+    m_BehaviourChanges.push_back(7.0f);
+    m_BehaviourChanges.push_back(20.0f);
+    m_BehaviourChanges.push_back(5.0f);
 }
 
 void Level::Parse(std::vector<char> const& data)
@@ -157,19 +168,37 @@ void Level::Parse(std::vector<char> const& data)
 
 void Level::Update(float dt)
 {
+    UpdateBehaviour(dt);
+
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
-        {
-            ghost->SetBehaviour(Ghost::Behaviour::Scatter);
-        }
-        else
-        {
-            ghost->SetBehaviour(Ghost::Behaviour::Chase);
-        }
         ghost->Update(dt);
     }
     m_Player.Update(dt);
+}
+
+void Level::UpdateBehaviour(float dt)
+{
+    if (m_CurrentBehaviour < m_BehaviourChanges.size())
+    {
+        m_BehaviourTimer += dt;
+        if (m_BehaviourTimer > m_BehaviourChanges[m_CurrentBehaviour])
+        {
+            // Swap behaviour, based on Blinky's current behaviour
+            Ghost::Behaviour current = m_Ghosts[0]->GetBehaviour();
+            Ghost::Behaviour next = (current == Ghost::Behaviour::Chase) ? Ghost::Behaviour::Scatter : Ghost::Behaviour::Chase;
+
+            // Apply to all ghosts
+            for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+            {
+                ghost->SetBehaviour(next);
+            }
+
+            // Reset for next change
+            m_BehaviourTimer = 0.0f;
+            ++m_CurrentBehaviour;
+        }
+    }
 }
 
 void Level::Draw(sf::RenderTarget& target)

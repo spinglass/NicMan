@@ -28,6 +28,7 @@ public:
     void SetBehaviour(Behaviour behaviour);
 
     Movement const& GetMovement() const { return m_Movement; }
+    Behaviour GetBehaviour() const { return m_Behaviour; }
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;

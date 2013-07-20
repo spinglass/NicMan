@@ -7,7 +7,7 @@
 Ghost::Ghost() :
     m_Movement(false),
     m_NextDirection(Direction::None),
-    m_Behaviour(Behaviour::Chase),
+    m_Behaviour(Behaviour::Scatter),
     m_PendingBehaviour(Behaviour::None)
 {
     Movement::NextCellFunc func = [this]() { return this->SelectNextDirection(); };
@@ -42,6 +42,8 @@ void Ghost::SetPosition(GridRef const& ref, float offsetX, float offsetY)
     m_Movement.Reset(ref, offsetX, offsetY);
     m_Movement.SetDirection(Direction::West);
     m_Movement.SetExitDirection(Direction::West);
+    m_Behaviour = Behaviour::Scatter;
+    m_PendingBehaviour = Behaviour::None;
     SelectNextDirection();
 }
 

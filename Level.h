@@ -18,6 +18,7 @@ public:
 
 private:
     void Parse(std::vector<char> const& data);
+    void UpdateBehaviour(float dt);
 
     std::vector<Cell> m_CellStorage;
     Grid m_Grid;
@@ -27,4 +28,8 @@ private:
     Sprite m_Background;
     Player m_Player;
     std::vector<std::shared_ptr<Ghost>> m_Ghosts;
+
+    std::vector<float> m_BehaviourChanges;
+    int m_CurrentBehaviour;
+    float m_BehaviourTimer;
 };
