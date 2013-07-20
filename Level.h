@@ -26,5 +26,5 @@ private:
 
     Sprite m_Background;
     Player m_Player;
-    std::vector<Ghost> m_Ghosts;
+    std::vector<std::shared_ptr<Ghost>> m_Ghosts;
 };

@@ -4,7 +4,7 @@
 
 #include "Sprite.h"
 #include "Entity.h"
-#include "Maze/GridRef.h"
+#include "Maze/Movement.h"
 #include "Sound.h"
 
 class IGhostTarget;
@@ -19,25 +19,22 @@ public:
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
     void SetTarget(std::shared_ptr<IGhostTarget> const& target) { m_Target = target; }
 
-    GridRef const& GetPosition() const { return m_GridRef; }
+    GridRef const& GetPosition() const { return m_Movement.GetPosition(); }
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;
 
 private:
-    void Move(Direction dir, float dt);
+    Ghost(Ghost&);
+    Ghost& operator=(Ghost&);
 
-    void UpdateMovement(float dt);
-    void SelectNextDirection();
+    Direction SelectNextDirection();
 
     std::shared_ptr<IGhostTarget> m_Target;
 
     Sprite m_Body;
     std::map<Direction, Sprite> m_Eyes;
-    GridRef m_GridRef;
+    Movement m_Movement;
     GridRef m_TargetRef;
-    sf::Vector2f m_Offset;
-    Direction m_Direction;
-    Direction m_ExitDirection;
     Direction m_NextDirection;
 };

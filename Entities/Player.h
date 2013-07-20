@@ -2,7 +2,7 @@
 
 #include "AnimatedSprite.h"
 #include "Entity.h"
-#include "Maze/GridRef.h"
+#include "Maze/Movement.h"
 #include "Sound.h"
 
 class Player : public Entity
@@ -13,26 +13,23 @@ public:
 
     void Load();
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
-    GridRef const& GetPosition() const { return m_GridRef; }
-    Direction const& GetDirection() const { return m_Direction; }
+    GridRef const& GetPosition() const { return m_Movement.GetPosition(); }
+    Direction GetDirection() const { return m_Movement.GetDirection(); }
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;
 
 private:
-    void Move(Direction dir, float dt);
+    Player(Player&);
+    Player& operator=(Player&);
 
-    void UpdateMovement(float dt);
+    void UpdateControls();
     void UpdateNomming();
     void UpdateSprite(float dt);
 
     AnimatedSprite m_Sprite;
-    GridRef m_GridRef;
-    sf::Vector2f m_Offset;
+    Movement m_Movement;
     sf::Vector2f m_PreviousOffset;
-    Direction m_Direction;
-    Direction m_NextDirection;
-    sf::Vector2f m_Speed;
     float m_StopTimer;
 
     Sound m_PillSound;

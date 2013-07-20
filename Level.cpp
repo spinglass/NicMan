@@ -42,20 +42,21 @@ void Level::Load(char* filename)
     m_Ghosts.resize(4);
     for (int i = 0; i < m_Ghosts.size(); ++i)
     {
-        m_Ghosts[i].Load(i);
+        m_Ghosts[i] = std::make_shared<Ghost>();
+        m_Ghosts[i]->Load(i);
     }
 
-    m_Ghosts[0].SetTarget(std::make_shared<BlinkyTarget>(m_Player.GetPosition()));
-    m_Ghosts[0].SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
+    m_Ghosts[0]->SetTarget(std::make_shared<BlinkyTarget>(m_Player.GetPosition()));
+    m_Ghosts[0]->SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
 
-    m_Ghosts[1].SetTarget(std::make_shared<PinkyTarget>(m_Player.GetPosition(), m_Player.GetDirection()));
-    m_Ghosts[1].SetPosition(GridRef(&m_Grid, 2, 22), 0.0f, 0.6f);
+    m_Ghosts[1]->SetTarget(std::make_shared<PinkyTarget>(m_Player.GetPosition(), m_Player.GetDirection()));
+    m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 2, 22), 0.0f, 0.6f);
 
-    m_Ghosts[2].SetTarget(std::make_shared<InkyTarget>(m_Player.GetPosition(), m_Player.GetDirection(), m_Ghosts[0].GetPosition()));
-    m_Ghosts[2].SetPosition(GridRef(&m_Grid, 26, 22), 0.0f, 0.7f);
+    m_Ghosts[2]->SetTarget(std::make_shared<InkyTarget>(m_Player.GetPosition(), m_Player.GetDirection(), m_Ghosts[0]->GetPosition()));
+    m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 26, 22), 0.0f, 0.7f);
 
-    m_Ghosts[3].SetTarget(std::make_shared<ClydeTarget>(m_Player.GetPosition(), m_Ghosts[3].GetPosition(), GridRef(&m_Grid, 1, -2)));
-    m_Ghosts[3].SetPosition(GridRef(&m_Grid, 14, 25), 0.0f, 0.8f);
+    m_Ghosts[3]->SetTarget(std::make_shared<ClydeTarget>(m_Player.GetPosition(), m_Ghosts[3]->GetPosition(), GridRef(&m_Grid, 1, -2)));
+    m_Ghosts[3]->SetPosition(GridRef(&m_Grid, 14, 25), 0.0f, 0.8f);
 }
 
 void Level::Parse(std::vector<char> const& data)
@@ -134,9 +135,9 @@ void Level::Parse(std::vector<char> const& data)
 
 void Level::Update(float dt)
 {
-    for (Ghost& ghost : m_Ghosts)
+    for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        ghost.Update(dt);
+        ghost->Update(dt);
     }
     m_Player.Update(dt);
 }
@@ -229,8 +230,8 @@ void Level::Draw(sf::RenderTarget& target)
     }
 
     m_Player.Draw(target, transform);
-    for (Ghost& ghost : m_Ghosts)
+    for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        ghost.Draw(target, transform);
+        ghost->Draw(target, transform);
     }
 }

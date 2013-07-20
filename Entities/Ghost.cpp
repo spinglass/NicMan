@@ -5,10 +5,11 @@
 #include "GhostTargets\IGhostTarget.h"
 
 Ghost::Ghost() :
-    m_Direction(Direction::None),
-    m_ExitDirection(Direction::None),
+    m_Movement(false),
     m_NextDirection(Direction::None)
 {
+    Movement::NextCellFunc func = [this]() { return this->SelectNextDirection(); };
+    m_Movement.SetNextCellFunc(func);
 }
 
 Ghost::~Ghost()
@@ -17,6 +18,8 @@ Ghost::~Ghost()
 
 void Ghost::Load(int id)
 {
+    m_Movement.SetSpeed(7.5f);
+
     char bodyFilename[FILENAME_MAX];
     sprintf_s(bodyFilename, "Resources/ghost_body_%02d", id);
     m_Body.Load(bodyFilename);
@@ -34,26 +37,27 @@ void Ghost::Load(int id)
 
 void Ghost::SetPosition(GridRef const& ref, float offsetX, float offsetY)
 {
-    m_GridRef = ref;
-    m_Offset.x = offsetX;
-    m_Offset.y = offsetY;
+    m_Movement.Reset(ref, offsetX, offsetY);
+    m_Movement.SetDirection(Direction::West);
+    m_Movement.SetExitDirection(Direction::West);
+    SelectNextDirection();
 }
 
 
 void Ghost::Update(float dt)
 {
-    UpdateMovement(dt);
+    m_Movement.Update(dt);
 }
 
 void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 {
     static bool k_DebugDraw = false;
 
-    sf::Vector2f gridPos = sf::Vector2f((float)m_GridRef.X(), (float)m_GridRef.Y()) + m_Offset;
+    sf::Vector2f const gridPos = m_Movement.GetAbsolutePosition();
     sf::Vector2f pos = transform.transformPoint(gridPos);
     m_Body.SetPosition(pos);
     m_Body.Draw(target);
-    Sprite& eyes = m_Eyes[m_Direction];
+    Sprite& eyes = m_Eyes[m_Movement.GetDirection()];
     eyes.SetPosition(pos);
     eyes.Draw(target);
 
@@ -70,57 +74,29 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     }
 }
 
-void Ghost::Move(Direction dir, float dt)
+Direction Ghost::SelectNextDirection()
 {
-    float const k_Speed = 7.5f;
-    float const delta = k_Speed * dt;
-
-    switch(dir)
-    {
-        case Direction::None:
-            break;
-        case Direction::North:
-        {
-            m_Offset.y += delta;
-            break;
-        }
-        case Direction::South:
-        {
-            m_Offset.y -= delta;
-            break;
-        }
-        case Direction::East:
-        {
-            m_Offset.x += delta;
-            break;
-        }
-        case Direction::West:
-        {
-            m_Offset.x -= delta;
-            break;
-        }
-    }
-}
-
-void Ghost::SelectNextDirection()
-{
+    // Update target position
     assert(m_Target);
     m_TargetRef = m_Target->It();
 
+    GridRef const& position = m_Movement.GetPosition();
+    Direction const nextExitDirection = m_NextDirection;
+    Direction const nextEnterDirection = Opposite(nextExitDirection);
+
     // Get the next cell we'll be entering, where the decision is required for exit.
-    GridRef const nextRef = m_GridRef.GetNext(m_ExitDirection);
+    GridRef const nextRef = position.GetNext(nextExitDirection);
     assert(nextRef.CanPlayerPass());
 
     // Find possible exit direction from the next cell.
     // Search order set for preferred direction in case of two equal options.
     Direction const searchOrder[] = { Direction::North, Direction::West, Direction::South, Direction::East };
-    Direction const enterDirection = Opposite(m_ExitDirection);
     Direction nextDirection = Direction::None;
     float minDistSq = FLT_MAX;
     for (Direction dir : searchOrder)
     {
         // If it's not back the way we came...
-        if (dir != enterDirection)
+        if (dir != nextEnterDirection)
         {
             // ...and we can pass, it's an option
             GridRef const optionRef = nextRef.GetNext(dir);
@@ -137,122 +113,7 @@ void Ghost::SelectNextDirection()
         }
     }
     assert(nextDirection != Direction::None);
-    m_NextDirection = nextDirection;
-}
 
-void Ghost::UpdateMovement(float dt)
-{
-    if (m_Direction == Direction::None)
-    {
-        m_Direction = Direction::West;
-        m_ExitDirection = Direction::West;
-    }
-    
-    if (m_NextDirection == Direction::None)
-    {
-        SelectNextDirection();
-    }
-
-    Move(m_Direction, dt);
-
-    // Check for next cell or a wall
-    bool nextCell = false;
-    switch (m_Direction)
-    {
-        case Direction::North:
-        {
-            if (m_ExitDirection == Direction::North)
-            {
-                if (m_Offset.y >= 1.0f)
-                {
-                    // Next cell
-                    m_Offset.y -= 1.0f;
-                    nextCell = true;
-                }
-            }
-            else
-            {
-                if (m_Offset.y >= 0.5f)
-                {
-                    // Change direction
-                    m_Offset.y = 0.5f;
-                    m_Direction = m_ExitDirection;
-                }
-            }
-            break;
-        }
-        case Direction::South:
-        {
-            if (m_ExitDirection == Direction::South)
-            {
-                if (m_Offset.y <= 0.0f)
-                {
-                    // Next cell
-                    m_Offset.y += 1.0f;
-                    nextCell = true;
-                }
-            }
-            else
-            {
-                if (m_Offset.y <= 0.5f)
-                {
-                    // Change direction
-                    m_Offset.y = 0.5f;
-                    m_Direction = m_ExitDirection;
-                }
-            }
-            break;
-        }
-        case Direction::East:
-        {
-            if (m_ExitDirection == Direction::East)
-            {
-                if (m_Offset.x >= 1.0f)
-                {
-                    // Next cell
-                    m_Offset.x -= 1.0f;
-                    nextCell = true;
-                }
-            }
-            else
-            {
-                if (m_Offset.x >= 0.5f)
-                {
-                    // Stop
-                    m_Offset.x = 0.5f;
-                    m_Direction = m_ExitDirection;
-                }
-            }
-            break;
-        }
-        case Direction::West:
-        {
-            if (m_ExitDirection == Direction::West)
-            {
-                if (m_Offset.x < 0.0f)
-                {
-                    // Next cell
-                    m_Offset.x += 1.0f;
-                    nextCell = true;
-                }
-            }
-            else
-            {
-                if (m_Offset.x <= 0.5f)
-                {
-                    // Stop
-                    m_Offset.x = 0.5f;
-                    m_Direction = m_ExitDirection;
-                }
-            }
-            break;
-        }
-    }
-
-    if (nextCell)
-    {
-        m_GridRef.Move(m_Direction);
-        m_ExitDirection = m_NextDirection;
-        m_NextDirection = Direction::None;
-    }
+    std::swap(m_NextDirection, nextDirection);
+    return nextDirection;
 }

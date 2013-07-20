@@ -47,6 +47,9 @@
     <ClCompile Include="GhostTargets\ClydeTarget.cpp">
       <Filter>GhostTargets</Filter>
     </ClCompile>
+    <ClCompile Include="Maze\Movement.cpp">
+      <Filter>Maze</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -96,6 +99,9 @@
     </ClInclude>
     <ClInclude Include="GhostTargets\ClydeTarget.h">
       <Filter>GhostTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze\Movement.h">
+      <Filter>Maze</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
