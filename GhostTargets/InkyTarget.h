@@ -1,9 +1,11 @@
 #include "IGhostTarget.h"
 
+class Movement;
+
 class InkyTarget : public IGhostTarget
 {
 public:
-    explicit InkyTarget(GridRef const& postion, Direction const& direction, GridRef const& otherPosition);
+    explicit InkyTarget(Movement const& target, Movement const& partner);
 
     virtual GridRef It() override;
 
@@ -11,7 +13,6 @@ private:
     InkyTarget(InkyTarget&);
     InkyTarget& operator=(InkyTarget&);
 
-    GridRef const& m_Position;
-    Direction const& m_Direction;
-    GridRef const& m_OtherPosition;
+    Movement const& m_Target;
+    Movement const& m_Partner;
 };

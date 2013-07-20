@@ -13,8 +13,8 @@ public:
 
     void Load();
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
-    GridRef const& GetPosition() const { return m_Movement.GetPosition(); }
-    Direction GetDirection() const { return m_Movement.GetDirection(); }
+
+    Movement const& GetMovement() const { return m_Movement; }
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;

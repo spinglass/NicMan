@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "BlinkyTarget.h"
 
-BlinkyTarget::BlinkyTarget(GridRef const& postion) :
-    m_Position(postion)
+#include "Maze/Movement.h"
+
+BlinkyTarget::BlinkyTarget(Movement const& target) :
+    m_Target(target)
 {
 }
 
 GridRef BlinkyTarget::It()
 {
-    return m_Position;
+    return m_Target.GetPosition();
 }

@@ -46,17 +46,30 @@ void Level::Load(char* filename)
         m_Ghosts[i]->Load(i);
     }
 
-    m_Ghosts[0]->SetTarget(std::make_shared<BlinkyTarget>(m_Player.GetPosition()));
-    m_Ghosts[0]->SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
+    {
+        std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<BlinkyTarget>(m_Player.GetMovement());
 
-    m_Ghosts[1]->SetTarget(std::make_shared<PinkyTarget>(m_Player.GetPosition(), m_Player.GetDirection()));
-    m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 2, 22), 0.1f, 0.5f);
+        m_Ghosts[0]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
+        m_Ghosts[0]->SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
+    }
+    {
+        std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<PinkyTarget>(m_Player.GetMovement());
 
-    m_Ghosts[2]->SetTarget(std::make_shared<InkyTarget>(m_Player.GetPosition(), m_Player.GetDirection(), m_Ghosts[0]->GetPosition()));
-    m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 26, 22), 0.2f, 0.5f);
+        m_Ghosts[1]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
+        m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 2, 22), 0.1f, 0.5f);
+    }
+    {
+        std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<InkyTarget>(m_Player.GetMovement(), m_Ghosts[0]->GetMovement());
 
-    m_Ghosts[3]->SetTarget(std::make_shared<ClydeTarget>(m_Player.GetPosition(), m_Ghosts[3]->GetPosition(), GridRef(&m_Grid, 1, -2)));
-    m_Ghosts[3]->SetPosition(GridRef(&m_Grid, 14, 25), 0.3f, 0.5f);
+        m_Ghosts[2]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
+        m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 26, 22), 0.2f, 0.5f);
+    }
+    {
+        std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<ClydeTarget>(m_Player.GetMovement(), m_Ghosts[3]->GetMovement(), GridRef(&m_Grid, 1, -2));
+
+        m_Ghosts[3]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
+        m_Ghosts[3]->SetPosition(GridRef(&m_Grid, 14, 25), 0.3f, 0.5f);
+    }
 }
 
 void Level::Parse(std::vector<char> const& data)

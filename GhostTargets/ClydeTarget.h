@@ -1,9 +1,11 @@
 #include "IGhostTarget.h"
 
+class Movement;
+
 class ClydeTarget : public IGhostTarget
 {
 public:
-    explicit ClydeTarget(GridRef const& postion, GridRef const& ownPostion, GridRef const& fleePosition);
+    explicit ClydeTarget(Movement const& target, Movement const& self, GridRef const& fleePosition);
 
     virtual GridRef It() override;
 
@@ -11,7 +13,7 @@ private:
     ClydeTarget(ClydeTarget&);
     ClydeTarget& operator=(ClydeTarget&);
 
-    GridRef const& m_Position;
-    GridRef const& m_OwnPosition;
+    Movement const& m_Target;
+    Movement const& m_Self;
     GridRef m_FleePosition;
 };

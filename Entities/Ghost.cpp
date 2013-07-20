@@ -6,7 +6,8 @@
 
 Ghost::Ghost() :
     m_Movement(false),
-    m_NextDirection(Direction::None)
+    m_NextDirection(Direction::None),
+    m_Behaviour(Behaviour::Chase)
 {
     Movement::NextCellFunc func = [this]() { return this->SelectNextDirection(); };
     m_Movement.SetNextCellFunc(func);
@@ -43,6 +44,10 @@ void Ghost::SetPosition(GridRef const& ref, float offsetX, float offsetY)
     SelectNextDirection();
 }
 
+void Ghost::SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target)
+{
+    m_Targets[behaviour] = target;
+}
 
 void Ghost::Update(float dt)
 {
@@ -77,8 +82,8 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 Direction Ghost::SelectNextDirection()
 {
     // Update target position
-    assert(m_Target);
-    m_TargetRef = m_Target->It();
+    assert(m_Targets[m_Behaviour]);
+    m_TargetRef = m_Targets[m_Behaviour]->It();
 
     GridRef const& position = m_Movement.GetPosition();
     Direction const nextExitDirection = m_NextDirection;
