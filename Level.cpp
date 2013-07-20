@@ -6,6 +6,7 @@
 #include "GhostTargets/PinkyTarget.h"
 #include "GhostTargets/InkyTarget.h"
 #include "GhostTargets/ClydeTarget.h"
+#include "GhostTargets/FixedTarget.h"
 
 Level::Level()
 {
@@ -48,26 +49,34 @@ void Level::Load(char* filename)
 
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<BlinkyTarget>(m_Player.GetMovement());
+        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(GridRef(&m_Grid, 25, 32));
 
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
+        m_Ghosts[0]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[0]->SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<PinkyTarget>(m_Player.GetMovement());
+        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(GridRef(&m_Grid, 2, 32));
 
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
+        m_Ghosts[1]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 2, 22), 0.1f, 0.5f);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<InkyTarget>(m_Player.GetMovement(), m_Ghosts[0]->GetMovement());
+        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(GridRef(&m_Grid, 27, -1));
 
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
+        m_Ghosts[2]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 26, 22), 0.2f, 0.5f);
     }
     {
-        std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<ClydeTarget>(m_Player.GetMovement(), m_Ghosts[3]->GetMovement(), GridRef(&m_Grid, 1, -2));
+        std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<ClydeTarget>(m_Player.GetMovement(), m_Ghosts[3]->GetMovement(), GridRef(&m_Grid, 0, -1));
+        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(GridRef(&m_Grid, 0, -1));
 
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
+        m_Ghosts[3]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[3]->SetPosition(GridRef(&m_Grid, 14, 25), 0.3f, 0.5f);
     }
 }
@@ -150,6 +159,14 @@ void Level::Update(float dt)
 {
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+        {
+            ghost->SetBehaviour(Ghost::Behaviour::Scatter);
+        }
+        else
+        {
+            ghost->SetBehaviour(Ghost::Behaviour::Chase);
+        }
         ghost->Update(dt);
     }
     m_Player.Update(dt);

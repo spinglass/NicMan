@@ -50,6 +50,9 @@
     <ClCompile Include="Maze\Movement.cpp">
       <Filter>Maze</Filter>
     </ClCompile>
+    <ClCompile Include="GhostTargets\FixedTarget.cpp">
+      <Filter>GhostTargets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -102,6 +105,9 @@
     </ClInclude>
     <ClInclude Include="Maze\Movement.h">
       <Filter>Maze</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostTargets\FixedTarget.h">
+      <Filter>GhostTargets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

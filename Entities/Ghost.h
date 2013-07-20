@@ -14,6 +14,7 @@ class Ghost : public Entity
 public:
     enum class Behaviour
     {
+        None,
         Chase,
         Scatter,
     };
@@ -24,6 +25,7 @@ public:
     void Load(int id);
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
     void SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target);
+    void SetBehaviour(Behaviour behaviour);
 
     Movement const& GetMovement() const { return m_Movement; }
 
@@ -42,5 +44,6 @@ private:
     GridRef m_TargetRef;
     Direction m_NextDirection;
     Behaviour m_Behaviour;
+    Behaviour m_PendingBehaviour;
     std::map<Behaviour, std::shared_ptr<IGhostTarget>> m_Targets;
 };

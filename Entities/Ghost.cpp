@@ -7,7 +7,8 @@
 Ghost::Ghost() :
     m_Movement(false),
     m_NextDirection(Direction::None),
-    m_Behaviour(Behaviour::Chase)
+    m_Behaviour(Behaviour::Chase),
+    m_PendingBehaviour(Behaviour::None)
 {
     Movement::NextCellFunc func = [this]() { return this->SelectNextDirection(); };
     m_Movement.SetNextCellFunc(func);
@@ -49,6 +50,14 @@ void Ghost::SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& 
     m_Targets[behaviour] = target;
 }
 
+void Ghost::SetBehaviour(Behaviour behaviour)
+{
+    if (m_Behaviour != behaviour)
+    {
+        m_PendingBehaviour = behaviour;
+    }
+}
+
 void Ghost::Update(float dt)
 {
     m_Movement.Update(dt);
@@ -81,6 +90,19 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 
 Direction Ghost::SelectNextDirection()
 {
+    if (m_PendingBehaviour != Behaviour::None)
+    {
+        assert(m_PendingBehaviour != m_Behaviour);
+        m_Behaviour = m_PendingBehaviour;
+        m_PendingBehaviour = Behaviour::None;
+
+        // Reverse.
+        // Just left a cell, so immediately re-enter it.
+        Direction const reverseDirection = Opposite(m_Movement.GetDirection());
+        m_Movement.SetDirection(reverseDirection);
+        m_NextDirection = reverseDirection;
+    }
+
     // Update target position
     assert(m_Targets[m_Behaviour]);
     m_TargetRef = m_Targets[m_Behaviour]->It();
