@@ -9,8 +9,10 @@
 #include "GhostTargets/FixedTarget.h"
 
 Level::Level() :
-    m_CurrentBehaviour(0),
-    m_BehaviourTimer(0.0f)
+    m_BehaviourCounter(0),
+    m_BehaviourTimer(0.0f),
+    m_MainBehaviour(Ghost::Behaviour::Scatter),
+    m_PowerTimer(0.0f)
 {
 }
 
@@ -169,6 +171,7 @@ void Level::Parse(std::vector<char> const& data)
 void Level::Update(float dt)
 {
     UpdateBehaviour(dt);
+    UpdatePowerPlay(dt);
 
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
@@ -179,25 +182,58 @@ void Level::Update(float dt)
 
 void Level::UpdateBehaviour(float dt)
 {
-    if (m_CurrentBehaviour < m_BehaviourChanges.size())
+    Ghost::Behaviour behaviourToApply;
+    bool frightFlash = false;
+
+    if (m_PowerTimer > 0.0f)
     {
-        m_BehaviourTimer += dt;
-        if (m_BehaviourTimer > m_BehaviourChanges[m_CurrentBehaviour])
+        behaviourToApply = Ghost::Behaviour::Fright;
+
+        if (m_PowerTimer < 1.0f)
         {
-            // Swap behaviour, based on Blinky's current behaviour
-            Ghost::Behaviour current = m_Ghosts[0]->GetBehaviour();
-            Ghost::Behaviour next = (current == Ghost::Behaviour::Chase) ? Ghost::Behaviour::Scatter : Ghost::Behaviour::Chase;
-
-            // Apply to all ghosts
-            for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
-            {
-                ghost->SetBehaviour(next);
-            }
-
-            // Reset for next change
-            m_BehaviourTimer = 0.0f;
-            ++m_CurrentBehaviour;
+            int foo = (int)floorf(4.0f * m_PowerTimer);
+            frightFlash = foo % 2 == 1;
         }
+    }
+    else 
+    {
+        if (m_BehaviourCounter < m_BehaviourChanges.size())
+        {
+            m_BehaviourTimer += dt;
+            if (m_BehaviourTimer > m_BehaviourChanges[m_BehaviourCounter])
+            {
+                // Swap behaviour
+                m_MainBehaviour = (m_MainBehaviour == Ghost::Behaviour::Chase) ? Ghost::Behaviour::Scatter : Ghost::Behaviour::Chase;
+
+                // Reset for next change
+                m_BehaviourTimer = 0.0f;
+                ++m_BehaviourCounter;
+            }
+        }
+
+        behaviourToApply = m_MainBehaviour;
+    }
+
+    // Apply to all ghosts
+    for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+    {
+        if (ghost->GetBehaviour() != Ghost::Behaviour::Eaten)
+        {
+            ghost->SetBehaviour(behaviourToApply);
+            ghost->SetFrightFlash(frightFlash);
+        }
+    }
+}
+
+void Level::UpdatePowerPlay(float dt)
+{
+    if (m_Player.AtePowerPill())
+    {
+        m_PowerTimer = 6.0f;
+    }
+    else if (m_PowerTimer > 0.0f)
+    {
+        m_PowerTimer -= dt;
     }
 }
 

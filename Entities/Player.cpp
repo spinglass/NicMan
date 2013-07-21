@@ -6,7 +6,9 @@
 
 Player::Player() :
     m_Movement(true),
-    m_StopTimer(0.0f)
+    m_StopTimer(0.0f),
+    m_AtePill(false),
+    m_AtePowerPill(false)
 {
 }
 
@@ -41,6 +43,9 @@ void Player::SetPosition(GridRef const& ref, float offsetX, float offsetY)
 
 void Player::Update(float dt)
 {
+    m_AtePill = false;
+    m_AtePowerPill = false;
+
     if (m_StopTimer > 0.0f)
     {
         m_StopTimer -= dt;
@@ -216,11 +221,13 @@ void Player::UpdateNomming()
         {
             if (position.GetCell()->GetPill())
             {
+                m_AtePill = true;
                 m_StopTimer = k_PillStopTime;
                 m_PillSound.Play();
             }
             else
             {
+                m_AtePowerPill = true;
                 m_StopTimer = k_PowerPillStopTime;
                 m_PowerPillSound.Play();
             }

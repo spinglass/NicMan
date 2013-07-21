@@ -19,6 +19,7 @@ public:
 private:
     void Parse(std::vector<char> const& data);
     void UpdateBehaviour(float dt);
+    void UpdatePowerPlay(float dt);
 
     std::vector<Cell> m_CellStorage;
     Grid m_Grid;
@@ -30,6 +31,9 @@ private:
     std::vector<std::shared_ptr<Ghost>> m_Ghosts;
 
     std::vector<float> m_BehaviourChanges;
-    int m_CurrentBehaviour;
+    int m_BehaviourCounter;
     float m_BehaviourTimer;
+    Ghost::Behaviour m_MainBehaviour;
+
+    float m_PowerTimer;
 };

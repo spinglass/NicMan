@@ -17,6 +17,8 @@ public:
         None,
         Chase,
         Scatter,
+        Fright,
+        Eaten,
     };
 
     Ghost();
@@ -26,6 +28,7 @@ public:
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
     void SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target);
     void SetBehaviour(Behaviour behaviour);
+    void SetFrightFlash(bool flash) { m_FrightFlash = flash; }
 
     Movement const& GetMovement() const { return m_Movement; }
     Behaviour GetBehaviour() const { return m_Behaviour; }
@@ -39,12 +42,16 @@ private:
 
     Direction SelectNextDirection();
 
+    std::map<Behaviour, std::shared_ptr<IGhostTarget>> m_Targets;
+
     Sprite m_Body;
     std::map<Direction, Sprite> m_Eyes;
+    Sprite m_Fright;
+
     Movement m_Movement;
     GridRef m_TargetRef;
     Direction m_NextDirection;
     Behaviour m_Behaviour;
     Behaviour m_PendingBehaviour;
-    std::map<Behaviour, std::shared_ptr<IGhostTarget>> m_Targets;
+    bool m_FrightFlash;
 };

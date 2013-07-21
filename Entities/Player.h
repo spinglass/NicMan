@@ -15,6 +15,8 @@ public:
     void SetPosition(GridRef const& ref, float offsetX, float offsetY);
 
     Movement const& GetMovement() const { return m_Movement; }
+    bool AtePill() const { return m_AtePill; }
+    bool AtePowerPill() const { return m_AtePowerPill; }
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;
@@ -31,6 +33,9 @@ private:
     Movement m_Movement;
     sf::Vector2f m_PreviousOffset;
     float m_StopTimer;
+    
+    bool m_AtePill;
+    bool m_AtePowerPill;
 
     Sound m_PillSound;
     Sound m_PowerPillSound;
