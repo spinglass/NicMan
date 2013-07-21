@@ -67,6 +67,11 @@ void Ghost::SetBehaviour(Behaviour behaviour)
 void Ghost::Update(float dt)
 {
     m_Movement.Update(dt);
+
+    if (m_Behaviour == Behaviour::Eaten && m_Movement.GetPosition() == m_TargetRef)
+    {
+        m_Behaviour = Behaviour::Chase;
+    }
 }
 
 void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
@@ -116,7 +121,7 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 
 Direction Ghost::SelectNextDirection()
 {
-    if (m_PendingBehaviour != Behaviour::None)
+    if (m_PendingBehaviour != Behaviour::None && m_Behaviour != Behaviour::Eaten)
     {
         // Reverse, unless leaving fright mode
         if (m_Behaviour != Behaviour::Fright)

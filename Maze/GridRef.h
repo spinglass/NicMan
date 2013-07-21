@@ -12,6 +12,7 @@ public:
     virtual ~GridRef();
 
     operator bool() const;
+    bool operator==(GridRef const& rhs) const;
     bool CanPlayerPass() const;
 
     Cell* GetCell() const;

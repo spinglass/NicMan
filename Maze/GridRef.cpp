@@ -33,6 +33,11 @@ GridRef::operator bool() const
     return (GetCell() != nullptr);
 }
 
+bool GridRef::operator==(GridRef const& rhs) const
+{
+    return (m_Grid == rhs.m_Grid) && (m_X == rhs.m_X) && (m_Y == rhs.m_Y);
+}
+
 bool GridRef::CanPlayerPass() const
 {
     Cell const* cell = GetCell();

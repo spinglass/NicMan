@@ -51,12 +51,14 @@ void Level::Load(char* filename)
         m_Ghosts[i]->Load(i);
     }
 
+    std::shared_ptr<IGhostTarget> eatenTarget = std::make_shared<FixedTarget>(GridRef(&m_Grid, 13, 19));
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<BlinkyTarget>(m_Player.GetMovement());
         std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(GridRef(&m_Grid, 25, 32));
 
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
+        m_Ghosts[0]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
         m_Ghosts[0]->SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
     }
     {
@@ -65,6 +67,7 @@ void Level::Load(char* filename)
 
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
+        m_Ghosts[1]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
         m_Ghosts[1]->SetPosition(GridRef(&m_Grid, 4, 22), 0.1f, 0.5f);
     }
     {
@@ -73,6 +76,7 @@ void Level::Load(char* filename)
 
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
+        m_Ghosts[2]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
         m_Ghosts[2]->SetPosition(GridRef(&m_Grid, 24, 22), 0.2f, 0.5f);
     }
     {
@@ -81,6 +85,7 @@ void Level::Load(char* filename)
 
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
+        m_Ghosts[3]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
         m_Ghosts[3]->SetPosition(GridRef(&m_Grid, 14, 25), 0.3f, 0.5f);
     }
 
@@ -217,11 +222,8 @@ void Level::UpdateBehaviour(float dt)
     // Apply to all ghosts
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        if (ghost->GetBehaviour() != Ghost::Behaviour::Eaten)
-        {
-            ghost->SetBehaviour(behaviourToApply);
-            ghost->SetFrightFlash(frightFlash);
-        }
+        ghost->SetBehaviour(behaviourToApply);
+        ghost->SetFrightFlash(frightFlash);
     }
 }
 
@@ -234,6 +236,15 @@ void Level::UpdatePowerPlay(float dt)
     else if (m_PowerTimer > 0.0f)
     {
         m_PowerTimer -= dt;
+
+        for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+        {
+            if (m_Player.GetMovement().GetPosition() == ghost->GetMovement().GetPosition())
+            {
+                // Eat ghost!
+                ghost->SetBehaviour(Ghost::Behaviour::Eaten);
+            }
+        }
     }
 }
 
