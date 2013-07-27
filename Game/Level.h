@@ -34,6 +34,12 @@ private:
         Complete,
     };
 
+    struct GhostScore
+    {
+        int Value;
+        std::shared_ptr<Sprite> Sprite;
+    };
+
     Level(Level&);
     Level& operator=(Level&);
 
@@ -72,8 +78,7 @@ private:
 
     int m_ScorePill;
     int m_ScorePowerPill;
-    std::array<int, 4> m_ScoreGhosts;
+    std::vector<GhostScore> m_GhostScores;
     int m_GhostEatCount;
-    std::array<Sprite, 4> m_ScoreSprites;
     Ghost const* m_EatenGhost;
 };

@@ -48,10 +48,6 @@ Level::Level(ScoreManager& scoreManager) :
     m_GhostEatCount(0),
     m_EatenGhost(nullptr)
 {
-    m_ScoreGhosts[0] = 200;
-    m_ScoreGhosts[1] = 400;
-    m_ScoreGhosts[2] = 800;
-    m_ScoreGhosts[3] = 1600;
 }
 
 Level::~Level()
@@ -76,10 +72,34 @@ void Level::Load(char* filename)
         }
 
         {
-            // Read Settings
+            // Read settings
             tinyxml2::XMLElement* element = levelElement->FirstChildElement("Settings");
             assert(element);
             m_Settings = std::make_shared<LevelSettings>(*element);
+        }
+
+        {
+            // Read Ghost scores
+            tinyxml2::XMLElement* element = levelElement->FirstChildElement("GhostScores");
+            assert(element);
+
+            tinyxml2::XMLElement* child = element->FirstChildElement("GhostScore");
+            while (child)
+            {
+                int const value = child->IntAttribute("Value");
+                char const* sprite = child->Attribute("Sprite");
+                assert(sprite);
+
+                GhostScore ghostScore;
+                ghostScore.Value = value;
+                ghostScore.Sprite = std::make_shared<Sprite>();
+                ghostScore.Sprite->Load(sprite);
+                ghostScore.Sprite->SetOriginToCentre();
+
+                m_GhostScores.push_back(ghostScore);
+
+                child = child->NextSiblingElement("GhostScore");
+            }
         }
 
         {
@@ -97,15 +117,6 @@ void Level::Load(char* filename)
             }
         }
     }
-
-    m_ScoreSprites[0].Load("Levels/Score_200");
-    m_ScoreSprites[0].SetOriginToCentre();
-    m_ScoreSprites[1].Load("Levels/Score_400");
-    m_ScoreSprites[1].SetOriginToCentre();
-    m_ScoreSprites[2].Load("Levels/Score_800");
-    m_ScoreSprites[2].SetOriginToCentre();
-    m_ScoreSprites[3].Load("Levels/Score_1600");
-    m_ScoreSprites[3].SetOriginToCentre();
 
     m_Player.Load();
 
@@ -242,7 +253,7 @@ void Level::UpdateFright(float dt)
             ghost->SetBehaviour(Ghost::Behaviour::Eaten);
 
             // Score and increase score for next eat
-            m_ScoreManager.Add(m_ScoreGhosts[m_GhostEatCount]);
+            m_ScoreManager.Add(m_GhostScores[m_GhostEatCount].Value);
 
             // Switch to eat state for a short while
             m_State = State::Eat;
@@ -271,7 +282,7 @@ void Level::UpdateEat(float dt)
         m_State = State::Fright;
 
         // Prepare for next ghost
-        m_GhostEatCount = std::min(m_GhostEatCount + 1, (int)m_ScoreGhosts.size() - 1);
+        m_GhostEatCount = std::min(m_GhostEatCount + 1, (int)m_GhostScores.size() - 1);
         m_EatenGhost = nullptr;
     }
 }
@@ -408,7 +419,7 @@ void Level::Draw(sf::RenderTarget& target)
 
     if (m_State == State::Eat)
     {
-        Sprite& sprite = m_ScoreSprites[m_GhostEatCount];
+        Sprite& sprite = *(m_GhostScores[m_GhostEatCount].Sprite);
         sf::Vector2f const gridPos = m_Player.GetMovement().GetAbsolutePosition();
         sf::Vector2f const pos = transform.transformPoint(gridPos);
         sprite.SetPosition(pos);
