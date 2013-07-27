@@ -42,13 +42,16 @@ void Ghost::Load(int id)
     m_Fright.SetOriginToCentre();
 }
 
-void Ghost::SetPosition(GridRef const& ref, float offsetX, float offsetY)
+void Ghost::Restart(GridRef const& ref, float offsetX, float offsetY)
 {
     m_Movement.Reset(ref, offsetX, offsetY);
     m_Movement.SetDirection(Direction::West);
     m_Movement.SetExitDirection(Direction::West);
     m_NextDirection = Direction::West;
+
     m_Behaviour = Behaviour::Scatter;
+    m_EatenExitBehaviour = Behaviour::None;
+    m_Reverse = false;
 }
 
 void Ghost::SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target)

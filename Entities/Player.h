@@ -12,7 +12,7 @@ public:
     virtual ~Player();
 
     void Load();
-    void SetPosition(GridRef const& ref, float offsetX, float offsetY);
+    void Restart(GridRef const& ref, float offsetX, float offsetY);
 
     Movement const& GetMovement() const { return m_Movement; }
     bool AtePill() const { return m_AtePill; }

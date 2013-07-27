@@ -27,7 +27,6 @@ void Level::Load(char* filename)
     m_Maze.Load(filename);
 
     m_Player.Load();
-    m_Player.SetPosition(m_Maze.GetGridRef(14, 7), 0.0f, 0.5f);
 
     m_Ghosts.resize(4);
     for (int i = 0; i < m_Ghosts.size(); ++i)
@@ -44,7 +43,6 @@ void Level::Load(char* filename)
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
-        m_Ghosts[0]->SetPosition(m_Maze.GetGridRef(13, 19), 1.0f, 0.5f);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<PinkyTarget>(m_Player.GetMovement());
@@ -53,7 +51,6 @@ void Level::Load(char* filename)
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
-        m_Ghosts[1]->SetPosition(m_Maze.GetGridRef(4, 22), 0.1f, 0.5f);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<InkyTarget>(m_Player.GetMovement(), m_Ghosts[0]->GetMovement());
@@ -62,7 +59,6 @@ void Level::Load(char* filename)
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
-        m_Ghosts[2]->SetPosition(m_Maze.GetGridRef(24, 22), 0.2f, 0.5f);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<ClydeTarget>(m_Player.GetMovement(), m_Ghosts[3]->GetMovement(), m_Maze.GetGridRef(0, -1));
@@ -71,7 +67,6 @@ void Level::Load(char* filename)
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
-        m_Ghosts[3]->SetPosition(m_Maze.GetGridRef(14, 25), 0.3f, 0.5f);
     }
 
     // Setup chase/scatter cycle
@@ -82,6 +77,8 @@ void Level::Load(char* filename)
     m_BehaviourChanges.push_back(7.0f);
     m_BehaviourChanges.push_back(20.0f);
     m_BehaviourChanges.push_back(5.0f);
+
+    Restart();
 }
 
 void Level::Update(float dt)
@@ -100,6 +97,9 @@ void Level::Update(float dt)
         break;
     case State::Eat:
         UpdateEat(dt);
+        break;
+    case State::Death:
+        UpdateDeath(dt);
         break;
     }
 }
@@ -190,6 +190,15 @@ void Level::UpdateEat(float dt)
     }
 }
 
+void Level::UpdateDeath(float dt)
+{
+    m_WaitTimer -= dt;
+    if (m_WaitTimer < 0.0f)
+    {
+        Restart();
+    }
+}
+
 void Level::UpdateEntities(float dt)
 {
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
@@ -201,6 +210,8 @@ void Level::UpdateEntities(float dt)
     // Check for player eating a power pill
     if (m_Player.AtePowerPill())
     {
+        // TODO: Score
+
         if (m_State != State::Fright)
         {
             // Need to know which state to go back to
@@ -219,6 +230,36 @@ void Level::UpdateEntities(float dt)
             }
         }
     }
+    else if (m_Player.AtePill())
+    {
+        // TODO: Score
+    }
+
+    // Check for ghosts eating player
+    for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+    {
+        if ((ghost->GetBehaviour() == Ghost::Behaviour::Chase || ghost->GetBehaviour() == Ghost::Behaviour::Scatter) &&
+            m_Player.GetMovement().GetPosition() == ghost->GetMovement().GetPosition())
+        {
+            m_State = State::Death;
+            m_WaitTimer = 2.0f;
+        }
+    }
+}
+
+void Level::Restart()
+{
+    m_State = State::Start;
+    m_BehaviourCounter = 0;
+    m_BehaviourTimer = 0.0f;
+    m_WaitTimer = 2.0f;
+    m_FrightTimer = 0.0f;
+
+    m_Player.Restart(m_Maze.GetGridRef(14, 7), 0.0f, 0.5f);
+    m_Ghosts[0]->Restart(m_Maze.GetGridRef(13, 19), 1.0f, 0.5f);
+    m_Ghosts[1]->Restart(m_Maze.GetGridRef(4, 22), 0.1f, 0.5f);
+    m_Ghosts[2]->Restart(m_Maze.GetGridRef(24, 22), 0.2f, 0.5f);
+    m_Ghosts[3]->Restart(m_Maze.GetGridRef(14, 25), 0.3f, 0.5f);
 }
 
 void Level::Draw(sf::RenderTarget& target)

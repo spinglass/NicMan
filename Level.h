@@ -24,14 +24,18 @@ private:
         Scatter,
         Fright,
         Eat,
+        Death,
     };
 
     void UpdateStart(float dt);
     void UpdateScatterChase(float dt);
     void UpdateFright(float dt);
     void UpdateEat(float dt);
+    void UpdateDeath(float dt);
 
     void UpdateEntities(float dt);
+
+    void Restart();
 
     Maze m_Maze;
 
@@ -41,7 +45,6 @@ private:
     std::vector<float> m_BehaviourChanges;
     int m_BehaviourCounter;
     float m_BehaviourTimer;
-    Ghost::Behaviour m_MainBehaviour;
     State m_State;
     float m_WaitTimer;
     float m_FrightTimer;

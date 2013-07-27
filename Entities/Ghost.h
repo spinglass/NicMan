@@ -25,7 +25,7 @@ public:
     virtual ~Ghost();
 
     void Load(int id);
-    void SetPosition(GridRef const& ref, float offsetX, float offsetY);
+    void Restart(GridRef const& ref, float offsetX, float offsetY);
     void SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target);
     void SetBehaviour(Behaviour behaviour);
     void SetFrightFlash(bool flash) { m_FrightFlash = flash; }
