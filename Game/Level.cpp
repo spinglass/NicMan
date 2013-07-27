@@ -26,7 +26,8 @@ Level::Level(ScoreManager& scoreManager) :
     m_GhostTunnelSpeedFactor(0.4f),
     m_ScorePill(10),
     m_ScorePowerPill(50),
-    m_GhostEatCount(0)
+    m_GhostEatCount(0),
+    m_EatenGhost(nullptr)
 {
     m_ScoreGhosts[0] = 200;
     m_ScoreGhosts[1] = 400;
@@ -41,6 +42,15 @@ Level::~Level()
 void Level::Load(char* filename)
 {
     m_Maze.Load(filename);
+
+    m_ScoreSprites[0].Load("Resources/score_200");
+    m_ScoreSprites[0].SetOriginToCentre();
+    m_ScoreSprites[1].Load("Resources/score_400");
+    m_ScoreSprites[1].SetOriginToCentre();
+    m_ScoreSprites[2].Load("Resources/score_800");
+    m_ScoreSprites[2].SetOriginToCentre();
+    m_ScoreSprites[3].Load("Resources/score_1600");
+    m_ScoreSprites[3].SetOriginToCentre();
 
     m_Player.Load();
 
@@ -187,11 +197,14 @@ void Level::UpdateFright(float dt)
 
             // Score and increase score for next eat
             m_ScoreManager.Add(m_ScoreGhosts[m_GhostEatCount]);
-            m_GhostEatCount = std::min(m_GhostEatCount + 1, (int)m_ScoreGhosts.size() - 1);
 
             // Switch to eat state for a short while
             m_State = State::Eat;
             m_WaitTimer = 1.0f;
+
+            // Ensure we only eat one ghost per frame
+            m_EatenGhost = ghost.get();
+            break;
         }
     }
 
@@ -210,6 +223,10 @@ void Level::UpdateEat(float dt)
     {
         // Return to fright
         m_State = State::Fright;
+
+        // Prepare for next ghost
+        m_GhostEatCount = std::min(m_GhostEatCount + 1, (int)m_ScoreGhosts.size() - 1);
+        m_EatenGhost = nullptr;
     }
 }
 
@@ -342,9 +359,26 @@ void Level::Draw(sf::RenderTarget& target)
     transform.scale(Maze::k_CellSize, -Maze::k_CellSize);
 
     m_Maze.Draw(target, transform);
-    m_Player.Draw(target, transform);
+
+    if (m_State == State::Eat)
+    {
+        Sprite& sprite = m_ScoreSprites[m_GhostEatCount];
+        sf::Vector2f const gridPos = m_Player.GetMovement().GetAbsolutePosition();
+        sf::Vector2f const pos = transform.transformPoint(gridPos);
+        sprite.SetPosition(pos);
+        sprite.Draw(target);
+    }
+    else
+    {
+        m_Player.Draw(target, transform);
+    }
+
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        ghost->Draw(target, transform);
+        // Don't draw eaten ghosts (will only be while displaying the score)
+        if (ghost.get() != m_EatenGhost)
+        {
+            ghost->Draw(target, transform);
+        }
     }
 }

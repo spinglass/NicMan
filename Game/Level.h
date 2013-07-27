@@ -72,4 +72,6 @@ private:
     int m_ScorePowerPill;
     std::array<int, 4> m_ScoreGhosts;
     int m_GhostEatCount;
+    std::array<Sprite, 4> m_ScoreSprites;
+    Ghost const* m_EatenGhost;
 };
