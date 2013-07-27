@@ -11,7 +11,6 @@
 Level::Level() :
     m_BehaviourCounter(0),
     m_BehaviourTimer(0.0f),
-    m_MainBehaviour(Ghost::Behaviour::Scatter),
     m_State(State::Start),
     m_WaitTimer(2.0f),
     m_FrightTimer(0.0f),
@@ -122,8 +121,8 @@ void Level::UpdateScatterChase(float dt)
         m_BehaviourTimer += dt;
         if (m_BehaviourTimer > m_BehaviourChanges[m_BehaviourCounter])
         {
-            // Swap behaviour
-            m_MainBehaviour = (m_MainBehaviour == Ghost::Behaviour::Chase) ? Ghost::Behaviour::Scatter : Ghost::Behaviour::Chase;
+            // Swap state
+            m_State = (m_State == State::Chase) ? State::Scatter : State::Chase;
 
             // Reset for next change
             m_BehaviourTimer = 0.0f;
@@ -132,9 +131,10 @@ void Level::UpdateScatterChase(float dt)
     }
 
     // Apply to all ghosts
+    Ghost::Behaviour const behaviour = (m_State == State::Chase) ? Ghost::Behaviour::Chase : Ghost::Behaviour::Scatter;
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        ghost->SetBehaviour(m_MainBehaviour);
+        ghost->SetBehaviour(behaviour);
     }
 
     UpdateEntities(dt);

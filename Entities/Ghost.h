@@ -53,6 +53,7 @@ private:
     GridRef m_TargetRef;
     Direction m_NextDirection;
     Behaviour m_Behaviour;
-    Behaviour m_PendingBehaviour;
+    Behaviour m_EatenExitBehaviour;
+    bool m_Reverse;
     bool m_FrightFlash;
 };

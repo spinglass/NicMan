@@ -8,7 +8,8 @@ Ghost::Ghost() :
     m_Movement(false),
     m_NextDirection(Direction::None),
     m_Behaviour(Behaviour::Scatter),
-    m_PendingBehaviour(Behaviour::None),
+    m_EatenExitBehaviour(Behaviour::None),
+    m_Reverse(false),
     m_FrightFlash(false)
 {
     Movement::NextCellFunc func = [this]() { return this->SelectNextDirection(); };
@@ -48,7 +49,6 @@ void Ghost::SetPosition(GridRef const& ref, float offsetX, float offsetY)
     m_Movement.SetExitDirection(Direction::West);
     m_NextDirection = Direction::West;
     m_Behaviour = Behaviour::Scatter;
-    m_PendingBehaviour = Behaviour::None;
 }
 
 void Ghost::SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target)
@@ -58,20 +58,32 @@ void Ghost::SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& 
 
 void Ghost::SetBehaviour(Behaviour behaviour)
 {
-    if (behaviour == Behaviour::Eaten || m_Behaviour == Behaviour::Fright)
+    if (behaviour != m_Behaviour)
     {
-        // Immediately start new behaviour if entering eaten or leaving fright
-        m_Behaviour = behaviour;
-    }
-    else if (m_Behaviour != behaviour)
-    {
-        // Wait to enter this behaviour, as a reversal is required when entering the next cell
-        m_PendingBehaviour = behaviour;
-    }
-    else
-    {
-        // Requested behaviour we're already in, cancel any previous pending behaviour
-        m_PendingBehaviour = Behaviour::None;
+        switch(m_Behaviour)
+        {
+            case Behaviour::Chase:
+            case Behaviour::Scatter:
+                assert(behaviour != Behaviour::Eaten);
+                if (behaviour == Behaviour::Fright)
+                {
+                    m_EatenExitBehaviour = m_Behaviour;
+                }
+                m_Behaviour = behaviour;
+                m_Reverse = true;
+                break;
+            case Behaviour::Fright:
+                // Straight into other behaviour
+                m_Behaviour = behaviour;
+                break;
+            case Behaviour::Eaten:
+                if (behaviour == Behaviour::Scatter || m_Behaviour == Behaviour::Chase)
+                {
+                    // Main behaviour has changed - enter it once no longer eaten
+                    m_EatenExitBehaviour = behaviour;
+                }
+                break;
+        }
     }
 }
 
@@ -81,8 +93,8 @@ void Ghost::Update(float dt)
 
     if (m_Behaviour == Behaviour::Eaten && m_Movement.GetPosition() == m_TargetRef)
     {
-        m_Behaviour = Behaviour::Chase;
-        m_PendingBehaviour = Behaviour::None;
+        assert(m_EatenExitBehaviour == Behaviour::Chase || m_EatenExitBehaviour == Behaviour::Scatter);
+        m_Behaviour = m_EatenExitBehaviour;
     }
 }
 
@@ -190,17 +202,14 @@ Direction Ghost::SelectExitDirection(GridRef const ref, Direction const enterDir
 
 Direction Ghost::SelectNextDirection()
 {
-    if (m_PendingBehaviour != Behaviour::None && m_Behaviour != Behaviour::Eaten)
+    if (m_Reverse)
     {
         // Just left a cell, so immediately re-enter it.
         Direction const reverseDirection = Opposite(m_Movement.GetDirection());
         m_Movement.SetDirection(reverseDirection);
         m_Movement.SetExitDirection(reverseDirection);
         m_NextDirection = reverseDirection;
-
-        assert(m_PendingBehaviour != m_Behaviour);
-        m_Behaviour = m_PendingBehaviour;
-        m_PendingBehaviour = Behaviour::None;
+        m_Reverse = false;
     }
 
     // Get the next cell we'll be entering, where the decision is required for exit.
