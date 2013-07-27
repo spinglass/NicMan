@@ -27,6 +27,7 @@ void Cell::Parse(char c)
         break;
     case '=':
         m_Tunnel = true;
+        break;
     case 'o':
         m_Pill = true;
         m_WasPill = true;
