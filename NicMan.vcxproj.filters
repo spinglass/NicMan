@@ -174,5 +174,11 @@
     <Xml Include="Output\Resources\Levels\Level01.xml">
       <Filter>Resources\Levels</Filter>
     </Xml>
+    <Xml Include="Output\Resources\Levels\Level02.xml">
+      <Filter>Resources\Levels</Filter>
+    </Xml>
+    <Xml Include="Output\Resources\Levels\Level03.xml">
+      <Filter>Resources\Levels</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

@@ -144,6 +144,8 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Output\Resources\Levels\Level01.xml" />
+    <Xml Include="Output\Resources\Levels\Level02.xml" />
+    <Xml Include="Output\Resources\Levels\Level03.xml" />
     <Xml Include="Output\Resources\Mazes\Maze01.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

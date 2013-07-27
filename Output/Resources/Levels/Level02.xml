@@ -2,12 +2,12 @@
 <Level>
   <Maze Definition="Mazes/Maze01.xml" />
 
-  <Settings FrightTime="6.0"
-            PlayerNormSpeedFactor="0.8"
-            PlayerFrightSpeedFactor="0.9"
-            GhostNormSpeedFactor="0.75"
-            GhostFrightSpeedFactor="0.5"
-            GhostTunnelSpeedFactor="0.4"
+  <Settings FrightTime="4.0"
+            PlayerNormSpeedFactor="0.9"
+            PlayerFrightSpeedFactor="0.95"
+            GhostNormSpeedFactor="0.85"
+            GhostFrightSpeedFactor="0.55"
+            GhostTunnelSpeedFactor="0.45"
             />
 
   <GhostScores>
@@ -23,8 +23,8 @@
     <BehaviourChange Time="7" />
     <BehaviourChange Time="20" />
     <BehaviourChange Time="7" />
-    <BehaviourChange Time="20" />
-    <BehaviourChange Time="5" />
+    <BehaviourChange Time="1033" />
+    <BehaviourChange Time="1" />
   </BehaviourChanges>
 
 </Level>

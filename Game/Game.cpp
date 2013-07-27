@@ -5,27 +5,39 @@
 #include "Level.h"
 #include "ScoreManager.h"
 
-Game::Game()
+Game::Game() :
+    m_LevelNext(1),
+    m_LevelMax(3)
 {
     m_Window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Nic-Man", sf::Style::Close);
 
     m_ScoreManager = new ScoreManager();
 
-    m_Level = new Level(*m_ScoreManager);
-    m_Level->Load("Levels/Level01.xml");
-
     m_Hud = new Hud(*m_ScoreManager);
     m_Hud->Load();
+
+    LoadNextLevel();
 }
 
 Game::~Game()
 {
     delete m_Hud;
-    delete m_Level;
     delete m_ScoreManager;
 
     m_Window->close();
     delete m_Window;
+}
+
+void Game::LoadNextLevel()
+{
+    char filename[FILENAME_MAX];
+    sprintf_s(filename, "Levels/Level%02d.xml", m_LevelNext);
+
+    m_Level = std::make_shared<Level>(*m_ScoreManager);
+    m_Level->Load(filename);
+
+    // Prepare for next level
+    m_LevelNext = std::min(m_LevelNext + 1, m_LevelMax);
 }
 
 void Game::Run()
@@ -47,10 +59,7 @@ void Game::Run()
 
         if (m_Level->IsComplete())
         {
-            // Load next level
-            delete m_Level;
-            m_Level = new Level(*m_ScoreManager);
-            m_Level->Load("Resources/level01.txt");
+            LoadNextLevel();
         }
 
         float const dt = std::min(frameTimer.restart().asSeconds(), 1.0f / 60.0f);

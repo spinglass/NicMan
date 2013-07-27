@@ -1,6 +1,8 @@
 #pragma once
 #include "stdafx.h"
 
+#include <memory>
+
 class Hud;
 class Level;
 class ScoreManager;
@@ -14,8 +16,16 @@ public:
     void Run();
 
 private:
+    Game(Game&);
+    Game& operator=(Game&);
+
+    void LoadNextLevel();
+
     sf::RenderWindow* m_Window;
     ScoreManager* m_ScoreManager;
-    Level* m_Level;
+    std::shared_ptr<Level> m_Level;
     Hud* m_Hud;
+
+    int m_LevelNext;
+    int m_LevelMax;
 };
