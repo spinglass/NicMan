@@ -42,6 +42,15 @@ void AnimatedSprite::Load(char* filename)
     }
 }
 
+void AnimatedSprite::Reset()
+{
+    m_FrameTime = 0.0f;
+    m_Playing = false;
+    m_Current = 0;
+    m_ShuttleUp = true;
+    m_Sprite.setTexture(m_Textures[m_Current], false);
+}
+
 void AnimatedSprite::Play()
 {
     m_Playing = true;

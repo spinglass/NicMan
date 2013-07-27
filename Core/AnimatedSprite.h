@@ -16,6 +16,7 @@ public:
     void SetPosition(sf::Vector2f const& pos);
     void SetRotation(float degs);
 
+    void Reset();
     void Play();
     void Pause();
     void SetSpeed(float fps) { m_FPS = fps; }

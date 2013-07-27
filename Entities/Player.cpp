@@ -22,7 +22,6 @@ void Player::Load()
 
     m_Sprite.Load("Resources/player");
     m_Sprite.SetOriginToCentre();
-    m_Sprite.Play();
     m_Sprite.SetShuttle(true);
     m_Sprite.SetSpeed(30.0f);
 
@@ -39,6 +38,8 @@ void Player::Restart(GridRef const& ref, float offsetX, float offsetY)
     m_Movement.Reset(ref, offsetX, offsetY);
     m_PreviousOffset = m_Movement.GetOffset();
     m_StopTimer = 0.0f;
+    m_Sprite.Reset();
+    m_Sprite.Play();
 }
 
 
