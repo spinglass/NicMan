@@ -3,7 +3,7 @@
 #include "Sprite.h"
 #include "Entities/Ghost.h"
 #include "Entities/Player.h"
-#include "Maze/Grid.h"
+#include "Maze/Maze.h"
 
 class Level
 {
@@ -17,16 +17,11 @@ public:
     void Draw(sf::RenderTarget& target);
 
 private:
-    void Parse(std::vector<char> const& data);
     void UpdateBehaviour(float dt);
     void UpdatePowerPlay(float dt);
 
-    std::vector<Cell> m_CellStorage;
-    Grid m_Grid;
-    int m_NumCols;
-    int m_NumRows;
+    Maze m_Maze;
 
-    Sprite m_Background;
     Player m_Player;
     std::vector<std::shared_ptr<Ghost>> m_Ghosts;
 

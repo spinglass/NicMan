@@ -53,6 +53,9 @@
     <ClCompile Include="GhostTargets\FixedTarget.cpp">
       <Filter>GhostTargets</Filter>
     </ClCompile>
+    <ClCompile Include="Maze\Maze.cpp">
+      <Filter>Maze</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -108,6 +111,9 @@
     </ClInclude>
     <ClInclude Include="GhostTargets\FixedTarget.h">
       <Filter>GhostTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze\Maze.h">
+      <Filter>Maze</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

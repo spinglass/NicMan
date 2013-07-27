@@ -103,6 +103,7 @@
     <ClInclude Include="Maze\Direction.h" />
     <ClInclude Include="Maze\Grid.h" />
     <ClInclude Include="Maze\GridRef.h" />
+    <ClInclude Include="Maze\Maze.h" />
     <ClInclude Include="Maze\Movement.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
@@ -125,6 +126,7 @@
     <ClCompile Include="Maze\Direction.cpp" />
     <ClCompile Include="Maze\Grid.cpp" />
     <ClCompile Include="Maze\GridRef.cpp" />
+    <ClCompile Include="Maze\Maze.cpp" />
     <ClCompile Include="Maze\Movement.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite.cpp" />
