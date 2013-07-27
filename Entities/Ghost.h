@@ -28,6 +28,7 @@ public:
     void Restart(GridRef const& ref, float offsetX, float offsetY);
     void SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target);
     void SetBehaviour(Behaviour behaviour);
+    void SetSpeed(float speed);
     void SetFrightFlash(bool flash) { m_FrightFlash = flash; }
 
     Movement const& GetMovement() const { return m_Movement; }

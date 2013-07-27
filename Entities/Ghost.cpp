@@ -22,8 +22,6 @@ Ghost::~Ghost()
 
 void Ghost::Load(int id)
 {
-    m_Movement.SetSpeed(7.5f);
-
     char bodyFilename[FILENAME_MAX];
     sprintf_s(bodyFilename, "Resources/ghost_body_%02d", id);
     m_Body.Load(bodyFilename);
@@ -88,6 +86,11 @@ void Ghost::SetBehaviour(Behaviour behaviour)
                 break;
         }
     }
+}
+
+void Ghost::SetSpeed(float speed)
+{
+    m_Movement.SetSpeed(speed);
 }
 
 void Ghost::Update(float dt)

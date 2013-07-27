@@ -14,7 +14,12 @@ Level::Level() :
     m_State(State::Start),
     m_WaitTimer(2.0f),
     m_FrightTimer(0.0f),
-    m_FrightExitState(State::Scatter)
+    m_NormalBehaviour(Ghost::Behaviour::Scatter),
+    m_MaxSpeed(8.0f),
+    m_PlayerNormSpeedFactor(0.8f),
+    m_PlayerFrightSpeedFactor(0.9f),
+    m_GhostNormSpeedFactor(0.75f),
+    m_GhostFrightSpeedFactor(0.5f)
 {
 }
 
@@ -88,9 +93,8 @@ void Level::Update(float dt)
     case State::Start:
         UpdateStart(dt);
         break;
-    case State::Scatter:
-    case State::Chase:
-        UpdateScatterChase(dt);
+    case State::Normal:
+        UpdateNormal(dt);
         break;
     case State::Fright:
         UpdateFright(dt);
@@ -109,11 +113,11 @@ void Level::UpdateStart(float dt)
     m_WaitTimer -= dt;
     if (m_WaitTimer < 0.0f)
     {
-        m_State = State::Scatter;
+        m_State = State::Normal;
     }
 }
 
-void Level::UpdateScatterChase(float dt)
+void Level::UpdateNormal(float dt)
 {
     // Check for swapping between scatter and chase
     if (m_BehaviourCounter < m_BehaviourChanges.size())
@@ -121,8 +125,8 @@ void Level::UpdateScatterChase(float dt)
         m_BehaviourTimer += dt;
         if (m_BehaviourTimer > m_BehaviourChanges[m_BehaviourCounter])
         {
-            // Swap state
-            m_State = (m_State == State::Chase) ? State::Scatter : State::Chase;
+            // Swap behaviour
+            m_NormalBehaviour = (m_NormalBehaviour == Ghost::Behaviour::Chase) ? Ghost::Behaviour::Scatter : Ghost::Behaviour::Chase;
 
             // Reset for next change
             m_BehaviourTimer = 0.0f;
@@ -131,10 +135,9 @@ void Level::UpdateScatterChase(float dt)
     }
 
     // Apply to all ghosts
-    Ghost::Behaviour const behaviour = (m_State == State::Chase) ? Ghost::Behaviour::Chase : Ghost::Behaviour::Scatter;
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        ghost->SetBehaviour(behaviour);
+        ghost->SetBehaviour(m_NormalBehaviour);
     }
 
     UpdateEntities(dt);
@@ -176,7 +179,7 @@ void Level::UpdateFright(float dt)
     m_FrightTimer -= dt;
     if (m_FrightTimer < 0.0f)
     {
-        m_State = m_FrightExitState;
+        m_State = State::Normal;
     }
 }
 
@@ -203,8 +206,13 @@ void Level::UpdateEntities(float dt)
 {
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
+        float const ghostSpeedFactor = (ghost->GetBehaviour() == Ghost::Behaviour::Fright) ? m_GhostFrightSpeedFactor : m_GhostNormSpeedFactor;
+        ghost->SetSpeed(ghostSpeedFactor * m_MaxSpeed);
         ghost->Update(dt);
     }
+
+    float const playerSpeedFactor = (m_State == State::Fright) ? m_PlayerFrightSpeedFactor : m_PlayerNormSpeedFactor;
+    m_Player.SetSpeed(playerSpeedFactor * m_MaxSpeed);
     m_Player.Update(dt);
 
     // Check for player eating a power pill
@@ -212,12 +220,7 @@ void Level::UpdateEntities(float dt)
     {
         // TODO: Score
 
-        if (m_State != State::Fright)
-        {
-            // Need to know which state to go back to
-            m_FrightExitState = m_State;
-            m_State = State::Fright;
-        }
+        m_State = State::Fright;
         m_FrightTimer = 6.0f;
 
         // Apply to all ghosts, unless already eaten
@@ -253,6 +256,7 @@ void Level::Restart()
     m_BehaviourCounter = 0;
     m_BehaviourTimer = 0.0f;
     m_WaitTimer = 2.0f;
+    m_NormalBehaviour = Ghost::Behaviour::Scatter;
     m_FrightTimer = 0.0f;
 
     m_Player.Restart(m_Maze.GetGridRef(14, 7), 0.0f, 0.5f);

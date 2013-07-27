@@ -17,6 +17,8 @@ public:
     Movement const& GetMovement() const { return m_Movement; }
     bool AtePill() const { return m_AtePill; }
     bool AtePowerPill() const { return m_AtePowerPill; }
+    
+    void SetSpeed(float speed);
 
     virtual void Update(float dt) override;
     virtual void Draw(sf::RenderTarget& target, sf::Transform const& transform) override;

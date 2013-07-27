@@ -18,12 +18,9 @@ Player::~Player()
 
 void Player::Load()
 {
-    m_Movement.SetSpeed(8.0f);
-
     m_Sprite.Load("Resources/player");
     m_Sprite.SetOriginToCentre();
     m_Sprite.SetShuttle(true);
-    m_Sprite.SetSpeed(30.0f);
 
     //m_PillSound.Load("Resources/player_pill.wav");
     //m_PillSound.SetVolume(30.0f);
@@ -42,6 +39,14 @@ void Player::Restart(GridRef const& ref, float offsetX, float offsetY)
     m_Sprite.Play();
 }
 
+void Player::SetSpeed(float speed)
+{
+    float const k_SpriteSpeedFactor = 6.0f;
+
+    m_Movement.SetSpeed(speed);
+    m_Sprite.SetSpeed(speed * k_SpriteSpeedFactor);
+
+}
 
 void Player::Update(float dt)
 {

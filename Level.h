@@ -20,15 +20,14 @@ private:
     enum class State
     {
         Start,
-        Chase,
-        Scatter,
+        Normal,
         Fright,
         Eat,
         Death,
     };
 
     void UpdateStart(float dt);
-    void UpdateScatterChase(float dt);
+    void UpdateNormal(float dt);
     void UpdateFright(float dt);
     void UpdateEat(float dt);
     void UpdateDeath(float dt);
@@ -47,6 +46,12 @@ private:
     float m_BehaviourTimer;
     State m_State;
     float m_WaitTimer;
+    Ghost::Behaviour m_NormalBehaviour;
     float m_FrightTimer;
-    State m_FrightExitState;
+
+    float m_MaxSpeed;
+    float m_PlayerNormSpeedFactor;
+    float m_PlayerFrightSpeedFactor;
+    float m_GhostNormSpeedFactor;
+    float m_GhostFrightSpeedFactor;
 };
