@@ -59,7 +59,7 @@ void Level::Load(char* filename)
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
-        m_Ghosts[0]->SetPosition(GridRef(&m_Grid, 14, 19), 0.0f, 0.5f);
+        m_Ghosts[0]->SetPosition(GridRef(&m_Grid, 13, 19), 1.0f, 0.5f);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<PinkyTarget>(m_Player.GetMovement());
