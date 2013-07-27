@@ -10,6 +10,7 @@ public:
     bool GetPill() const { return m_Pill; }
     bool GetPowerPill() const { return m_PowerPill; }
     bool IsGhostBase() const { return m_GhostBase; }
+    bool IsTunnel() const { return m_Tunnel; }
 
     void Nom();
     void Reset();
@@ -24,4 +25,5 @@ private:
     bool m_WasPowerPill;
 
     bool m_GhostBase;
+    bool m_Tunnel;
 };

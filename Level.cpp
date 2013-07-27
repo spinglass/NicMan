@@ -19,7 +19,8 @@ Level::Level() :
     m_PlayerNormSpeedFactor(0.8f),
     m_PlayerFrightSpeedFactor(0.9f),
     m_GhostNormSpeedFactor(0.75f),
-    m_GhostFrightSpeedFactor(0.5f)
+    m_GhostFrightSpeedFactor(0.5f),
+    m_GhostTunnelSpeedFactor(0.4f)
 {
 }
 
@@ -206,7 +207,15 @@ void Level::UpdateEntities(float dt)
 {
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        float const ghostSpeedFactor = (ghost->GetBehaviour() == Ghost::Behaviour::Fright) ? m_GhostFrightSpeedFactor : m_GhostNormSpeedFactor;
+        float ghostSpeedFactor = m_GhostNormSpeedFactor;
+        if (ghost->GetMovement().GetPosition().GetCell()->IsTunnel())
+        {
+            ghostSpeedFactor = m_GhostTunnelSpeedFactor;
+        }
+        else if (ghost->GetBehaviour() == Ghost::Behaviour::Fright)
+        {
+            ghostSpeedFactor = m_GhostFrightSpeedFactor;
+        }
         ghost->SetSpeed(ghostSpeedFactor * m_MaxSpeed);
         ghost->Update(dt);
     }

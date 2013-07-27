@@ -6,14 +6,15 @@ Cell::Cell(char c) :
     m_Pill(false),
     m_WasPill(false),
     m_PowerPill(false),
-    m_WasPowerPill(false)
+    m_WasPowerPill(false),
+    m_Tunnel(false)
 {
     Parse(c);
 }
 
 bool Cell::IsCell(char c)
 {
-    return (c == '+' || c == 'o' || c == '#' || c == 'x');
+    return (c == '+' || c == '=' || c == 'o' || c == '#' || c == 'x');
 }
 
 void Cell::Parse(char c)
@@ -24,6 +25,8 @@ void Cell::Parse(char c)
     case '+':
         // Empty cell
         break;
+    case '=':
+        m_Tunnel = true;
     case 'o':
         m_Pill = true;
         m_WasPill = true;

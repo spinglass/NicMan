@@ -54,4 +54,5 @@ private:
     float m_PlayerFrightSpeedFactor;
     float m_GhostNormSpeedFactor;
     float m_GhostFrightSpeedFactor;
+    float m_GhostTunnelSpeedFactor;
 };
