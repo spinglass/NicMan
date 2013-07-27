@@ -142,7 +142,7 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     {
         float const colCentre = col + 0.5f;
 
-        for (int row = 0; row < m_Grid.GetWidth(); ++row)
+        for (int row = 0; row < m_Grid.GetHeight(); ++row)
         {
             float const rowCentre = row + 0.5f;
             sf::Vector2f const cellPosition = transform.transformPoint(colCentre, rowCentre);
