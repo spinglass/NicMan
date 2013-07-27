@@ -3,8 +3,6 @@
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Entities\Entity.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
@@ -56,11 +54,15 @@
     <ClCompile Include="Core\Sprite.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Level.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Level.h" />
     <ClInclude Include="Entities\Entity.h">
       <Filter>Entities</Filter>
     </ClInclude>
@@ -115,6 +117,12 @@
     <ClInclude Include="Core\Sprite.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Level.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resources">
@@ -131,6 +139,9 @@
     </Filter>
     <Filter Include="GhostTargets">
       <UniqueIdentifier>{d6bb607f-cf1a-4e14-b531-a09d2ebb023b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{71eb6ffc-aea7-4541-bf18-77e1ab771474}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
