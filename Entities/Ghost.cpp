@@ -46,9 +46,9 @@ void Ghost::SetPosition(GridRef const& ref, float offsetX, float offsetY)
     m_Movement.Reset(ref, offsetX, offsetY);
     m_Movement.SetDirection(Direction::West);
     m_Movement.SetExitDirection(Direction::West);
+    m_NextDirection = Direction::West;
     m_Behaviour = Behaviour::Scatter;
     m_PendingBehaviour = Behaviour::None;
-    SelectNextDirection();
 }
 
 void Ghost::SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target)
@@ -62,6 +62,10 @@ void Ghost::SetBehaviour(Behaviour behaviour)
     {
         m_PendingBehaviour = behaviour;
     }
+    else
+    {
+        m_PendingBehaviour = Behaviour::None;
+    }
 }
 
 void Ghost::Update(float dt)
@@ -71,6 +75,7 @@ void Ghost::Update(float dt)
     if (m_Behaviour == Behaviour::Eaten && m_Movement.GetPosition() == m_TargetRef)
     {
         m_Behaviour = Behaviour::Chase;
+        m_PendingBehaviour = Behaviour::None;
     }
 }
 
@@ -119,31 +124,12 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     }
 }
 
-Direction Ghost::SelectNextDirection()
+Direction Ghost::SelectExitDirection(GridRef const ref, Direction const enterDirection)
 {
-    if (m_PendingBehaviour != Behaviour::None && m_Behaviour != Behaviour::Eaten)
-    {
-        // Reverse, unless leaving fright mode
-        if (m_Behaviour != Behaviour::Fright)
-        {
-            // Just left a cell, so immediately re-enter it.
-            Direction const reverseDirection = Opposite(m_Movement.GetDirection());
-            m_Movement.SetDirection(reverseDirection);
-            m_NextDirection = reverseDirection;
-        }
+    assert(ref.CanPlayerPass());
 
-        assert(m_PendingBehaviour != m_Behaviour);
-        m_Behaviour = m_PendingBehaviour;
-        m_PendingBehaviour = Behaviour::None;
-    }
-
-    GridRef const& position = m_Movement.GetPosition();
-    Direction const nextExitDirection = m_NextDirection;
-    Direction const nextEnterDirection = Opposite(nextExitDirection);
-
-    // Get the next cell we'll be entering, where the decision is required for exit.
-    GridRef const nextRef = position.GetNext(nextExitDirection);
-    assert(nextRef.CanPlayerPass());
+    // Can't exit the way we came in
+    Direction const noExitDirection = Opposite(enterDirection);
 
     // Build set of available options
     // Search order set for preferred direction in case of two equal options.
@@ -152,10 +138,10 @@ Direction Ghost::SelectNextDirection()
     for (Direction dir : searchOrder)
     {
         // If it's not back the way we came...
-        if (dir != nextEnterDirection)
+        if (dir != noExitDirection)
         {
             // ...and we can pass, it's an option
-            GridRef const optionRef = nextRef.GetNext(dir);
+            GridRef const optionRef = ref.GetNext(dir);
             if (optionRef.CanPlayerPass())
             {
                 options.push_back(std::make_pair(dir, optionRef));
@@ -163,17 +149,18 @@ Direction Ghost::SelectNextDirection()
         }
     }
 
-    Direction nextDirection = Direction::None;
+    Direction exitDirection = Direction::None;
     if (m_Behaviour == Behaviour::Fright)
     {
         // Randomly select an option
         int const ran = rand() % options.size();
-        nextDirection = options[ran].first;
+        exitDirection = options[ran].first;
     }
     else
     {
         // Update target position
         assert(m_Targets[m_Behaviour]);
+
         m_TargetRef = m_Targets[m_Behaviour]->It();
 
         // Find possible exit direction from the next cell.
@@ -184,13 +171,43 @@ Direction Ghost::SelectNextDirection()
             float const distSq = DistanceSq(m_TargetRef, option.second);
             if (distSq < minDistSq)
             {
-                nextDirection = option.first;
+                exitDirection = option.first;
                 minDistSq = distSq;
             }
         }
     }
-    assert(nextDirection != Direction::None);
+    assert(exitDirection != Direction::None);
 
+    return exitDirection;
+}
+
+Direction Ghost::SelectNextDirection()
+{
+    if (m_PendingBehaviour != Behaviour::None && m_Behaviour != Behaviour::Eaten)
+    {
+        // Reverse, unless leaving fright mode
+        if (m_Behaviour != Behaviour::Fright)
+        {
+            // Just left a cell, so immediately re-enter it.
+            Direction const reverseDirection = Opposite(m_Movement.GetDirection());
+            m_Movement.SetDirection(reverseDirection);
+            m_Movement.SetExitDirection(reverseDirection);
+
+            m_NextDirection = reverseDirection;
+        }
+
+        assert(m_PendingBehaviour != m_Behaviour);
+        m_Behaviour = m_PendingBehaviour;
+        m_PendingBehaviour = Behaviour::None;
+    }
+
+    // Get the next cell we'll be entering, where the decision is required for exit.
+    GridRef const nextRef = m_Movement.GetPosition().GetNext(m_NextDirection);
+
+    // And select the exit direction from that cell
+    Direction nextDirection = SelectExitDirection(nextRef, m_NextDirection);
+
+    // Return the previously selected next direction and save the new selected direction for next time
     std::swap(m_NextDirection, nextDirection);
     return nextDirection;
 }
