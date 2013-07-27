@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Level>
+  <Maze Definition="Mazes/Maze01.xml"
+    />
+  <Settings FrightTime="6.0"
+            PlayerNormSpeedFactor="0.8"
+            PlayerFrightSpeedFactor="0.9"
+            GhostNormSpeedFactor="0.75"
+            GhostFrightSpeedFactor="0.5"
+            GhostTunnelSpeedFactor="0.4"
+    />
+  <BehaviourChanges>
+    <BehaviourChange Time="7" />
+    <BehaviourChange Time="20" />
+    <BehaviourChange Time="7" />
+    <BehaviourChange Time="20" />
+    <BehaviourChange Time="7" />
+    <BehaviourChange Time="20" />
+    <BehaviourChange Time="5" />
+  </BehaviourChanges>
+</Level>

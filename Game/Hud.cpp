@@ -14,12 +14,12 @@ Hud::~Hud()
 
 void Hud::Load()
 {
-    if (!m_Font.loadFromFile("Resources/sansation.ttf"))
+    if (!m_Font.loadFromFile("sansation.ttf"))
     {
         assert(false);
     }
 
-    m_Life.Load("Resources/player_06");
+    m_Life.Load("Player/Player_06");
 }
 
 void Hud::Draw(sf::RenderTarget& target)

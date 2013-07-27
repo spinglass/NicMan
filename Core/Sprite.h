@@ -6,7 +6,7 @@ public:
     Sprite();
     virtual ~Sprite();
 
-    void Load(char* filename);
+    void Load(char const* filename);
     void Draw(sf::RenderTarget& target);
 
     void SetOriginToCentre();

@@ -10,7 +10,7 @@ public:
     Maze();
     virtual ~Maze();
 
-    void Load(char* filename);
+    void Load(char const* name);
 
     void Draw(sf::RenderTarget& target, sf::Transform const& transform);
 
@@ -23,6 +23,7 @@ private:
     Maze(Maze&);
     Maze& operator=(Maze&);
 
+    void LoadGrid(char const* filename);
     void Parse(std::vector<char> const& data);
 
     std::vector<Cell> m_CellStorage;

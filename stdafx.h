@@ -13,3 +13,5 @@
 
 #include "SFML\Audio.hpp"
 #include "SFML\Graphics.hpp"
+
+#include "tinyxml2.h"

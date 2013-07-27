@@ -23,20 +23,20 @@ Ghost::~Ghost()
 void Ghost::Load(int id)
 {
     char bodyFilename[FILENAME_MAX];
-    sprintf_s(bodyFilename, "Resources/ghost_body_%02d", id);
+    sprintf_s(bodyFilename, "Ghosts/Ghost_body_%02d", id);
     m_Body.Load(bodyFilename);
     m_Body.SetOriginToCentre();
 
-    m_Eyes[Direction::North].Load("Resources/ghost_eyes_north");
+    m_Eyes[Direction::North].Load("Ghosts/Ghost_eyes_north");
     m_Eyes[Direction::North].SetOriginToCentre();
-    m_Eyes[Direction::South].Load("Resources/ghost_eyes_south");
+    m_Eyes[Direction::South].Load("Ghosts/Ghost_eyes_south");
     m_Eyes[Direction::South].SetOriginToCentre();
-    m_Eyes[Direction::East].Load("Resources/ghost_eyes_east");
+    m_Eyes[Direction::East].Load("Ghosts/Ghost_eyes_east");
     m_Eyes[Direction::East].SetOriginToCentre();
-    m_Eyes[Direction::West].Load("Resources/ghost_eyes_west");
+    m_Eyes[Direction::West].Load("Ghosts/Ghost_eyes_west");
     m_Eyes[Direction::West].SetOriginToCentre();
 
-    m_Fright.Load("Resources/ghost_fright");
+    m_Fright.Load("Ghosts/Ghost_fright");
     m_Fright.SetOriginToCentre();
 }
 

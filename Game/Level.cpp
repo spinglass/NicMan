@@ -9,21 +9,40 @@
 #include "GhostTargets/FixedTarget.h"
 #include "ScoreManager.h"
 
+struct LevelSettings
+{
+    LevelSettings(tinyxml2::XMLElement const& element)
+    {
+        FrightTime = element.FloatAttribute("FrightTime");
+        PlayerNormSpeedFactor = element.FloatAttribute("PlayerNormSpeedFactor");
+        PlayerFrightSpeedFactor = element.FloatAttribute("PlayerFrightSpeedFactor");
+        GhostNormSpeedFactor = element.FloatAttribute("GhostNormSpeedFactor");
+        GhostFrightSpeedFactor = element.FloatAttribute("GhostFrightSpeedFactor");
+        GhostTunnelSpeedFactor = element.FloatAttribute("GhostTunnelSpeedFactor");
+    }
+
+    float FrightTime;
+    float PlayerNormSpeedFactor;
+    float PlayerFrightSpeedFactor;
+    float GhostNormSpeedFactor;
+    float GhostFrightSpeedFactor;
+    float GhostTunnelSpeedFactor;
+};
+
+float const Level::s_MaxSpeed = 8.0f;
+float const Level::s_StartWait = 2.0f;
+float const Level::s_DeathWait = 2.0f;
+float const Level::s_CompletionWait = 2.0f;
+
 Level::Level(ScoreManager& scoreManager) :
     m_ScoreManager(scoreManager),
     m_BehaviourCounter(0),
     m_BehaviourTimer(0.0f),
     m_State(State::Start),
-    m_WaitTimer(2.0f),
+    m_WaitTimer(0.0f),
     m_FrightTimer(0.0f),
     m_Complete(false),
     m_NormalBehaviour(Ghost::Behaviour::Scatter),
-    m_MaxSpeed(8.0f),
-    m_PlayerNormSpeedFactor(0.8f),
-    m_PlayerFrightSpeedFactor(0.9f),
-    m_GhostNormSpeedFactor(0.75f),
-    m_GhostFrightSpeedFactor(0.5f),
-    m_GhostTunnelSpeedFactor(0.4f),
     m_ScorePill(10),
     m_ScorePowerPill(50),
     m_GhostEatCount(0),
@@ -41,15 +60,51 @@ Level::~Level()
 
 void Level::Load(char* filename)
 {
-    m_Maze.Load(filename);
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile(filename) == tinyxml2::XML_NO_ERROR)
+    {
+        tinyxml2::XMLElement* levelElement = doc.FirstChildElement("Level");
+        assert(levelElement);
 
-    m_ScoreSprites[0].Load("Resources/score_200");
+        {
+            // Load maze
+            tinyxml2::XMLElement* element = levelElement->FirstChildElement("Maze");
+            assert(element);
+            char const* definition = element->Attribute("Definition");
+            assert(definition);
+            m_Maze.Load(definition);
+        }
+
+        {
+            // Read Settings
+            tinyxml2::XMLElement* element = levelElement->FirstChildElement("Settings");
+            assert(element);
+            m_Settings = std::make_shared<LevelSettings>(*element);
+        }
+
+        {
+            // Setup chase/scatter cycle
+            tinyxml2::XMLElement* element = levelElement->FirstChildElement("BehaviourChanges");
+            assert(element);
+
+            tinyxml2::XMLElement* child = element->FirstChildElement("BehaviourChange");
+            while (child)
+            {
+                float const time = child->FloatAttribute("Time");
+                m_BehaviourChanges.push_back(time);
+
+                child = child->NextSiblingElement("BehaviourChange");
+            }
+        }
+    }
+
+    m_ScoreSprites[0].Load("Levels/Score_200");
     m_ScoreSprites[0].SetOriginToCentre();
-    m_ScoreSprites[1].Load("Resources/score_400");
+    m_ScoreSprites[1].Load("Levels/Score_400");
     m_ScoreSprites[1].SetOriginToCentre();
-    m_ScoreSprites[2].Load("Resources/score_800");
+    m_ScoreSprites[2].Load("Levels/Score_800");
     m_ScoreSprites[2].SetOriginToCentre();
-    m_ScoreSprites[3].Load("Resources/score_1600");
+    m_ScoreSprites[3].Load("Levels/Score_1600");
     m_ScoreSprites[3].SetOriginToCentre();
 
     m_Player.Load();
@@ -94,15 +149,6 @@ void Level::Load(char* filename)
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
     }
-
-    // Setup chase/scatter cycle
-    m_BehaviourChanges.push_back(7.0f);
-    m_BehaviourChanges.push_back(20.0f);
-    m_BehaviourChanges.push_back(7.0f);
-    m_BehaviourChanges.push_back(20.0f);
-    m_BehaviourChanges.push_back(7.0f);
-    m_BehaviourChanges.push_back(20.0f);
-    m_BehaviourChanges.push_back(5.0f);
 
     Restart();
 }
@@ -257,21 +303,21 @@ void Level::UpdateEntities(float dt)
 {
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
-        float ghostSpeedFactor = m_GhostNormSpeedFactor;
+        float ghostSpeedFactor = m_Settings->GhostNormSpeedFactor;
         if (ghost->GetMovement().GetPosition().GetCell()->IsTunnel())
         {
-            ghostSpeedFactor = m_GhostTunnelSpeedFactor;
+            ghostSpeedFactor = m_Settings->GhostTunnelSpeedFactor;
         }
         else if (ghost->GetBehaviour() == Ghost::Behaviour::Fright)
         {
-            ghostSpeedFactor = m_GhostFrightSpeedFactor;
+            ghostSpeedFactor = m_Settings->GhostFrightSpeedFactor;
         }
-        ghost->SetSpeed(ghostSpeedFactor * m_MaxSpeed);
+        ghost->SetSpeed(ghostSpeedFactor * s_MaxSpeed);
         ghost->Update(dt);
     }
 
-    float const playerSpeedFactor = (m_State == State::Fright) ? m_PlayerFrightSpeedFactor : m_PlayerNormSpeedFactor;
-    m_Player.SetSpeed(playerSpeedFactor * m_MaxSpeed);
+    float const playerSpeedFactor = (m_State == State::Fright) ? m_Settings->PlayerFrightSpeedFactor : m_Settings->PlayerNormSpeedFactor;
+    m_Player.SetSpeed(playerSpeedFactor * s_MaxSpeed);
     m_Player.Update(dt);
 
     // Check for player eating a power pill
@@ -285,7 +331,7 @@ void Level::UpdateEntities(float dt)
         }
 
         m_State = State::Fright;
-        m_FrightTimer = 6.0f;
+        m_FrightTimer = m_Settings->FrightTime;
 
         // Apply to all ghosts, unless already eaten
         for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
@@ -308,7 +354,7 @@ void Level::UpdateEntities(float dt)
         {
             // Level finished!
             m_State = State::Complete;
-            m_WaitTimer = 2.0f;
+            m_WaitTimer = s_CompletionWait;
         }
     }
 
@@ -319,7 +365,7 @@ void Level::UpdateEntities(float dt)
             m_Player.GetMovement().GetPosition() == ghost->GetMovement().GetPosition())
         {
             m_State = State::Death;
-            m_WaitTimer = 2.0f;
+            m_WaitTimer = s_DeathWait;
         }
     }
 }
@@ -329,7 +375,7 @@ void Level::Restart()
     m_State = State::Start;
     m_BehaviourCounter = 0;
     m_BehaviourTimer = 0.0f;
-    m_WaitTimer = 2.0f;
+    m_WaitTimer = s_StartWait;
     m_NormalBehaviour = Ghost::Behaviour::Scatter;
     m_FrightTimer = 0.0f;
 

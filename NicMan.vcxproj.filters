@@ -155,10 +155,24 @@
     <Filter Include="Game">
       <UniqueIdentifier>{71eb6ffc-aea7-4541-bf18-77e1ab771474}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Mazes">
+      <UniqueIdentifier>{1abfb598-1df8-4ad3-9364-8392cf3ae137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Levels">
+      <UniqueIdentifier>{63c9052a-2884-40c1-9e50-f23b2f4094ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Output\Resources\level01.txt">
-      <Filter>Resources</Filter>
+    <Text Include="Output\Resources\Mazes\Maze01.txt">
+      <Filter>Resources\Mazes</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Output\Resources\Mazes\Maze01.xml">
+      <Filter>Resources\Mazes</Filter>
+    </Xml>
+    <Xml Include="Output\Resources\Levels\Level01.xml">
+      <Filter>Resources\Levels</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

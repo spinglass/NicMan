@@ -9,7 +9,7 @@ Sprite::~Sprite()
 {
 }
 
-void Sprite::Load(char* filename)
+void Sprite::Load(char const* filename)
 {
     std::string fullFilename = filename;
     fullFilename += ".png";

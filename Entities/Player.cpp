@@ -18,7 +18,7 @@ Player::~Player()
 
 void Player::Load()
 {
-    m_Sprite.Load("Resources/player");
+    m_Sprite.Load("Player/Player");
     m_Sprite.SetOriginToCentre();
     m_Sprite.SetShuttle(true);
 

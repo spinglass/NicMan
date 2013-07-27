@@ -12,7 +12,7 @@ Game::Game()
     m_ScoreManager = new ScoreManager();
 
     m_Level = new Level(*m_ScoreManager);
-    m_Level->Load("Resources/level01.txt");
+    m_Level->Load("Levels/Level01.xml");
 
     m_Hud = new Hud(*m_ScoreManager);
     m_Hud->Load();

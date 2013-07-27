@@ -13,7 +13,25 @@ Maze::~Maze()
 {
 }
 
-void Maze::Load(char* filename)
+void Maze::Load(char const* filename)
+{
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile(filename) == tinyxml2::XML_NO_ERROR)
+    {
+        if (tinyxml2::XMLElement* mazeElement = doc.FirstChildElement("Maze"))
+        {
+            char const* grid = mazeElement->Attribute("Grid");
+            assert(grid);
+            LoadGrid(grid);
+
+            char const* bg = mazeElement->Attribute("Background");
+            assert(bg);
+            m_Background.Load(bg);
+        }
+    }
+}
+
+void Maze::LoadGrid(char const* filename)
 {
     FILE* file;
     if (0 == fopen_s(&file, filename, "r"))
@@ -31,8 +49,6 @@ void Maze::Load(char* filename)
 
         Parse(data);
     }
-
-    m_Background.Load("Resources/level01_bg");
 }
 
 void Maze::Parse(std::vector<char> const& data)

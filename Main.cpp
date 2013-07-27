@@ -6,6 +6,8 @@
 
 int main()
 {
+    SetCurrentDirectory(L"Resources");
+
     {
         Game game;
         game.Run();

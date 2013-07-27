@@ -8,6 +8,7 @@
 #include "Maze/Maze.h"
 
 class ScoreManager;
+struct LevelSettings;
 
 class Level
 {
@@ -47,6 +48,12 @@ private:
 
     void Restart();
 
+    static float const s_MaxSpeed;
+    static float const s_StartWait;
+    static float const s_EatWait;
+    static float const s_DeathWait;
+    static float const s_CompletionWait;
+
     ScoreManager& m_ScoreManager;
     Maze m_Maze;
     Player m_Player;
@@ -61,12 +68,7 @@ private:
     float m_FrightTimer;
     bool m_Complete;
 
-    float m_MaxSpeed;
-    float m_PlayerNormSpeedFactor;
-    float m_PlayerFrightSpeedFactor;
-    float m_GhostNormSpeedFactor;
-    float m_GhostFrightSpeedFactor;
-    float m_GhostTunnelSpeedFactor;
+    std::shared_ptr<LevelSettings> m_Settings;
 
     int m_ScorePill;
     int m_ScorePowerPill;
