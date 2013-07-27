@@ -45,6 +45,14 @@ void Game::Run()
             }
         }
 
+        if (m_Level->IsComplete())
+        {
+            // Load next level
+            delete m_Level;
+            m_Level = new Level(*m_ScoreManager);
+            m_Level->Load("Resources/level01.txt");
+        }
+
         float const dt = std::min(frameTimer.restart().asSeconds(), 1.0f / 60.0f);
         if (!m_ScoreManager->GetGameOver())
         {

@@ -17,6 +17,8 @@ public:
 
     void Load(char* filename);
 
+    bool IsComplete() const { return m_Complete; }
+
     void Update(float dt);
     void Draw(sf::RenderTarget& target);
 
@@ -28,13 +30,18 @@ private:
         Fright,
         Eat,
         Death,
+        Complete,
     };
+
+    Level(Level&);
+    Level& operator=(Level&);
 
     void UpdateStart(float dt);
     void UpdateNormal(float dt);
     void UpdateFright(float dt);
     void UpdateEat(float dt);
     void UpdateDeath(float dt);
+    void UpdateComplete(float dt);
 
     void UpdateEntities(float dt);
 
@@ -52,6 +59,7 @@ private:
     float m_WaitTimer;
     Ghost::Behaviour m_NormalBehaviour;
     float m_FrightTimer;
+    bool m_Complete;
 
     float m_MaxSpeed;
     float m_PlayerNormSpeedFactor;

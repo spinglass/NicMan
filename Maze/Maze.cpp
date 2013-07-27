@@ -184,3 +184,17 @@ GridRef Maze::GetGridRef(int x, int y) const
 {
     return GridRef(&m_Grid, x, y);
 }
+
+bool Maze::GetPillsRemaining() const
+{
+    bool pillFound = false;
+    for (Cell cell : m_CellStorage)
+    {
+        if (cell.GetPill() || cell.GetPowerPill())
+        {
+            pillFound = true;
+            break;
+        }
+    }
+    return pillFound;
+}

@@ -16,6 +16,7 @@ Level::Level(ScoreManager& scoreManager) :
     m_State(State::Start),
     m_WaitTimer(2.0f),
     m_FrightTimer(0.0f),
+    m_Complete(false),
     m_NormalBehaviour(Ghost::Behaviour::Scatter),
     m_MaxSpeed(8.0f),
     m_PlayerNormSpeedFactor(0.8f),
@@ -114,6 +115,9 @@ void Level::Update(float dt)
         break;
     case State::Death:
         UpdateDeath(dt);
+        break;
+    case State::Complete:
+        UpdateComplete(dt);
         break;
     }
 }
@@ -223,6 +227,15 @@ void Level::UpdateDeath(float dt)
     }
 }
 
+void Level::UpdateComplete(float dt)
+{
+    m_WaitTimer -= dt;
+    if (m_WaitTimer < 0.0f)
+    {
+        m_Complete = true;
+    }
+}
+
 void Level::UpdateEntities(float dt)
 {
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
@@ -270,6 +283,16 @@ void Level::UpdateEntities(float dt)
     else if (m_Player.AtePill())
     {
         m_ScoreManager.Add(10);
+    }
+
+    if (m_Player.AtePowerPill() || m_Player.AtePill())
+    {
+        if (!m_Maze.GetPillsRemaining())
+        {
+            // Level finished!
+            m_State = State::Complete;
+            m_WaitTimer = 2.0f;
+        }
     }
 
     // Check for ghosts eating player

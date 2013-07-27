@@ -15,6 +15,7 @@ public:
     void Draw(sf::RenderTarget& target, sf::Transform const& transform);
 
     GridRef GetGridRef(int x, int y) const;
+    bool GetPillsRemaining() const;
 
     static float const k_CellSize;
 
