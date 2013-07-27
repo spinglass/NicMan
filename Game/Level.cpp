@@ -7,8 +7,10 @@
 #include "GhostTargets/InkyTarget.h"
 #include "GhostTargets/ClydeTarget.h"
 #include "GhostTargets/FixedTarget.h"
+#include "ScoreManager.h"
 
-Level::Level() :
+Level::Level(ScoreManager& scoreManager) :
+    m_ScoreManager(scoreManager),
     m_BehaviourCounter(0),
     m_BehaviourTimer(0.0f),
     m_State(State::Start),
@@ -20,8 +22,15 @@ Level::Level() :
     m_PlayerFrightSpeedFactor(0.9f),
     m_GhostNormSpeedFactor(0.75f),
     m_GhostFrightSpeedFactor(0.5f),
-    m_GhostTunnelSpeedFactor(0.4f)
+    m_GhostTunnelSpeedFactor(0.4f),
+    m_ScorePill(10),
+    m_ScorePowerPill(50),
+    m_GhostEatCount(0)
 {
+    m_ScoreGhosts[0] = 200;
+    m_ScoreGhosts[1] = 400;
+    m_ScoreGhosts[2] = 800;
+    m_ScoreGhosts[3] = 1600;
 }
 
 Level::~Level()
@@ -112,10 +121,12 @@ void Level::Update(float dt)
 void Level::UpdateStart(float dt)
 {
     m_WaitTimer -= dt;
-    if (m_WaitTimer < 0.0f)
+    bool go = (m_WaitTimer < 0.0f);
+    if (go)
     {
         m_State = State::Normal;
     }
+    m_ScoreManager.SetReady(!go);
 }
 
 void Level::UpdateNormal(float dt)
@@ -170,6 +181,10 @@ void Level::UpdateFright(float dt)
             // Nom!
             ghost->SetBehaviour(Ghost::Behaviour::Eaten);
 
+            // Score and increase score for next eat
+            m_ScoreManager.Add(m_ScoreGhosts[m_GhostEatCount]);
+            m_GhostEatCount = std::min(m_GhostEatCount + 1, (int)m_ScoreGhosts.size() - 1);
+
             // Switch to eat state for a short while
             m_State = State::Eat;
             m_WaitTimer = 1.0f;
@@ -199,7 +214,12 @@ void Level::UpdateDeath(float dt)
     m_WaitTimer -= dt;
     if (m_WaitTimer < 0.0f)
     {
-        Restart();
+        m_ScoreManager.LoseLife();
+
+        if (!m_ScoreManager.GetGameOver())
+        {
+            Restart();
+        }
     }
 }
 
@@ -227,7 +247,12 @@ void Level::UpdateEntities(float dt)
     // Check for player eating a power pill
     if (m_Player.AtePowerPill())
     {
-        // TODO: Score
+        m_ScoreManager.Add(50);
+
+        if (m_State != State::Fright)
+        {
+            m_GhostEatCount = 0;
+        }
 
         m_State = State::Fright;
         m_FrightTimer = 6.0f;
@@ -244,7 +269,7 @@ void Level::UpdateEntities(float dt)
     }
     else if (m_Player.AtePill())
     {
-        // TODO: Score
+        m_ScoreManager.Add(10);
     }
 
     // Check for ghosts eating player

@@ -60,6 +60,12 @@
     <ClCompile Include="Game\Level.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Hud.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ScoreManager.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -121,6 +127,12 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Level.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Hud.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ScoreManager.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

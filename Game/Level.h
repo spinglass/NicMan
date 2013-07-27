@@ -1,14 +1,18 @@
 #pragma once
 
+#include <array>
+
 #include "Core/Sprite.h"
 #include "Entities/Ghost.h"
 #include "Entities/Player.h"
 #include "Maze/Maze.h"
 
+class ScoreManager;
+
 class Level
 {
 public:
-    Level();
+    Level(ScoreManager& scoreManager);
     virtual ~Level();
 
     void Load(char* filename);
@@ -36,8 +40,8 @@ private:
 
     void Restart();
 
+    ScoreManager& m_ScoreManager;
     Maze m_Maze;
-
     Player m_Player;
     std::vector<std::shared_ptr<Ghost>> m_Ghosts;
 
@@ -55,4 +59,9 @@ private:
     float m_GhostNormSpeedFactor;
     float m_GhostFrightSpeedFactor;
     float m_GhostTunnelSpeedFactor;
+
+    int m_ScorePill;
+    int m_ScorePowerPill;
+    std::array<int, 4> m_ScoreGhosts;
+    int m_GhostEatCount;
 };

@@ -94,7 +94,9 @@
     <ClInclude Include="Entities\Ghost.h" />
     <ClInclude Include="Entities\Player.h" />
     <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\Hud.h" />
     <ClInclude Include="Game\Level.h" />
+    <ClInclude Include="Game\ScoreManager.h" />
     <ClInclude Include="GhostTargets\BlinkyTarget.h" />
     <ClInclude Include="GhostTargets\ClydeTarget.h" />
     <ClInclude Include="GhostTargets\FixedTarget.h" />
@@ -117,7 +119,9 @@
     <ClCompile Include="Entities\Ghost.cpp" />
     <ClCompile Include="Entities\Player.cpp" />
     <ClCompile Include="Game\Game.cpp" />
+    <ClCompile Include="Game\Hud.cpp" />
     <ClCompile Include="Game\Level.cpp" />
+    <ClCompile Include="Game\ScoreManager.cpp" />
     <ClCompile Include="GhostTargets\BlinkyTarget.cpp" />
     <ClCompile Include="GhostTargets\ClydeTarget.cpp" />
     <ClCompile Include="GhostTargets\FixedTarget.cpp" />
