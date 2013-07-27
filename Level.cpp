@@ -187,17 +187,18 @@ void Level::Update(float dt)
 
 void Level::UpdateBehaviour(float dt)
 {
-    Ghost::Behaviour behaviourToApply;
-    bool frightFlash = false;
-
     if (m_PowerTimer > 0.0f)
     {
-        behaviourToApply = Ghost::Behaviour::Fright;
-
         if (m_PowerTimer < 1.0f)
         {
-            int foo = (int)floorf(4.0f * m_PowerTimer);
-            frightFlash = foo % 2 == 1;
+            // Flash
+            bool const frightFlash = (int)floorf(4.0f * m_PowerTimer) % 2 == 1;
+
+            // Apply to all ghosts
+            for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+            {
+                ghost->SetFrightFlash(frightFlash);
+            }
         }
     }
     else 
@@ -216,14 +217,11 @@ void Level::UpdateBehaviour(float dt)
             }
         }
 
-        behaviourToApply = m_MainBehaviour;
-    }
-
-    // Apply to all ghosts
-    for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
-    {
-        ghost->SetBehaviour(behaviourToApply);
-        ghost->SetFrightFlash(frightFlash);
+        // Apply to all ghosts
+        for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+        {
+            ghost->SetBehaviour(m_MainBehaviour);
+        }
     }
 }
 
@@ -232,6 +230,16 @@ void Level::UpdatePowerPlay(float dt)
     if (m_Player.AtePowerPill())
     {
         m_PowerTimer = 6.0f;
+
+        // Apply to all ghosts, unless already eaten
+        for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+        {
+            if (ghost->GetBehaviour() != Ghost::Behaviour::Eaten)
+            {
+                ghost->SetBehaviour(Ghost::Behaviour::Fright);
+                ghost->SetFrightFlash(false);
+            }
+        }
     }
     else if (m_PowerTimer > 0.0f)
     {
