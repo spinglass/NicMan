@@ -58,12 +58,19 @@ void Ghost::SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& 
 
 void Ghost::SetBehaviour(Behaviour behaviour)
 {
-    if (m_Behaviour != behaviour)
+    if (behaviour == Behaviour::Eaten || m_Behaviour == Behaviour::Fright)
     {
+        // Immediately start new behaviour if entering eaten or leaving fright
+        m_Behaviour = behaviour;
+    }
+    else if (m_Behaviour != behaviour)
+    {
+        // Wait to enter this behaviour, as a reversal is required when entering the next cell
         m_PendingBehaviour = behaviour;
     }
     else
     {
+        // Requested behaviour we're already in, cancel any previous pending behaviour
         m_PendingBehaviour = Behaviour::None;
     }
 }
@@ -185,16 +192,11 @@ Direction Ghost::SelectNextDirection()
 {
     if (m_PendingBehaviour != Behaviour::None && m_Behaviour != Behaviour::Eaten)
     {
-        // Reverse, unless leaving fright mode
-        if (m_Behaviour != Behaviour::Fright)
-        {
-            // Just left a cell, so immediately re-enter it.
-            Direction const reverseDirection = Opposite(m_Movement.GetDirection());
-            m_Movement.SetDirection(reverseDirection);
-            m_Movement.SetExitDirection(reverseDirection);
-
-            m_NextDirection = reverseDirection;
-        }
+        // Just left a cell, so immediately re-enter it.
+        Direction const reverseDirection = Opposite(m_Movement.GetDirection());
+        m_Movement.SetDirection(reverseDirection);
+        m_Movement.SetExitDirection(reverseDirection);
+        m_NextDirection = reverseDirection;
 
         assert(m_PendingBehaviour != m_Behaviour);
         m_Behaviour = m_PendingBehaviour;

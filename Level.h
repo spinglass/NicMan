@@ -17,8 +17,21 @@ public:
     void Draw(sf::RenderTarget& target);
 
 private:
-    void UpdateBehaviour(float dt);
-    void UpdatePowerPlay(float dt);
+    enum class State
+    {
+        Start,
+        Chase,
+        Scatter,
+        Fright,
+        Eat,
+    };
+
+    void UpdateStart(float dt);
+    void UpdateScatterChase(float dt);
+    void UpdateFright(float dt);
+    void UpdateEat(float dt);
+
+    void UpdateEntities(float dt);
 
     Maze m_Maze;
 
@@ -29,6 +42,8 @@ private:
     int m_BehaviourCounter;
     float m_BehaviourTimer;
     Ghost::Behaviour m_MainBehaviour;
-
-    float m_PowerTimer;
+    State m_State;
+    float m_WaitTimer;
+    float m_FrightTimer;
+    State m_FrightExitState;
 };

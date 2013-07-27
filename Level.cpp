@@ -12,7 +12,10 @@ Level::Level() :
     m_BehaviourCounter(0),
     m_BehaviourTimer(0.0f),
     m_MainBehaviour(Ghost::Behaviour::Scatter),
-    m_PowerTimer(0.0f)
+    m_State(State::Start),
+    m_WaitTimer(2.0f),
+    m_FrightTimer(0.0f),
+    m_FrightExitState(State::Scatter)
 {
 }
 
@@ -84,61 +87,127 @@ void Level::Load(char* filename)
 
 void Level::Update(float dt)
 {
-    UpdateBehaviour(dt);
-    UpdatePowerPlay(dt);
+    switch(m_State)
+    {
+    case State::Start:
+        UpdateStart(dt);
+        break;
+    case State::Scatter:
+    case State::Chase:
+        UpdateScatterChase(dt);
+        break;
+    case State::Fright:
+        UpdateFright(dt);
+        break;
+    case State::Eat:
+        UpdateEat(dt);
+        break;
+    }
+}
 
+void Level::UpdateStart(float dt)
+{
+    m_WaitTimer -= dt;
+    if (m_WaitTimer < 0.0f)
+    {
+        m_State = State::Scatter;
+    }
+}
+
+void Level::UpdateScatterChase(float dt)
+{
+    // Check for swapping between scatter and chase
+    if (m_BehaviourCounter < m_BehaviourChanges.size())
+    {
+        m_BehaviourTimer += dt;
+        if (m_BehaviourTimer > m_BehaviourChanges[m_BehaviourCounter])
+        {
+            // Swap behaviour
+            m_MainBehaviour = (m_MainBehaviour == Ghost::Behaviour::Chase) ? Ghost::Behaviour::Scatter : Ghost::Behaviour::Chase;
+
+            // Reset for next change
+            m_BehaviourTimer = 0.0f;
+            ++m_BehaviourCounter;
+        }
+    }
+
+    // Apply to all ghosts
+    for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+    {
+        ghost->SetBehaviour(m_MainBehaviour);
+    }
+
+    UpdateEntities(dt);
+}
+
+void Level::UpdateFright(float dt)
+{
+    // Update flash
+    if (m_FrightTimer < 1.0f)
+    {
+        // Detemine flash state
+        bool const frightFlash = (int)floorf(4.0f * m_FrightTimer) % 2 == 1;
+
+        // Apply to all ghosts
+        for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+        {
+            ghost->SetFrightFlash(frightFlash);
+        }
+    }
+
+    UpdateEntities(dt);
+
+    // Check for eating a ghost
+    for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+    {
+        if (ghost->GetBehaviour() == Ghost::Behaviour::Fright &&
+            m_Player.GetMovement().GetPosition() == ghost->GetMovement().GetPosition())
+        {
+            // Nom!
+            ghost->SetBehaviour(Ghost::Behaviour::Eaten);
+
+            // Switch to eat state for a short while
+            m_State = State::Eat;
+            m_WaitTimer = 1.0f;
+        }
+    }
+
+    // Check for finishing fright
+    m_FrightTimer -= dt;
+    if (m_FrightTimer < 0.0f)
+    {
+        m_State = m_FrightExitState;
+    }
+}
+
+void Level::UpdateEat(float dt)
+{
+    m_WaitTimer -= dt;
+    if (m_WaitTimer < 0.0f)
+    {
+        // Return to fright
+        m_State = State::Fright;
+    }
+}
+
+void Level::UpdateEntities(float dt)
+{
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
         ghost->Update(dt);
     }
     m_Player.Update(dt);
-}
 
-void Level::UpdateBehaviour(float dt)
-{
-    if (m_PowerTimer > 0.0f)
-    {
-        if (m_PowerTimer < 1.0f)
-        {
-            // Flash
-            bool const frightFlash = (int)floorf(4.0f * m_PowerTimer) % 2 == 1;
-
-            // Apply to all ghosts
-            for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
-            {
-                ghost->SetFrightFlash(frightFlash);
-            }
-        }
-    }
-    else 
-    {
-        if (m_BehaviourCounter < m_BehaviourChanges.size())
-        {
-            m_BehaviourTimer += dt;
-            if (m_BehaviourTimer > m_BehaviourChanges[m_BehaviourCounter])
-            {
-                // Swap behaviour
-                m_MainBehaviour = (m_MainBehaviour == Ghost::Behaviour::Chase) ? Ghost::Behaviour::Scatter : Ghost::Behaviour::Chase;
-
-                // Reset for next change
-                m_BehaviourTimer = 0.0f;
-                ++m_BehaviourCounter;
-            }
-        }
-
-        // Apply to all ghosts
-        for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
-        {
-            ghost->SetBehaviour(m_MainBehaviour);
-        }
-    }
-}
-
-void Level::UpdatePowerPlay(float dt)
-{
+    // Check for player eating a power pill
     if (m_Player.AtePowerPill())
     {
-        m_PowerTimer = 6.0f;
+        if (m_State != State::Fright)
+        {
+            // Need to know which state to go back to
+            m_FrightExitState = m_State;
+            m_State = State::Fright;
+        }
+        m_FrightTimer = 6.0f;
 
         // Apply to all ghosts, unless already eaten
         for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
@@ -147,19 +216,6 @@ void Level::UpdatePowerPlay(float dt)
             {
                 ghost->SetBehaviour(Ghost::Behaviour::Fright);
                 ghost->SetFrightFlash(false);
-            }
-        }
-    }
-    else if (m_PowerTimer > 0.0f)
-    {
-        m_PowerTimer -= dt;
-
-        for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
-        {
-            if (m_Player.GetMovement().GetPosition() == ghost->GetMovement().GetPosition())
-            {
-                // Eat ghost!
-                ghost->SetBehaviour(Ghost::Behaviour::Eaten);
             }
         }
     }
