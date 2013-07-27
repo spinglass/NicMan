@@ -1,9 +1,9 @@
 #pragma once
 
-#include "AnimatedSprite.h"
+#include "Core/AnimatedSprite.h"
+#include "Core/Sound.h"
 #include "Entity.h"
 #include "Maze/Movement.h"
-#include "Sound.h"
 
 class Player : public Entity
 {

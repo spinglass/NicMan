@@ -11,15 +11,6 @@
     <ClCompile Include="Entities\Player.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimatedSprite.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Entities\Ghost.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
@@ -56,6 +47,15 @@
     <ClCompile Include="Maze\Maze.cpp">
       <Filter>Maze</Filter>
     </ClCompile>
+    <ClCompile Include="Core\AnimatedSprite.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Sound.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Sprite.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -66,15 +66,6 @@
     </ClInclude>
     <ClInclude Include="Entities\Player.h">
       <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimatedSprite.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound.h">
-      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Entities\Ghost.h">
       <Filter>Entities</Filter>
@@ -114,6 +105,15 @@
     </ClInclude>
     <ClInclude Include="Maze\Maze.h">
       <Filter>Maze</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\AnimatedSprite.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Sound.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Sprite.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

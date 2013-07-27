@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Sprite.h"
+#include "Core/Sprite.h"
 #include "Entities/Ghost.h"
 #include "Entities/Player.h"
 #include "Maze/Maze.h"

@@ -2,10 +2,10 @@
 
 #include <memory>
 
-#include "Sprite.h"
+#include "Core/Sound.h"
+#include "Core/Sprite.h"
 #include "Entity.h"
 #include "Maze/Movement.h"
-#include "Sound.h"
 
 class IGhostTarget;
 

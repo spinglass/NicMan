@@ -2,7 +2,7 @@
 
 #include "Grid.h"
 #include "GridRef.h"
-#include "Sprite.h"
+#include "Core/Sprite.h"
 
 class Maze
 {
