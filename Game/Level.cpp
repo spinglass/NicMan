@@ -14,6 +14,7 @@ struct LevelSettings
     LevelSettings(tinyxml2::XMLElement const& element)
     {
         FrightTime = element.FloatAttribute("FrightTime");
+        FrightFlashTime = element.FloatAttribute("FrightFlashTime");
         PlayerNormSpeedFactor = element.FloatAttribute("PlayerNormSpeedFactor");
         PlayerFrightSpeedFactor = element.FloatAttribute("PlayerFrightSpeedFactor");
         GhostNormSpeedFactor = element.FloatAttribute("GhostNormSpeedFactor");
@@ -24,6 +25,7 @@ struct LevelSettings
     }
 
     float FrightTime;
+    float FrightFlashTime;
     float PlayerNormSpeedFactor;
     float PlayerFrightSpeedFactor;
     float GhostNormSpeedFactor;
@@ -238,7 +240,7 @@ void Level::UpdateNormal(float dt)
 void Level::UpdateFright(float dt)
 {
     // Update flash
-    if (m_FrightTimer < 1.0f)
+    if (m_FrightTimer < m_Settings->FrightFlashTime)
     {
         // Detemine flash state
         bool const frightFlash = (int)floorf(4.0f * m_FrightTimer) % 2 == 1;
