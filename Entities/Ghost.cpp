@@ -11,7 +11,7 @@ Ghost::Ghost(Maze const& maze) :
     m_NextDirection(Direction::None),
     m_Behaviour(Behaviour::Scatter),
     m_EatenExitBehaviour(Behaviour::None),
-    m_InBase(false),
+    m_ExitTimer(0.0f),
     m_Reverse(false),
     m_FrightFlash(false)
 {
@@ -57,13 +57,12 @@ void Ghost::Restart(float x, float y)
 
     m_Behaviour = Behaviour::Scatter;
     m_EatenExitBehaviour = Behaviour::None;
-    m_InBase = false;
+    m_BaseMovement.ResetToOut();
     m_Reverse = false;
 }
 
 void Ghost::RestartInBase()
 {
-    m_InBase = true;
     m_BaseMovement.ResetToHome();
 }
 
@@ -103,14 +102,6 @@ void Ghost::SetBehaviour(Behaviour behaviour)
     }
 }
 
-void Ghost::ExitBase()
-{
-    if (m_InBase)
-    {
-        m_BaseMovement.Exit();
-    }
-}
-
 void Ghost::SetSpeed(float speed)
 {
     m_Movement.SetSpeed(speed);
@@ -118,28 +109,48 @@ void Ghost::SetSpeed(float speed)
 
 void Ghost::Update(float dt)
 {
-    if (m_InBase)
+    // Update initial base exit
+    if (m_ExitTimer >= 0.0f)
     {
-        m_BaseMovement.Update(dt);
-        if (m_BaseMovement.IsOut())
+        m_ExitTimer -= dt;
+        if (m_ExitTimer < 0.0f)
         {
-            // Start normal movement
-            m_InBase = false;
-            m_Movement.SetDirection(Direction::West);
-            m_Movement.SetExitDirection(Direction::West);
-            m_NextDirection = Direction::West;
-            m_Reverse = false;
+            m_BaseMovement.Exit();
+        }
+    }
+
+    bool const outOfBase = m_BaseMovement.IsOut();
+    if (outOfBase)
+    {
+        // Only update normal movement when out of base
+        m_Movement.Update(dt);
+
+        if (m_Behaviour == Behaviour::Eaten)
+        {
+            // Returning to base - set base movement to capture when back
+            m_BaseMovement.Capture();
         }
     }
     else
     {
-        m_Movement.Update(dt);
+        if (m_BaseMovement.IsHome() && m_Behaviour == Behaviour::Eaten)
+        {
+            // Immediately exit when returned home having been eaten
+            m_BaseMovement.Exit();
+            m_Behaviour = m_EatenExitBehaviour;
+        }
     }
 
-    if (m_Behaviour == Behaviour::Eaten && m_Movement.GetPosition() == m_TargetRef)
+    // Alway update base movement - might be in capture mode
+    m_BaseMovement.Update(dt);
+
+    if (!outOfBase && m_BaseMovement.IsOut())
     {
-        assert(m_EatenExitBehaviour == Behaviour::Chase || m_EatenExitBehaviour == Behaviour::Scatter);
-        m_Behaviour = m_EatenExitBehaviour;
+        // Just left base - start normal movement
+        m_Movement.SetDirection(Direction::West);
+        m_Movement.SetExitDirection(Direction::West);
+        m_NextDirection = Direction::West;
+        m_Reverse = false;
     }
 }
 

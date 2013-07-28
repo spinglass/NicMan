@@ -44,7 +44,6 @@ Level::Level(ScoreManager& scoreManager) :
     m_BehaviourCounter(0),
     m_BehaviourTimer(0.0f),
     m_State(State::Start),
-    m_LevelTimer(0.0f),
     m_WaitTimer(0.0f),
     m_FrightTimer(0.0f),
     m_Complete(false),
@@ -322,16 +321,6 @@ void Level::UpdateComplete(float dt)
 
 void Level::UpdateEntities(float dt)
 {
-    m_LevelTimer += dt;
-    if (m_LevelTimer > m_Settings->InkyExitTime)
-    {
-        m_Ghosts[2]->ExitBase();
-    }
-    if (m_LevelTimer > m_Settings->ClydeExitTime)
-    {
-        m_Ghosts[3]->ExitBase();
-    }
-
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
         float ghostSpeedFactor = m_Settings->GhostNormSpeedFactor;
@@ -408,15 +397,20 @@ void Level::Restart()
     m_BehaviourTimer = 0.0f;
     m_WaitTimer = s_StartWait;
     m_NormalBehaviour = Ghost::Behaviour::Scatter;
-    m_LevelTimer = 0.0f;
     m_FrightTimer = 0.0f;
 
     m_Player.Restart(14.0f, 7.5f);
+
     m_Ghosts[0]->Restart(13.99f, 19.5f);
+
     m_Ghosts[1]->RestartInBase();
-    m_Ghosts[1]->ExitBase();
+    m_Ghosts[1]->SetExitTime(0.0f);
+
     m_Ghosts[2]->RestartInBase();
+    m_Ghosts[2]->SetExitTime(m_Settings->InkyExitTime);
+
     m_Ghosts[3]->RestartInBase();
+    m_Ghosts[3]->SetExitTime(m_Settings->ClydeExitTime);
 }
 
 void Level::Draw(sf::RenderTarget& target)

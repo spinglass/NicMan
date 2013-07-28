@@ -32,7 +32,7 @@ public:
     void SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target);
     void SetBehaviour(Behaviour behaviour);
     void SetSpeed(float speed);
-    void ExitBase();
+    void SetExitTime(float time) { m_ExitTimer = time; }
     void SetFrightFlash(bool flash) { m_FrightFlash = flash; }
 
     Movement const& GetMovement() const { return m_Movement; }
@@ -60,7 +60,7 @@ private:
     Direction m_NextDirection;
     Behaviour m_Behaviour;
     Behaviour m_EatenExitBehaviour;
-    bool m_InBase;
+    float m_ExitTimer;
     bool m_Reverse;
     bool m_FrightFlash;
 };
