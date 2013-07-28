@@ -8,6 +8,8 @@
             GhostNormSpeedFactor="0.75"
             GhostFrightSpeedFactor="0.5"
             GhostTunnelSpeedFactor="0.4"
+            InkyExitTime="5.0"
+            ClydeExitTime="10.0"
             />
 
   <GhostScores>

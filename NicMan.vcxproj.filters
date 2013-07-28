@@ -66,6 +66,12 @@
     <ClCompile Include="Game\ScoreManager.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Maze\BaseMovement.cpp">
+      <Filter>Maze</Filter>
+    </ClCompile>
+    <ClCompile Include="Maze\Base.cpp">
+      <Filter>Maze</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -134,6 +140,12 @@
     </ClInclude>
     <ClInclude Include="Game\ScoreManager.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze\BaseMovement.h">
+      <Filter>Maze</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze\Base.h">
+      <Filter>Maze</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,2 +1,5 @@
 <?xml version="1.0"?>
-<Maze Grid="mazes/maze01.txt" Background="mazes/maze01"/>
+<Maze Grid="mazes/maze01.txt"
+      Background="mazes/maze01">
+  <Base ExitX="14" ExitY="19.5" Top="18" Bottom="17" Exit="19.5" Left="12" Right="16" />
+</Maze>

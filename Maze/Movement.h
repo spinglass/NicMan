@@ -5,15 +5,18 @@
 #include "Direction.h"
 #include "GridRef.h"
 
+class Maze;
+
 class Movement
 {
 public:
     typedef std::function<Direction()> NextCellFunc;
 
-    Movement(bool canTransition);
+    Movement(Maze const& maze, bool canTransition);
     virtual ~Movement();
 
-    void Reset(GridRef const& position, float x, float y);
+    void Reset(GridRef const& position, float offsetX, float offsetY);
+    void Reset(float absoluteX, float absoluteY);
     void Update(float dt);
 
     GridRef const& GetPosition() const { return m_Position; }
@@ -34,6 +37,7 @@ private:
     void Move(Direction dir, float dt);
     static Direction NextCellDefault();
 
+    Maze const& m_Maze;
     bool const m_CanTransition;
     GridRef m_Position;
     sf::Vector2f m_Offset;

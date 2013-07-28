@@ -2,13 +2,16 @@
 #include "Ghost.h"
 
 #include "Maze/Direction.h"
+#include "Maze/Maze.h"
 #include "GhostTargets\IGhostTarget.h"
 
-Ghost::Ghost() :
-    m_Movement(false),
+Ghost::Ghost(Maze const& maze) :
+    m_Movement(maze, false),
+    m_BaseMovement(maze.GetBase(), m_Movement),
     m_NextDirection(Direction::None),
     m_Behaviour(Behaviour::Scatter),
     m_EatenExitBehaviour(Behaviour::None),
+    m_InBase(false),
     m_Reverse(false),
     m_FrightFlash(false)
 {
@@ -40,6 +43,11 @@ void Ghost::Load(int id)
     m_Fright.SetOriginToCentre();
 }
 
+void Ghost::SetHomePosition(BaseMovement::HomePosition homePosition)
+{
+    m_BaseMovement.SetHomePosition(homePosition);
+}
+
 void Ghost::Restart(GridRef const& ref, float offsetX, float offsetY)
 {
     m_Movement.Reset(ref, offsetX, offsetY);
@@ -49,7 +57,14 @@ void Ghost::Restart(GridRef const& ref, float offsetX, float offsetY)
 
     m_Behaviour = Behaviour::Scatter;
     m_EatenExitBehaviour = Behaviour::None;
+    m_InBase = false;
     m_Reverse = false;
+}
+
+void Ghost::RestartInBase()
+{
+    m_InBase = true;
+    m_BaseMovement.ResetToHome();
 }
 
 void Ghost::SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target)
@@ -88,6 +103,14 @@ void Ghost::SetBehaviour(Behaviour behaviour)
     }
 }
 
+void Ghost::ExitBase()
+{
+    if (m_InBase)
+    {
+        m_BaseMovement.Exit();
+    }
+}
+
 void Ghost::SetSpeed(float speed)
 {
     m_Movement.SetSpeed(speed);
@@ -95,7 +118,23 @@ void Ghost::SetSpeed(float speed)
 
 void Ghost::Update(float dt)
 {
-    m_Movement.Update(dt);
+    if (m_InBase)
+    {
+        m_BaseMovement.Update(dt);
+        if (m_BaseMovement.IsOut())
+        {
+            // Start normal movement
+            m_InBase = false;
+            m_Movement.SetDirection(Direction::West);
+            m_Movement.SetExitDirection(Direction::West);
+            m_NextDirection = Direction::West;
+            m_Reverse = false;
+        }
+    }
+    else
+    {
+        m_Movement.Update(dt);
+    }
 
     if (m_Behaviour == Behaviour::Eaten && m_Movement.GetPosition() == m_TargetRef)
     {

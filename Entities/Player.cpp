@@ -4,8 +4,8 @@
 #include "Maze/Cell.h"
 #include "Maze/Direction.h"
 
-Player::Player() :
-    m_Movement(true),
+Player::Player(Maze const& maze) :
+    m_Movement(maze, true),
     m_StopTimer(0.0f),
     m_AtePill(false),
     m_AtePowerPill(false)

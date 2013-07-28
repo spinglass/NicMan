@@ -5,6 +5,7 @@
 #include "Core/Sound.h"
 #include "Core/Sprite.h"
 #include "Entity.h"
+#include "Maze/BaseMovement.h"
 #include "Maze/Movement.h"
 
 class IGhostTarget;
@@ -21,14 +22,17 @@ public:
         Eaten,
     };
 
-    Ghost();
+    Ghost(Maze const& maze);
     virtual ~Ghost();
 
     void Load(int id);
+    void SetHomePosition(BaseMovement::HomePosition homePosition);
     void Restart(GridRef const& ref, float offsetX, float offsetY);
+    void RestartInBase();
     void SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target);
     void SetBehaviour(Behaviour behaviour);
     void SetSpeed(float speed);
+    void ExitBase();
     void SetFrightFlash(bool flash) { m_FrightFlash = flash; }
 
     Movement const& GetMovement() const { return m_Movement; }
@@ -51,10 +55,12 @@ private:
     Sprite m_Fright;
 
     Movement m_Movement;
+    BaseMovement m_BaseMovement;
     GridRef m_TargetRef;
     Direction m_NextDirection;
     Behaviour m_Behaviour;
     Behaviour m_EatenExitBehaviour;
+    bool m_InBase;
     bool m_Reverse;
     bool m_FrightFlash;
 };

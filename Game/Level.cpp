@@ -19,6 +19,8 @@ struct LevelSettings
         GhostNormSpeedFactor = element.FloatAttribute("GhostNormSpeedFactor");
         GhostFrightSpeedFactor = element.FloatAttribute("GhostFrightSpeedFactor");
         GhostTunnelSpeedFactor = element.FloatAttribute("GhostTunnelSpeedFactor");
+        InkyExitTime = element.FloatAttribute("InkyExitTime");
+        ClydeExitTime = element.FloatAttribute("ClydeExitTime");
     }
 
     float FrightTime;
@@ -27,6 +29,8 @@ struct LevelSettings
     float GhostNormSpeedFactor;
     float GhostFrightSpeedFactor;
     float GhostTunnelSpeedFactor;
+    float InkyExitTime;
+    float ClydeExitTime;
 };
 
 float const Level::s_MaxSpeed = 8.0f;
@@ -36,9 +40,11 @@ float const Level::s_CompletionWait = 2.0f;
 
 Level::Level(ScoreManager& scoreManager) :
     m_ScoreManager(scoreManager),
+    m_Player(m_Maze),
     m_BehaviourCounter(0),
     m_BehaviourTimer(0.0f),
     m_State(State::Start),
+    m_LevelTimer(0.0f),
     m_WaitTimer(0.0f),
     m_FrightTimer(0.0f),
     m_Complete(false),
@@ -123,7 +129,7 @@ void Level::Load(char* filename)
     m_Ghosts.resize(4);
     for (int i = 0; i < m_Ghosts.size(); ++i)
     {
-        m_Ghosts[i] = std::make_shared<Ghost>();
+        m_Ghosts[i] = std::make_shared<Ghost>(m_Maze);
         m_Ghosts[i]->Load(i);
     }
 
@@ -135,6 +141,7 @@ void Level::Load(char* filename)
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
+        m_Ghosts[0]->SetHomePosition(BaseMovement::HomePosition::Middle);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<PinkyTarget>(m_Player.GetMovement());
@@ -143,6 +150,7 @@ void Level::Load(char* filename)
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
+        m_Ghosts[1]->SetHomePosition(BaseMovement::HomePosition::Middle);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<InkyTarget>(m_Player.GetMovement(), m_Ghosts[0]->GetMovement());
@@ -151,6 +159,7 @@ void Level::Load(char* filename)
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
+        m_Ghosts[2]->SetHomePosition(BaseMovement::HomePosition::Left);
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<ClydeTarget>(m_Player.GetMovement(), m_Ghosts[3]->GetMovement(), m_Maze.GetGridRef(0, -1));
@@ -159,6 +168,7 @@ void Level::Load(char* filename)
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Eaten, eatenTarget);
+        m_Ghosts[3]->SetHomePosition(BaseMovement::HomePosition::Right);
     }
 
     Restart();
@@ -312,10 +322,20 @@ void Level::UpdateComplete(float dt)
 
 void Level::UpdateEntities(float dt)
 {
+    m_LevelTimer += dt;
+    if (m_LevelTimer > m_Settings->InkyExitTime)
+    {
+        m_Ghosts[2]->ExitBase();
+    }
+    if (m_LevelTimer > m_Settings->ClydeExitTime)
+    {
+        m_Ghosts[3]->ExitBase();
+    }
+
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
         float ghostSpeedFactor = m_Settings->GhostNormSpeedFactor;
-        if (ghost->GetMovement().GetPosition().GetCell()->IsTunnel())
+        if (ghost->GetMovement().GetPosition().GetCell() && ghost->GetMovement().GetPosition().GetCell()->IsTunnel())
         {
             ghostSpeedFactor = m_Settings->GhostTunnelSpeedFactor;
         }
@@ -388,13 +408,15 @@ void Level::Restart()
     m_BehaviourTimer = 0.0f;
     m_WaitTimer = s_StartWait;
     m_NormalBehaviour = Ghost::Behaviour::Scatter;
+    m_LevelTimer = 0.0f;
     m_FrightTimer = 0.0f;
 
     m_Player.Restart(m_Maze.GetGridRef(14, 7), 0.0f, 0.5f);
     m_Ghosts[0]->Restart(m_Maze.GetGridRef(13, 19), 1.0f, 0.5f);
-    m_Ghosts[1]->Restart(m_Maze.GetGridRef(4, 22), 0.1f, 0.5f);
-    m_Ghosts[2]->Restart(m_Maze.GetGridRef(24, 22), 0.2f, 0.5f);
-    m_Ghosts[3]->Restart(m_Maze.GetGridRef(14, 25), 0.3f, 0.5f);
+    m_Ghosts[1]->RestartInBase();
+    m_Ghosts[1]->ExitBase();
+    m_Ghosts[2]->RestartInBase();
+    m_Ghosts[3]->RestartInBase();
 }
 
 void Level::Draw(sf::RenderTarget& target)

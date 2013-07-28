@@ -8,7 +8,7 @@
 class Player : public Entity
 {
 public:
-    Player();
+    Player(Maze const& maze);
     virtual ~Player();
 
     void Load();

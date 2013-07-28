@@ -27,6 +27,10 @@ void Maze::Load(char const* filename)
             char const* bg = mazeElement->Attribute("Background");
             assert(bg);
             m_Background.Load(bg);
+
+            tinyxml2::XMLElement* baseElement = mazeElement->FirstChildElement("Base");
+            assert(baseElement);
+            m_Base.Load(*baseElement);
         }
     }
 }

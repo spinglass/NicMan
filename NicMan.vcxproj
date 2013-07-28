@@ -103,6 +103,8 @@
     <ClInclude Include="GhostTargets\IGhostTarget.h" />
     <ClInclude Include="GhostTargets\InkyTarget.h" />
     <ClInclude Include="GhostTargets\PinkyTarget.h" />
+    <ClInclude Include="Maze\Base.h" />
+    <ClInclude Include="Maze\BaseMovement.h" />
     <ClInclude Include="Maze\Cell.h" />
     <ClInclude Include="Maze\Direction.h" />
     <ClInclude Include="Maze\Grid.h" />
@@ -128,6 +130,8 @@
     <ClCompile Include="GhostTargets\InkyTarget.cpp" />
     <ClCompile Include="GhostTargets\PinkyTarget.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Maze\Base.cpp" />
+    <ClCompile Include="Maze\BaseMovement.cpp" />
     <ClCompile Include="Maze\Cell.cpp" />
     <ClCompile Include="Maze\Direction.cpp" />
     <ClCompile Include="Maze\Grid.cpp" />
@@ -146,7 +150,9 @@
     <Xml Include="Output\Resources\Levels\Level01.xml" />
     <Xml Include="Output\Resources\Levels\Level02.xml" />
     <Xml Include="Output\Resources\Levels\Level03.xml" />
-    <Xml Include="Output\Resources\Mazes\Maze01.xml" />
+    <Xml Include="Output\Resources\Mazes\Maze01.xml">
+      <SubType>Designer</SubType>
+    </Xml>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

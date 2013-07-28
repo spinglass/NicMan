@@ -2,8 +2,10 @@
 #include "Movement.h"
 
 #include "Direction.h"
+#include "Maze.h"
 
-Movement::Movement(bool canTransition) :
+Movement::Movement(Maze const& maze, bool canTransition) :
+    m_Maze(maze),
     m_CanTransition(canTransition),
     m_Direction(Direction::None),
     m_ExitDirection(Direction::None),
@@ -17,14 +19,26 @@ Movement::~Movement()
 {
 }
 
-void Movement::Reset(GridRef const& position, float x, float y)
+void Movement::Reset(GridRef const& position, float offsetX, float offsetY)
 {
     assert(position.GetCell());
-    assert(x == 0.5f || y == 0.5f);
+    assert(offsetX == 0.5f || offsetY == 0.5f);
 
     m_Position = position;
-    m_Offset.x = x;
-    m_Offset.y = y;
+    m_Offset.x = offsetX;
+    m_Offset.y = offsetY;
+    m_Direction = Direction::None;
+    m_ExitDirection = Direction::None;
+    m_Transition = false;
+}
+
+void Movement::Reset(float absoluteX, float absoluteY)
+{
+    int const gridX = (int)absoluteX;
+    int const gridY = (int)absoluteY;
+    m_Position = m_Maze.GetGridRef(gridX, gridY);
+    m_Offset.x = absoluteX - (float)gridX;
+    m_Offset.y = absoluteY - (float)gridY;
     m_Direction = Direction::None;
     m_ExitDirection = Direction::None;
     m_Transition = false;
@@ -212,16 +226,6 @@ sf::Vector2f Movement::GetAbsolutePosition() const
 
 void Movement::SetDirection(Direction direction)
 {
-    // Check in middle of cell for requested direction
-    if (direction == Direction::North || direction == Direction::South)
-    {
-        assert(m_Offset.x = 0.5f);
-    }
-    if (direction == Direction::East || direction == Direction::West)
-    {
-        assert(m_Offset.y = 0.5f);
-    }
-
     m_Direction = direction;
 }
 

@@ -69,6 +69,7 @@ private:
     int m_BehaviourCounter;
     float m_BehaviourTimer;
     State m_State;
+    float m_LevelTimer;
     float m_WaitTimer;
     Ghost::Behaviour m_NormalBehaviour;
     float m_FrightTimer;
