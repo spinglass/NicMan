@@ -6,7 +6,6 @@
 #include "ScoreManager.h"
 
 Game::Game() :
-    m_LevelNext(1),
     m_LevelMax(3)
 {
     m_Window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Nic-Man", sf::Style::Close);
@@ -30,14 +29,14 @@ Game::~Game()
 
 void Game::LoadNextLevel()
 {
+    m_ScoreManager->NextLevel();
+
+    int const level = std::min(m_ScoreManager->GetLevel(), m_LevelMax);
     char filename[FILENAME_MAX];
-    sprintf_s(filename, "Levels/Level%02d.xml", m_LevelNext);
+    sprintf_s(filename, "Levels/Level%02d.xml", level);
 
     m_Level = std::make_shared<Level>(*m_ScoreManager);
     m_Level->Load(filename);
-
-    // Prepare for next level
-    m_LevelNext = std::min(m_LevelNext + 1, m_LevelMax);
 }
 
 void Game::Run()

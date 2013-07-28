@@ -57,16 +57,28 @@ void Hud::Draw(sf::RenderTarget& target)
     text.setPosition(12.0f, 28.0f);
     target.draw(text);
 
+    // Level
+    text.setString("Level");
+    text.setCharacterSize(24);
+    text.setPosition(12.0f, 98.0f);
+    target.draw(text);
+
+    sprintf_s(msg, "%d", m_ScoreManager.GetLevel());
+    text.setString(msg);
+    text.setCharacterSize(48);
+    text.setPosition(12.0f, 118.0f);
+    target.draw(text);
+
     // Lives
     text.setString("Lives");
     text.setCharacterSize(24);
-    text.setPosition(12.0f, 96.0f);
+    text.setPosition(12.0f, 188.0f);
     target.draw(text);
 
     float lifeX = 12.0f;
     for (int i = 0; i < m_ScoreManager.GetLives(); ++i)
     {
-        m_Life.SetPosition(lifeX, 128.0f);
+        m_Life.SetPosition(lifeX, 218.0f);
         m_Life.Draw(target);
         lifeX += 40.0f;
     }

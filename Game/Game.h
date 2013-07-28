@@ -26,6 +26,5 @@ private:
     std::shared_ptr<Level> m_Level;
     Hud* m_Hud;
 
-    int m_LevelNext;
     int m_LevelMax;
 };
