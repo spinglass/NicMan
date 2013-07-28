@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "Ghost.h"
 
+#include "Game/GlobalSettings.h"
+#include "GhostTargets\IGhostTarget.h"
 #include "Maze/Direction.h"
 #include "Maze/Maze.h"
-#include "GhostTargets\IGhostTarget.h"
 
 Ghost::Ghost(Maze const& maze) :
     m_Movement(maze, false),
@@ -156,8 +157,6 @@ void Ghost::Update(float dt)
 
 void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 {
-    static bool k_DebugDraw = false;
-
     sf::Vector2f const gridPos = m_Movement.GetAbsolutePosition();
     sf::Vector2f pos = transform.transformPoint(gridPos);
 
@@ -183,7 +182,7 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
         m_Fright.Draw(target);
     }
 
-    if (k_DebugDraw)
+    if (GlobalSettings::It().DebugGhosts)
     {
         if (m_Behaviour != Behaviour::Fright)
         {

@@ -2,6 +2,7 @@
 #include "Maze.h"
 
 #include "Cell.h"
+#include "Game/GlobalSettings.h"
 
 float const Maze::k_CellSize = 20.0f;
 
@@ -134,13 +135,6 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     m_Background.SetPosition(bgPos);
     m_Background.Draw(target);
 
-    static bool k_ShowWall = false;
-    sf::RectangleShape wall(k_HalfCell);
-    wall.setOrigin(0.5f * wall.getSize());
-    wall.setOutlineColor(sf::Color(0, 0, 50));
-    wall.setOutlineThickness(-1.0f);
-    wall.setFillColor(sf::Color(0, 0, 0));
-
     float const k_PillSize = 6.0f;
     sf::RectangleShape pill(sf::Vector2f(k_PillSize, k_PillSize));
     pill.setOrigin(0.5f * pill.getSize());
@@ -151,7 +145,6 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     powerPill.setOrigin(sf::Vector2f(k_PowerPillSize, k_PowerPillSize));
     powerPill.setFillColor(sf::Color::White);
 
-    static bool k_ShowCell = false;
     sf::RectangleShape path(sf::Vector2f(k_CellSize, k_CellSize));
     path.setOrigin(0.5f * path.getSize());
     path.setOutlineThickness(-1.0f);
@@ -169,7 +162,7 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 
             if (Cell const* cell = m_Grid.GetCell(col, row))
             {
-                if (k_ShowCell)
+                if (GlobalSettings::It().DebugCells)
                 {
                     path.setPosition(cellPosition);
                     target.draw(path);
@@ -184,17 +177,6 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
                     powerPill.setPosition(cellPosition);
                     target.draw(powerPill);
                 }
-            }
-            else if (k_ShowWall)
-            {
-                wall.setPosition(cellPosition + sf::Vector2f(-0.25f * k_CellSize, -0.25f * k_CellSize));
-                target.draw(wall);
-                wall.setPosition(cellPosition + sf::Vector2f(-0.25f * k_CellSize, 0.25f * k_CellSize));
-                target.draw(wall);
-                wall.setPosition(cellPosition + sf::Vector2f(0.25f * k_CellSize, -0.25f * k_CellSize));
-                target.draw(wall);
-                wall.setPosition(cellPosition + sf::Vector2f(0.25f * k_CellSize, 0.25f * k_CellSize));
-                target.draw(wall);
             }
         }
     }

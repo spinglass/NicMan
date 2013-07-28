@@ -2,6 +2,7 @@
 #include "Game.h"
 
 #include "Hud.h"
+#include "GlobalSettings.h"
 #include "Level.h"
 #include "ScoreManager.h"
 
@@ -13,8 +14,8 @@ Game::Game() :
     m_ScoreManager = new ScoreManager();
 
     m_Hud = new Hud(*m_ScoreManager);
-    m_Hud->Load();
 
+    Load();
     LoadNextLevel();
 }
 
@@ -25,6 +26,25 @@ Game::~Game()
 
     m_Window->close();
     delete m_Window;
+}
+
+void Game::Load()
+{
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile("Game.xml") == tinyxml2::XML_NO_ERROR)
+    {
+        tinyxml2::XMLElement* gameElement = doc.FirstChildElement("Game");
+        assert(gameElement);
+
+        {
+            // Read settings
+            tinyxml2::XMLElement* element = gameElement->FirstChildElement("Settings");
+            assert(element);
+            GlobalSettings::Init(*element);
+        }
+    }
+
+    m_Hud->Load();
 }
 
 void Game::LoadNextLevel()

@@ -72,6 +72,9 @@
     <ClCompile Include="Maze\Base.cpp">
       <Filter>Maze</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GlobalSettings.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -147,6 +150,9 @@
     <ClInclude Include="Maze\Base.h">
       <Filter>Maze</Filter>
     </ClInclude>
+    <ClInclude Include="Game\GlobalSettings.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resources">
@@ -191,6 +197,9 @@
     </Xml>
     <Xml Include="Output\Resources\Levels\Level03.xml">
       <Filter>Resources\Levels</Filter>
+    </Xml>
+    <Xml Include="Output\Resources\Game.xml">
+      <Filter>Resources</Filter>
     </Xml>
   </ItemGroup>
 </Project>
