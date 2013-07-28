@@ -136,7 +136,7 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 
     sf::Vector2f const bgPos = transform.transformPoint(0.0f, (float)m_Grid.GetHeight());
     m_Background.SetPosition(bgPos);
-    //m_Background.Draw(target);
+    m_Background.Draw(target);
 
     float const k_PillSize = 6.0f;
     sf::RectangleShape pill(sf::Vector2f(k_PillSize, k_PillSize));

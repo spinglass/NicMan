@@ -184,6 +184,9 @@
     <Text Include="Output\Resources\Mazes\Maze01.txt">
       <Filter>Resources\Mazes</Filter>
     </Text>
+    <Text Include="Output\Resources\Mazes\Maze02.txt">
+      <Filter>Resources\Mazes</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Output\Resources\Mazes\Maze01.xml">
@@ -200,6 +203,9 @@
     </Xml>
     <Xml Include="Output\Resources\Game.xml">
       <Filter>Resources</Filter>
+    </Xml>
+    <Xml Include="Output\Resources\Mazes\Maze02.xml">
+      <Filter>Resources\Mazes</Filter>
     </Xml>
   </ItemGroup>
 </Project>

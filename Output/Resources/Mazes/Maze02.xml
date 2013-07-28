@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<Maze Grid="mazes/maze01.txt"
-      Background="mazes/maze01"
+<Maze Grid="mazes/maze02.txt"
+      Background="mazes/maze02"
       PlayerX="14"
       PlayerY="7.5"
       >

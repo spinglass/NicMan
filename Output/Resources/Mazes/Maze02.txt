@@ -1,0 +1,31 @@
+                            
+ oooooooooooooooooooooooooo 
+ o  o    o        o    o  o 
+ #  o    o        o    o  # 
+ o  o    o  oooo  o    o  o 
+ o  oooooo  o  o  oooooo  o 
+ o    o  o  o  o  o  o    o 
+ o    o  o  o  o  o  o    o 
+ oooooo  oooo  oooo  oooooo 
+   o        +  +        o   
+   o        +  +        o   
+   oooo  ++++++++++  oooo   
+   +  o  +        +  o  +   
+====  o  +        +  o  ====
+      o+++        +++o      
+      o  +        +  o      
+====  o  +        +  o  ====
+   +  o  ++++++++++  o  +   
+   oooo     +  +     oooo   
+   o  o     +  +     o  o   
+   o  ooooooo  ooooooo  o   
+   o     o  o  o  o     o   
+   o     o  o  o  o     o   
+ ooooooooo  o++o  ooooooooo 
+ o    o  o        o  o    o 
+ o    o  o        o  o    o 
+ o  ooo  oooooooooo  ooo  o 
+ #  o       o  o       o  # 
+ o  o       o  o       o  o 
+ oooooooooooo  oooooooooooo 
+                            
