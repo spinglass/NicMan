@@ -29,6 +29,9 @@ void Maze::Load(char const* filename)
             assert(bg);
             m_Background.Load(bg);
 
+            m_PlayerStart.x = mazeElement->FloatAttribute("PlayerX");
+            m_PlayerStart.y = mazeElement->FloatAttribute("PlayerY");
+
             tinyxml2::XMLElement* baseElement = mazeElement->FirstChildElement("Base");
             assert(baseElement);
             m_Base.Load(*baseElement);
@@ -133,7 +136,7 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 
     sf::Vector2f const bgPos = transform.transformPoint(0.0f, (float)m_Grid.GetHeight());
     m_Background.SetPosition(bgPos);
-    m_Background.Draw(target);
+    //m_Background.Draw(target);
 
     float const k_PillSize = 6.0f;
     sf::RectangleShape pill(sf::Vector2f(k_PillSize, k_PillSize));

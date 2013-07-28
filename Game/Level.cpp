@@ -401,7 +401,8 @@ void Level::Restart()
     m_NormalBehaviour = Ghost::Behaviour::Scatter;
     m_FrightTimer = 0.0f;
 
-    m_Player.Restart(14.0f, 7.5f);
+    sf::Vector2f playerStart = m_Maze.GetPlayerStart();
+    m_Player.Restart(playerStart.x, playerStart.y);
 
     m_Ghosts[0]->Restart(13.99f, 19.5f);
 
