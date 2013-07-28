@@ -15,8 +15,7 @@ public:
     Movement(Maze const& maze, bool canTransition);
     virtual ~Movement();
 
-    void Reset(GridRef const& position, float offsetX, float offsetY);
-    void Reset(float absoluteX, float absoluteY);
+    void Reset(float x, float y);
     void Update(float dt);
 
     GridRef const& GetPosition() const { return m_Position; }

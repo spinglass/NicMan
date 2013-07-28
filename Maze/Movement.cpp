@@ -19,26 +19,13 @@ Movement::~Movement()
 {
 }
 
-void Movement::Reset(GridRef const& position, float offsetX, float offsetY)
+void Movement::Reset(float x, float y)
 {
-    assert(position.GetCell());
-    assert(offsetX == 0.5f || offsetY == 0.5f);
-
-    m_Position = position;
-    m_Offset.x = offsetX;
-    m_Offset.y = offsetY;
-    m_Direction = Direction::None;
-    m_ExitDirection = Direction::None;
-    m_Transition = false;
-}
-
-void Movement::Reset(float absoluteX, float absoluteY)
-{
-    int const gridX = (int)absoluteX;
-    int const gridY = (int)absoluteY;
+    int const gridX = (int)x;
+    int const gridY = (int)y;
     m_Position = m_Maze.GetGridRef(gridX, gridY);
-    m_Offset.x = absoluteX - (float)gridX;
-    m_Offset.y = absoluteY - (float)gridY;
+    m_Offset.x = x - (float)gridX;
+    m_Offset.y = y - (float)gridY;
     m_Direction = Direction::None;
     m_ExitDirection = Direction::None;
     m_Transition = false;

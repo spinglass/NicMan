@@ -27,7 +27,7 @@ public:
 
     void Load(int id);
     void SetHomePosition(BaseMovement::HomePosition homePosition);
-    void Restart(GridRef const& ref, float offsetX, float offsetY);
+    void Restart(float x, float y);
     void RestartInBase();
     void SetTarget(Behaviour behaviour, std::shared_ptr<IGhostTarget> const& target);
     void SetBehaviour(Behaviour behaviour);

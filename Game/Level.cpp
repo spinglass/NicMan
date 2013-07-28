@@ -411,8 +411,8 @@ void Level::Restart()
     m_LevelTimer = 0.0f;
     m_FrightTimer = 0.0f;
 
-    m_Player.Restart(m_Maze.GetGridRef(14, 7), 0.0f, 0.5f);
-    m_Ghosts[0]->Restart(m_Maze.GetGridRef(13, 19), 1.0f, 0.5f);
+    m_Player.Restart(14.0f, 7.5f);
+    m_Ghosts[0]->Restart(13.99f, 19.5f);
     m_Ghosts[1]->RestartInBase();
     m_Ghosts[1]->ExitBase();
     m_Ghosts[2]->RestartInBase();

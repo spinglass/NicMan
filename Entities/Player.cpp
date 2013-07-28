@@ -28,11 +28,11 @@ void Player::Load()
     //m_PowerPillSound.SetVolume(30.0f);
 }
 
-void Player::Restart(GridRef const& ref, float offsetX, float offsetY)
+void Player::Restart(float x, float y)
 {
-    assert(ref.CanPlayerPass());
+    m_Movement.Reset(x, y);
+    assert(m_Movement.GetPosition().CanPlayerPass());
 
-    m_Movement.Reset(ref, offsetX, offsetY);
     m_PreviousOffset = m_Movement.GetOffset();
     m_StopTimer = 0.0f;
     m_Sprite.Reset();

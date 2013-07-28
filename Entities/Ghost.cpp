@@ -48,9 +48,9 @@ void Ghost::SetHomePosition(BaseMovement::HomePosition homePosition)
     m_BaseMovement.SetHomePosition(homePosition);
 }
 
-void Ghost::Restart(GridRef const& ref, float offsetX, float offsetY)
+void Ghost::Restart(float x, float y)
 {
-    m_Movement.Reset(ref, offsetX, offsetY);
+    m_Movement.Reset(x, y);
     m_Movement.SetDirection(Direction::West);
     m_Movement.SetExitDirection(Direction::West);
     m_NextDirection = Direction::West;
