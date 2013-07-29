@@ -404,7 +404,8 @@ void Level::Restart()
     sf::Vector2f playerStart = m_Maze.GetPlayerStart();
     m_Player.Restart(playerStart.x, playerStart.y);
 
-    m_Ghosts[0]->Restart(13.99f, 19.5f);
+    // Start Blinky at maze exit. Nudge left to force route on standard maze.
+    m_Ghosts[0]->Restart(m_Maze.GetBase().ExitX - 0.01f, m_Maze.GetBase().ExitY);
 
     m_Ghosts[1]->RestartInBase();
     m_Ghosts[1]->SetExitTime(0.0f);
