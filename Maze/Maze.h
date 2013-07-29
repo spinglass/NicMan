@@ -29,11 +29,15 @@ private:
 
     void LoadGrid(char const* filename);
     void Parse(std::vector<char> const& data);
+    void BuildKitPartList();
 
     std::vector<Cell> m_CellStorage;
     Grid m_Grid;
     Base m_Base;
+    sf::Color m_Color;
     sf::Vector2f m_PlayerStart;
 
-    Sprite m_Background;
+    std::map<int, Sprite> m_KitParts;
+    std::vector<std::vector<Sprite*>> m_CellKitParts;
+    Sprite m_KitBase;
 };

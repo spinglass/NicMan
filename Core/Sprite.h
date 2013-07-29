@@ -12,6 +12,7 @@ public:
     void SetOriginToCentre();
     void SetPosition(float x, float y);
     void SetPosition(sf::Vector2f const& pos);
+    void SetColor(sf::Color color);
 
 private:
     sf::Texture m_Texture;

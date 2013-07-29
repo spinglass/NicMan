@@ -150,7 +150,9 @@
     <Text Include="Output\Resources\Mazes\Maze02.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="Output\Resources\Game.xml" />
+    <Xml Include="Output\Resources\Game.xml">
+      <SubType>Designer</SubType>
+    </Xml>
     <Xml Include="Output\Resources\Levels\Level01.xml" />
     <Xml Include="Output\Resources\Levels\Level02.xml" />
     <Xml Include="Output\Resources\Levels\Level03.xml" />

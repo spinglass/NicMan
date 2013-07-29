@@ -40,3 +40,8 @@ void Sprite::SetPosition(sf::Vector2f const& pos)
 {
     m_Sprite.setPosition(pos);
 }
+
+void Sprite::SetColor(sf::Color color)
+{
+    m_Sprite.setColor(color);
+}

@@ -21,13 +21,14 @@ void Maze::Load(char const* filename)
     {
         if (tinyxml2::XMLElement* mazeElement = doc.FirstChildElement("Maze"))
         {
+            char const* colorHex = mazeElement->Attribute("Color");
+            int color = 0;
+            sscanf_s(colorHex, "%x", &color);
+            m_Color = sf::Color((sf::Uint8)(color >> 16), (sf::Uint8)(color >> 8), (sf::Uint8)color);
+
             char const* grid = mazeElement->Attribute("Grid");
             assert(grid);
             LoadGrid(grid);
-
-            char const* bg = mazeElement->Attribute("Background");
-            assert(bg);
-            m_Background.Load(bg);
 
             m_PlayerStart.x = mazeElement->FloatAttribute("PlayerX");
             m_PlayerStart.y = mazeElement->FloatAttribute("PlayerY");
@@ -56,6 +57,7 @@ void Maze::LoadGrid(char const* filename)
         fclose(file);
 
         Parse(data);
+        BuildKitPartList();
     }
 }
 
@@ -130,13 +132,83 @@ void Maze::Parse(std::vector<char> const& data)
     }
 }
 
+void Maze::BuildKitPartList()
+{
+    // Avialable kit parts.
+    // Array ordered to find in correct order with bitwise compare.
+    int kitParts[] = { 10, 40, 130, 160, 2, 8, 32, 128, 1, 4, 16, 64 };
+
+    // Load the parts
+    char filename[FILENAME_MAX];
+    for (int part : kitParts)
+    {
+        sprintf_s(filename, "Mazes/Kit%03d", part);
+        m_KitParts[part].Load(filename);
+        m_KitParts[part].SetOriginToCentre();
+        m_KitParts[part].SetColor(m_Color);
+    }
+    m_KitBase.Load("Mazes/KitBase");
+    m_KitBase.SetOriginToCentre();
+    m_KitBase.SetColor(m_Color);
+
+    // Map the cells onto the correct parts
+    m_CellKitParts.resize(m_Grid.GetWidth());
+    for (int col = 0; col < m_Grid.GetWidth(); ++col)
+    {
+        m_CellKitParts[col].resize(m_Grid.GetHeight());
+
+        for (int row = 0; row < m_Grid.GetHeight(); ++row)
+        {
+            GridRef ref(&m_Grid, col, row);
+            if (!ref.GetCell())
+            {
+                int val = 0;
+
+                // Value built based on surrounding pieces
+                ref = ref.North();
+                if (ref.GetCell()) { val |= 2; }
+                ref = ref.East();
+                if (ref.GetCell()) { val |= 4; }
+                ref = ref.South();
+                if (ref.GetCell()) { val |= 8; }
+                ref = ref.South();
+                if (ref.GetCell()) { val |= 16; }
+                ref = ref.West();
+                if (ref.GetCell()) { val |= 32; }
+                ref = ref.West();
+                if (ref.GetCell()) { val |= 64; }
+                ref = ref.North();
+                if (ref.GetCell()) { val |= 128; }
+                ref = ref.North();
+                if (ref.GetCell()) { val |= 1; }
+
+                if (val != 0)
+                {
+                    int foundPart = 0;
+                    for (int part : kitParts)
+                    {
+                        if ((val & part) == part)
+                        {
+                            foundPart = part;
+                            break;
+                        }
+                    }
+                    assert(foundPart);
+                    m_CellKitParts[col][row] = &m_KitParts[foundPart];
+                }
+            }
+        }
+    }
+}
+
 void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 {
     sf::Vector2f const k_HalfCell(0.5f * k_CellSize, 0.5f * k_CellSize);
 
-    sf::Vector2f const bgPos = transform.transformPoint(0.0f, (float)m_Grid.GetHeight());
-    m_Background.SetPosition(bgPos);
-    m_Background.Draw(target);
+    // Ghost base
+    sf::Vector2f const basePosition = transform.transformPoint(m_Base.ExitX, m_Base.Middle);
+    m_KitBase.SetPosition(basePosition);
+    m_KitBase.Draw(target);
 
     float const k_PillSize = 6.0f;
     sf::RectangleShape pill(sf::Vector2f(k_PillSize, k_PillSize));
@@ -163,6 +235,7 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
             float const rowCentre = row + 0.5f;
             sf::Vector2f const cellPosition = transform.transformPoint(colCentre, rowCentre);
 
+            // Render pill or power pill for cell
             if (Cell const* cell = m_Grid.GetCell(col, row))
             {
                 if (GlobalSettings::It().DebugCells)
@@ -180,6 +253,12 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
                     powerPill.setPosition(cellPosition);
                     target.draw(powerPill);
                 }
+            }
+            // Render kit part for cell, if there is one
+            else if (Sprite* sprite = m_CellKitParts[col][row])
+            {
+                sprite->SetPosition(cellPosition);
+                sprite->Draw(target);
             }
         }
     }
