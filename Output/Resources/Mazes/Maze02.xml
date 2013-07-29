@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Maze Grid="mazes/maze03.txt"
+<Maze Grid="mazes/maze02.txt"
       Color="36D60A"
       PlayerX="14"
       PlayerY="7.5"
