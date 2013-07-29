@@ -6,7 +6,8 @@
 
 float const Maze::k_CellSize = 20.0f;
 
-Maze::Maze()
+Maze::Maze() :
+    m_BaseName("Mazes/KitBase")
 {
 }
 
@@ -25,6 +26,11 @@ void Maze::Load(char const* filename)
             int color = 0;
             sscanf_s(colorHex, "%x", &color);
             m_Color = sf::Color((sf::Uint8)(color >> 16), (sf::Uint8)(color >> 8), (sf::Uint8)color);
+
+            if (char const* baseName = mazeElement->Attribute("Base"))
+            {
+                m_BaseName = baseName;
+            }
 
             char const* grid = mazeElement->Attribute("Grid");
             assert(grid);
@@ -147,7 +153,7 @@ void Maze::BuildKitPartList()
         m_KitParts[part].SetOriginToCentre();
         m_KitParts[part].SetColor(m_Color);
     }
-    m_KitBase.Load("Mazes/KitBase");
+    m_KitBase.Load(m_BaseName.c_str());
     m_KitBase.SetOriginToCentre();
     m_KitBase.SetColor(m_Color);
 

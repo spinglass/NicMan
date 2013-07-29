@@ -148,6 +148,7 @@
   <ItemGroup>
     <Text Include="Output\Resources\Mazes\Maze01.txt" />
     <Text Include="Output\Resources\Mazes\Maze02.txt" />
+    <Text Include="Output\Resources\Mazes\Maze03.txt" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Output\Resources\Game.xml">
@@ -160,6 +161,7 @@
       <SubType>Designer</SubType>
     </Xml>
     <Xml Include="Output\Resources\Mazes\Maze02.xml" />
+    <Xml Include="Output\Resources\Mazes\Maze03.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

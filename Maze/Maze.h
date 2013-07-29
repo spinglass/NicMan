@@ -35,6 +35,7 @@ private:
     Grid m_Grid;
     Base m_Base;
     sf::Color m_Color;
+    std::string m_BaseName;
     sf::Vector2f m_PlayerStart;
 
     std::map<int, Sprite> m_KitParts;
