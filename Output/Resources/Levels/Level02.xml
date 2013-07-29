@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Level>
-  <Maze Definition="Mazes/Maze01.xml" />
+  <Maze Definition="Mazes/Maze02.xml" />
 
   <Settings FrightTime="4.0"
             FrightFlashTime="1.5"
