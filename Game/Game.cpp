@@ -6,6 +6,22 @@
 #include "Level.h"
 #include "ScoreManager.h"
 
+namespace GameHelpers
+{
+    bool SkipLevel()
+    {
+#if defined _DEBUG
+        static bool wasSkipPressed = false;
+        bool const skipPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::End);
+        bool const skip = (skipPressed && !wasSkipPressed);
+        wasSkipPressed = skipPressed;
+        return skip;
+#else
+        return false;
+#endif
+    }
+}
+
 Game::Game() :
     m_LevelMax(3)
 {
@@ -76,7 +92,7 @@ void Game::Run()
             }
         }
 
-        if (m_Level->IsComplete())
+        if (m_Level->IsComplete() || GameHelpers::SkipLevel())
         {
             LoadNextLevel();
         }
