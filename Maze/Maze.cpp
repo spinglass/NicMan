@@ -166,21 +166,21 @@ void Maze::BuildKitPartList()
 
                 // Value built based on surrounding pieces
                 ref = ref.North();
-                if (ref.GetCell()) { val |= 2; }
+                if (ref.CanPlayerPass()) { val |= 2; }
                 ref = ref.East();
-                if (ref.GetCell()) { val |= 4; }
+                if (ref.CanPlayerPass()) { val |= 4; }
                 ref = ref.South();
-                if (ref.GetCell()) { val |= 8; }
+                if (ref.CanPlayerPass()) { val |= 8; }
                 ref = ref.South();
-                if (ref.GetCell()) { val |= 16; }
+                if (ref.CanPlayerPass()) { val |= 16; }
                 ref = ref.West();
-                if (ref.GetCell()) { val |= 32; }
+                if (ref.CanPlayerPass()) { val |= 32; }
                 ref = ref.West();
-                if (ref.GetCell()) { val |= 64; }
+                if (ref.CanPlayerPass()) { val |= 64; }
                 ref = ref.North();
-                if (ref.GetCell()) { val |= 128; }
+                if (ref.CanPlayerPass()) { val |= 128; }
                 ref = ref.North();
-                if (ref.GetCell()) { val |= 1; }
+                if (ref.CanPlayerPass()) { val |= 1; }
 
                 if (val != 0)
                 {
