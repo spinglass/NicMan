@@ -44,16 +44,20 @@ bool GridRef::CanPlayerPass() const
     return cell ? !cell->IsGhostBase() : false;
 }
 
-void GridRef::Wrap()
+void GridRef::Warp()
 {
     if (m_Grid)
     {
-        m_X = (m_X + m_Grid->GetWidth()) % m_Grid->GetWidth();
-        m_Y = (m_Y + m_Grid->GetHeight()) % m_Grid->GetHeight();
+        GridRef target = m_Grid->GetWarpTarget(GetCell());
+        if (target.GetCell())
+        {
+            m_X = target.X();
+            m_Y = target.Y();
+        }
     }
 }
 
-void GridRef::MoveWithoutWrap(Direction dir)
+void GridRef::MoveWithoutWarp(Direction dir)
 {
     switch(dir)
     {
@@ -74,11 +78,11 @@ void GridRef::MoveWithoutWrap(Direction dir)
 
 void GridRef::Move(Direction dir)
 {
-    MoveWithoutWrap(dir);
-    Wrap();
+    MoveWithoutWarp(dir);
+    Warp();
 }
 
-void GridRef::MoveWithoutWrap(int dx, int dy)
+void GridRef::MoveWithoutWarp(int dx, int dy)
 {
     m_X += dx;
     m_Y += dy;
@@ -86,14 +90,14 @@ void GridRef::MoveWithoutWrap(int dx, int dy)
 
 void GridRef::Move(int dx, int dy)
 {
-    MoveWithoutWrap(dx, dy);
-    Wrap();
+    MoveWithoutWarp(dx, dy);
+    Warp();
 }
 
-GridRef GridRef::GetNextWithoutWrap(Direction dir) const
+GridRef GridRef::GetNextWithoutWarp(Direction dir) const
 {
     GridRef gridRef(*this);
-    gridRef.MoveWithoutWrap(dir);
+    gridRef.MoveWithoutWarp(dir);
     return gridRef;
 }
 

@@ -18,7 +18,7 @@ GridRef InkyTarget::It()
     GridRef target = m_Target.GetPosition();
     for (int i = 0; i < k_TargetDistance; ++i)
     {
-        target.MoveWithoutWrap(m_Target.GetDirection());
+        target.MoveWithoutWarp(m_Target.GetDirection());
     }
 
     // Overflow bug from original pacman, if target is moving north, also aim west.
@@ -26,7 +26,7 @@ GridRef InkyTarget::It()
     {
         for (int i = 0; i < k_TargetDistance; ++i)
         {
-            target.MoveWithoutWrap(Direction::West);
+            target.MoveWithoutWarp(Direction::West);
         }
     }
 
@@ -35,7 +35,7 @@ GridRef InkyTarget::It()
     int const dy = target.Y() - m_Partner.GetPosition().Y();
 
     // Finally, move the target this distance in the other direction
-    target.MoveWithoutWrap(dx, dy);
+    target.MoveWithoutWarp(dx, dy);
 
     return target;
 }

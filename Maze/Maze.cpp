@@ -2,6 +2,7 @@
 #include "Maze.h"
 
 #include "Cell.h"
+#include "Direction.h"
 #include "Game/GlobalSettings.h"
 
 float const Maze::k_CellSize = 20.0f;
@@ -64,6 +65,7 @@ void Maze::LoadGrid(char const* filename)
 
         Parse(data);
         BuildKitPartList();
+        m_Grid.BuildWarpTargets();
     }
 }
 
@@ -171,21 +173,21 @@ void Maze::BuildKitPartList()
                 int val = 0;
 
                 // Value built based on surrounding pieces
-                ref = ref.North();
+                ref = ref.GetNextWithoutWarp(Direction::North);
                 if (ref.CanPlayerPass()) { val |= 2; }
-                ref = ref.East();
+                ref = ref.GetNextWithoutWarp(Direction::East);
                 if (ref.CanPlayerPass()) { val |= 4; }
-                ref = ref.South();
+                ref = ref.GetNextWithoutWarp(Direction::South);
                 if (ref.CanPlayerPass()) { val |= 8; }
-                ref = ref.South();
+                ref = ref.GetNextWithoutWarp(Direction::South);
                 if (ref.CanPlayerPass()) { val |= 16; }
-                ref = ref.West();
+                ref = ref.GetNextWithoutWarp(Direction::West);
                 if (ref.CanPlayerPass()) { val |= 32; }
-                ref = ref.West();
+                ref = ref.GetNextWithoutWarp(Direction::West);
                 if (ref.CanPlayerPass()) { val |= 64; }
-                ref = ref.North();
+                ref = ref.GetNextWithoutWarp(Direction::North);
                 if (ref.CanPlayerPass()) { val |= 128; }
-                ref = ref.North();
+                ref = ref.GetNextWithoutWarp(Direction::North);
                 if (ref.CanPlayerPass()) { val |= 1; }
 
                 if (val != 0)

@@ -20,20 +20,20 @@ public:
     int Y() const { return m_Y; }
 
     void Move(Direction dir);
-    void MoveWithoutWrap(Direction dir);
+    void MoveWithoutWarp(Direction dir);
 
     void Move(int dx, int dy);
-    void MoveWithoutWrap(int dx, int dy);
+    void MoveWithoutWarp(int dx, int dy);
 
     GridRef GetNext(Direction dir) const;
-    GridRef GetNextWithoutWrap(Direction dir) const;
+    GridRef GetNextWithoutWarp(Direction dir) const;
     GridRef North() const;
     GridRef South() const;
     GridRef East() const;
     GridRef West() const;
 
 private:
-    void Wrap();
+    void Warp();
 
     Grid const* m_Grid;
     int m_X;

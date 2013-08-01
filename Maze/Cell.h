@@ -11,6 +11,7 @@ public:
     bool GetPowerPill() const { return m_PowerPill; }
     bool IsGhostBase() const { return m_GhostBase; }
     bool IsTunnel() const { return m_Tunnel; }
+    int GetWarpId() const { return m_WarpId; }
 
     void Nom();
     void Reset();
@@ -26,4 +27,5 @@ private:
 
     bool m_GhostBase;
     bool m_Tunnel;
+    int m_WarpId;
 };

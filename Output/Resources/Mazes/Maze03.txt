@@ -12,7 +12,7 @@
   o  o        o  o        o  o  
   o  o        o  o        o  o  
   o  o  ooooooo  ooooooo  o  o  
-==oooo  o              o  oooo==
+1=oooo  o              o  oooo=1
   o  o  o              o  o  o  
   o  o  o              o  o  o  
   o  oooooooooooooooooooooo  o  

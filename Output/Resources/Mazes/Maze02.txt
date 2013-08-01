@@ -11,10 +11,10 @@
    o        +  +        o   
    oooo  ++++++++++  oooo   
    +  o  +xxxxxxxx+  o  +   
-====  o  +xxxxxxxx+  o  ====
+1===  o  +xxxxxxxx+  o  ===1
       o+++xxxxxxxx+++o      
       o  +xxxxxxxx+  o      
-====  o  +xxxxxxxx+  o  ====
+2===  o  +xxxxxxxx+  o  ===2
    +  o  ++++++++++  o  +   
    oooo     +  +     oooo   
    o  o     +  +     o  o   
