@@ -20,6 +20,7 @@ private:
     Game& operator=(Game&);
 
     void Load();
+    void LoadLevel();
     void LoadNextLevel();
 
     sf::RenderWindow* m_Window;

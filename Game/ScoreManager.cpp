@@ -4,7 +4,7 @@
 ScoreManager::ScoreManager() :
     m_Points(0),
     m_Lives(3),
-    m_Level(0),
+    m_Level(1),
     m_Ready(false)
 {
 }

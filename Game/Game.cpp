@@ -20,6 +20,19 @@ namespace GameHelpers
         return false;
 #endif
     }
+
+    bool RestartLevel()
+    {
+#if defined _DEBUG
+        static bool wasRestartPressed = false;
+        bool const restartPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Home);
+        bool const restart = (restartPressed && !wasRestartPressed);
+        wasRestartPressed = restartPressed;
+        return restart;
+#else
+        return false;
+#endif
+    }
 }
 
 Game::Game() :
@@ -32,7 +45,7 @@ Game::Game() :
     m_Hud = new Hud(*m_ScoreManager);
 
     Load();
-    LoadNextLevel();
+    LoadLevel();
 }
 
 Game::~Game()
@@ -63,16 +76,20 @@ void Game::Load()
     m_Hud->Load();
 }
 
-void Game::LoadNextLevel()
+void Game::LoadLevel()
 {
-    m_ScoreManager->NextLevel();
-
     int const level = std::min(m_ScoreManager->GetLevel(), m_LevelMax);
     char filename[FILENAME_MAX];
     sprintf_s(filename, "Levels/Level%02d.xml", level);
 
     m_Level = std::make_shared<Level>(*m_ScoreManager);
     m_Level->Load(filename);
+}
+
+void Game::LoadNextLevel()
+{
+    m_ScoreManager->NextLevel();
+    LoadLevel();
 }
 
 void Game::Run()
@@ -95,6 +112,10 @@ void Game::Run()
         if (m_Level->IsComplete() || GameHelpers::SkipLevel())
         {
             LoadNextLevel();
+        }
+        else if (GameHelpers::RestartLevel())
+        {
+            LoadLevel();
         }
 
         float const dt = std::min(frameTimer.restart().asSeconds(), 1.0f / 60.0f);

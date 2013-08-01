@@ -8,6 +8,7 @@ public:
 
     bool DebugCells;
     bool DebugGhosts;
+    bool DebugImmortal;
 
 private:
     GlobalSettings();

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "Level.h"
 
-#include "Maze/Cell.h"
 #include "GhostTargets/BlinkyTarget.h"
 #include "GhostTargets/PinkyTarget.h"
 #include "GhostTargets/InkyTarget.h"
 #include "GhostTargets/ClydeTarget.h"
 #include "GhostTargets/FixedTarget.h"
+#include "GlobalSettings.h"
+#include "Maze/Cell.h"
 #include "ScoreManager.h"
 
 struct LevelSettings
@@ -381,13 +382,16 @@ void Level::UpdateEntities(float dt)
     }
 
     // Check for ghosts eating player
-    for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
+    if (!GlobalSettings::It().DebugImmortal)
     {
-        if ((ghost->GetBehaviour() == Ghost::Behaviour::Chase || ghost->GetBehaviour() == Ghost::Behaviour::Scatter) &&
-            m_Player.GetMovement().GetPosition() == ghost->GetMovement().GetPosition())
+        for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
         {
-            m_State = State::Death;
-            m_WaitTimer = s_DeathWait;
+            if ((ghost->GetBehaviour() == Ghost::Behaviour::Chase || ghost->GetBehaviour() == Ghost::Behaviour::Scatter) &&
+                m_Player.GetMovement().GetPosition() == ghost->GetMovement().GetPosition())
+            {
+                m_State = State::Death;
+                m_WaitTimer = s_DeathWait;
+            }
         }
     }
 }
