@@ -5,5 +5,5 @@
       PlayerX="16"
       PlayerY="29.5"
       >
-  <Base ExitX="16" ExitY="14.5" Top="13" Bottom="12" Exit="19.5" Left="14" Right="18" />
+  <Base ExitX="16" ExitY="10.5" Top="9" Bottom="8" Exit="19.5" Left="14" Right="18" />
 </Maze>

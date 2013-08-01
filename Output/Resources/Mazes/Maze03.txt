@@ -14,16 +14,16 @@
   o  o  ooooooo  ooooooo  o  o  
 ==oooo  o              o  oooo==
   o  o  o              o  o  o  
-  o  o  o  ++++++++++  o  o  o  
-  o  oooo  +xxxxxxxx+  oooo  o  
-  o     o  +xxxxxxxx+  o     o  
-  o     o  +xxxxxxxx+  o     o  
-  o  oooo+++xxxxxxxx+++oooo  o  
+  o  o  o              o  o  o  
+  o  oooooooooooooooooooooo  o  
+  o        o        o        o  
+  o        o        o        o  
+  o  ooooooo++++++++ooooooo  o  
   o  o      xxxxxxxx      o  o  
-  o  o                    o  o  
-  o  oo#oooooooooooooooo#oo  o  
-  o  o                    o  o  
-  o  o                    o  o  
+  o  o      xxxxxxxx      o  o  
+  o  oooooo#xxxxxxxx#oooooo  o  
+  o  o      xxxxxxxx      o  o  
+  o  o      xxxxxxxx      o  o  
   o  oooooooooooooooooooooo  o  
   o                          o  
   o                          o  
