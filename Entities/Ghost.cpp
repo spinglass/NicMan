@@ -250,7 +250,12 @@ Direction Ghost::SelectExitDirection(GridRef const ref, Direction const enterDir
             }
         }
     }
-    assert(exitDirection != Direction::None);
+
+    if(exitDirection == Direction::None)
+    {
+        // Hmm, no direction found, must be a dead-end. Go back the way we came!
+        exitDirection = noExitDirection;
+    }
 
     return exitDirection;
 }
