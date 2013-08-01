@@ -244,6 +244,14 @@ void Player::UpdateNomming()
     }
 
     m_PreviousOffset = offset;
+
+#if defined _DEBUG
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+    {
+        // Force fright mode
+        m_AtePowerPill = true;
+    }
+#endif
 }
 
 void Player::UpdateSprite(float dt)
