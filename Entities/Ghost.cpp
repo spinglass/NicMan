@@ -224,29 +224,32 @@ Direction Ghost::SelectExitDirection(GridRef const ref, Direction const enterDir
     }
 
     Direction exitDirection = Direction::None;
-    if (m_Behaviour == Behaviour::Fright)
+    if (options.size() > 0)
     {
-        // Randomly select an option
-        int const ran = rand() % options.size();
-        exitDirection = options[ran].first;
-    }
-    else
-    {
-        // Update target position
-        assert(m_Targets[m_Behaviour]);
-
-        m_TargetRef = m_Targets[m_Behaviour]->It();
-
-        // Find possible exit direction from the next cell.
-        float minDistSq = FLT_MAX;
-        for (auto option : options)
+        if (m_Behaviour == Behaviour::Fright)
         {
-            // Check the distance to the target
-            float const distSq = DistanceSq(m_TargetRef, option.second);
-            if (distSq < minDistSq)
+            // Randomly select an option
+            int const ran = rand() % options.size();
+            exitDirection = options[ran].first;
+        }
+        else
+        {
+            // Update target position
+            assert(m_Targets[m_Behaviour]);
+
+            m_TargetRef = m_Targets[m_Behaviour]->It();
+
+            // Find possible exit direction from the next cell.
+            float minDistSq = FLT_MAX;
+            for (auto option : options)
             {
-                exitDirection = option.first;
-                minDistSq = distSq;
+                // Check the distance to the target
+                float const distSq = DistanceSq(m_TargetRef, option.second);
+                if (distSq < minDistSq)
+                {
+                    exitDirection = option.first;
+                    minDistSq = distSq;
+                }
             }
         }
     }
