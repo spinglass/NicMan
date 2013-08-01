@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Maze Grid="mazes/maze03.txt"
-      Color="EFB99B"
+      Color="FFF328"
 	  Base="Mazes/KitBase03"
       PlayerX="16"
       PlayerY="29.5"

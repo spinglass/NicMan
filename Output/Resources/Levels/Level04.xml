@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<Level>
+  <Maze Definition="Mazes/Maze04.xml" />
+
+  <Settings FrightTime="4.0"
+            FrightFlashTime="1.5"
+            PlayerNormSpeedFactor="1.0"
+            PlayerFrightSpeedFactor="1.0"
+            GhostNormSpeedFactor="0.85"
+            GhostFrightSpeedFactor="0.55"
+            GhostTunnelSpeedFactor="0.45"
+            InkyExitTime="2.0"
+            ClydeExitTime="4.0"
+            />
+
+  <GhostScores>
+    <GhostScore Value="200" Sprite="Levels/Score_200" />
+    <GhostScore Value="400" Sprite="Levels/Score_400" />
+    <GhostScore Value="800" Sprite="Levels/Score_800" />
+    <GhostScore Value="1600" Sprite="Levels/Score_1600" />
+  </GhostScores>
+
+  <BehaviourChanges>
+    <BehaviourChange Time="5" />
+    <BehaviourChange Time="20" />
+    <BehaviourChange Time="5" />
+    <BehaviourChange Time="20" />
+    <BehaviourChange Time="7" />
+    <BehaviourChange Time="1033" />
+    <BehaviourChange Time="1" />
+  </BehaviourChanges>
+
+</Level>

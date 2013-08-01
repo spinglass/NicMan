@@ -36,7 +36,7 @@ namespace GameHelpers
 }
 
 Game::Game() :
-    m_LevelMax(3)
+    m_LevelMax(4)
 {
     m_Window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Nic-Man", sf::Style::Close);
 
