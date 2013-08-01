@@ -135,7 +135,7 @@ void Level::Load(char* filename)
         m_Ghosts[i]->Load(i);
     }
 
-    std::shared_ptr<IGhostTarget> eatenTarget = std::make_shared<FixedTarget>(m_Maze.GetGridRef(13, 19));
+    std::shared_ptr<IGhostTarget> eatenTarget = std::make_shared<FixedTarget>(m_Maze.GetBaseExit());
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<BlinkyTarget>(m_Player.GetMovement());
         std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(m_Maze.GetGridRef(25, 32));

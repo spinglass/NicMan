@@ -275,6 +275,11 @@ GridRef Maze::GetGridRef(int x, int y) const
     return GridRef(&m_Grid, x, y);
 }
 
+GridRef Maze::GetBaseExit() const
+{
+    return GridRef(&m_Grid, (int)m_Base.ExitX, (int)m_Base.ExitY);
+}
+
 bool Maze::GetPillsRemaining() const
 {
     bool pillFound = false;

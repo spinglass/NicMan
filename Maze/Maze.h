@@ -17,6 +17,7 @@ public:
 
     sf::Vector2f GetPlayerStart() const { return m_PlayerStart; }
     Base const& GetBase() const { return m_Base; }
+    GridRef GetBaseExit() const;
 
     GridRef GetGridRef(int x, int y) const;
     bool GetPillsRemaining() const;
