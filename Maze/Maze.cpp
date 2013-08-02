@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Maze.h"
 
+#include "Core/Vector.h"
 #include "Cell.h"
 #include "Direction.h"
 #include "Game/GlobalSettings.h"
@@ -137,16 +138,43 @@ void Maze::Parse(std::vector<char> const& data)
             ++i;
         }
 
-        BuildLinks(data, numRows, numCols);
+        BuildLinks();
+        BuildTunnelLinks(data, numRows, numCols);
     }
 }
 
-void Maze::BuildLinks(std::vector<char> const& data, int numRows, int numCols)
+void Maze::BuildLinks()
+{
+    Direction const dirs[] = { Direction::North, Direction::East, Direction::South, Direction::West };
+
+    for (int x = 0; x < m_Grid.GetWidth(); ++x)
+    {
+        for (int y = 0; y < m_Grid.GetHeight(); ++y)
+        {
+            Cell* c1 = m_Grid.GetCell(x, y);
+            if (c1 && c1->IsOpen())
+            {
+                sf::Vector2i const p1(x, y);
+
+                for (Direction dir : dirs)
+                {
+                    sf::Vector2i const p2 = Add(p1, 1, dir);
+                    Cell* c2 = m_Grid.GetCell(p2.x, p2.y);
+                    if (c2 && c2->IsOpen())
+                    {
+                        c1->SetNext(dir, c2);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Maze::BuildTunnelLinks(std::vector<char> const& data, int numRows, int numCols)
 {
     struct Link
     {
-        int X;
-        int Y;
+        sf::Vector2i pos;
         int Id;
     };
     std::vector<Link> links;
@@ -160,8 +188,8 @@ void Maze::BuildLinks(std::vector<char> const& data, int numRows, int numCols)
             {
                 Link link;
                 link.Id = (int)(data[i] - '0');
-                link.X = col;
-                link.Y = row;
+                link.pos.x = col;
+                link.pos.y = row;
                 links.push_back(link);
             }
             ++i;
@@ -180,19 +208,17 @@ void Maze::BuildLinks(std::vector<char> const& data, int numRows, int numCols)
             Link const& l2 = links[j];
             if (l1.Id == l2.Id)
             {
-                GridRef r1(&m_Grid, l1.X, l1.Y);
-                GridRef r2(&m_Grid, l2.X, l2.Y);
 
                 for (Direction dir : dirs)
                 {
                     Direction opp = Opposite(dir);
-                    GridRef n1 = r1.GetNext(dir);
-                    GridRef n2 = r2.GetNext(opp);
 
-                    if (n1.GetCell() && n2.GetCell())
+                    Cell* c1 = m_Grid.GetCell(l1.pos.x, l1.pos.y);
+                    Cell* c2 = m_Grid.GetCell(l2.pos.x, l2.pos.y);
+                    if (c1 && c2)
                     {
-                        n1.GetCell()->SetNext(opp, n2.GetCell());
-                        n2.GetCell()->SetNext(dir, n1.GetCell());
+                        c1->SetNext(opp, c2);
+                        c2->SetNext(dir, c1);
                     }
                 }
 
@@ -229,28 +255,38 @@ void Maze::BuildKitPartList()
 
         for (int row = 0; row < m_Grid.GetHeight(); ++row)
         {
-            GridRef ref(&m_Grid, col, row);
-            if (!ref.GetCell())
+            Cell* cell = m_Grid.GetCell(col, row);
+            if (!cell)
             {
+                int x = col;
+                int y = row;
                 int val = 0;
 
                 // Value built based on surrounding pieces
-                ref = ref.GetNextWithoutWarp(Direction::North);
-                if (ref.CanPlayerPass()) { val |= 2; }
-                ref = ref.GetNextWithoutWarp(Direction::East);
-                if (ref.CanPlayerPass()) { val |= 4; }
-                ref = ref.GetNextWithoutWarp(Direction::South);
-                if (ref.CanPlayerPass()) { val |= 8; }
-                ref = ref.GetNextWithoutWarp(Direction::South);
-                if (ref.CanPlayerPass()) { val |= 16; }
-                ref = ref.GetNextWithoutWarp(Direction::West);
-                if (ref.CanPlayerPass()) { val |= 32; }
-                ref = ref.GetNextWithoutWarp(Direction::West);
-                if (ref.CanPlayerPass()) { val |= 64; }
-                ref = ref.GetNextWithoutWarp(Direction::North);
-                if (ref.CanPlayerPass()) { val |= 128; }
-                ref = ref.GetNextWithoutWarp(Direction::North);
-                if (ref.CanPlayerPass()) { val |= 1; }
+                ++y;
+                cell = m_Grid.GetCell(x, y);
+                if (cell && cell->IsOpen()) { val |= 2; }
+                ++x;
+                cell = m_Grid.GetCell(x, y);
+                if (cell && cell->IsOpen()) { val |= 4; }
+                --y;
+                cell = m_Grid.GetCell(x, y);
+                if (cell && cell->IsOpen()) { val |= 8; }
+                --y;
+                cell = m_Grid.GetCell(x, y);
+                if (cell && cell->IsOpen()) { val |= 16; }
+                --x;
+                cell = m_Grid.GetCell(x, y);
+                if (cell && cell->IsOpen()) { val |= 32; }
+                --x;
+                cell = m_Grid.GetCell(x, y);
+                if (cell && cell->IsOpen()) { val |= 64; }
+                ++y;
+                cell = m_Grid.GetCell(x, y);
+                if (cell && cell->IsOpen()) { val |= 128; }
+                ++y;
+                cell = m_Grid.GetCell(x, y);
+                if (cell && cell->IsOpen()) { val |= 1; }
 
                 if (val != 0)
                 {
@@ -342,14 +378,14 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     }
 }
 
-GridRef Maze::GetGridRef(int x, int y) const
+Cell* Maze::GetCell(int x, int y) const
 {
-    return GridRef(&m_Grid, x, y);
+    return m_Grid.GetCell(x, y);
 }
 
-GridRef Maze::GetBaseExit() const
+sf::Vector2i Maze::GetBaseExit() const
 {
-    return GridRef(&m_Grid, (int)m_Base.ExitX, (int)m_Base.ExitY);
+    return sf::Vector2i((int)m_Base.ExitX, (int)m_Base.ExitY);
 }
 
 bool Maze::GetPillsRemaining() const

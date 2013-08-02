@@ -45,7 +45,7 @@ private:
     Ghost(Ghost&);
     Ghost& operator=(Ghost&);
 
-    Direction SelectExitDirection(GridRef const ref, Direction enterDirection);
+    Direction SelectExitDirection(Cell const& cell, Direction enterDirection);
     Direction SelectNextDirection();
 
     std::map<Behaviour, std::shared_ptr<IGhostTarget>> m_Targets;
@@ -56,7 +56,7 @@ private:
 
     Movement m_Movement;
     BaseMovement m_BaseMovement;
-    GridRef m_TargetRef;
+    sf::Vector2i m_TargetRef;
     Direction m_NextDirection;
     Behaviour m_Behaviour;
     Behaviour m_EatenExitBehaviour;

@@ -5,9 +5,9 @@ class Movement;
 class ClydeTarget : public IGhostTarget
 {
 public:
-    explicit ClydeTarget(Movement const& target, Movement const& self, GridRef const& fleePosition);
+    explicit ClydeTarget(Movement const& target, Movement const& self, sf::Vector2i fleePosition);
 
-    virtual GridRef It() override;
+    virtual sf::Vector2i It() override;
 
 private:
     ClydeTarget(ClydeTarget&);
@@ -15,5 +15,5 @@ private:
 
     Movement const& m_Target;
     Movement const& m_Self;
-    GridRef m_FleePosition;
+    sf::Vector2i m_FleePosition;
 };

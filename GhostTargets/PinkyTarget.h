@@ -7,7 +7,7 @@ class PinkyTarget : public IGhostTarget
 public:
     explicit PinkyTarget(Movement const& target);
 
-    virtual GridRef It() override;
+    virtual sf::Vector2i It() override;
 
 private:
     PinkyTarget(PinkyTarget&);

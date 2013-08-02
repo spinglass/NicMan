@@ -7,7 +7,7 @@ class BlinkyTarget : public IGhostTarget
 public:
     explicit BlinkyTarget(Movement const& target);
 
-    virtual GridRef It() override;
+    virtual sf::Vector2i It() override;
 
 private:
     BlinkyTarget(BlinkyTarget&);

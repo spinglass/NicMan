@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "FixedTarget.h"
 
-FixedTarget::FixedTarget(GridRef const& target) :
+FixedTarget::FixedTarget(sf::Vector2i target) :
     m_Target(target)
 {
 }
 
-GridRef FixedTarget::It()
+sf::Vector2i FixedTarget::It()
 {
     return m_Target;
 }

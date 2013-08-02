@@ -18,9 +18,6 @@
     <ClCompile Include="Maze\Grid.cpp">
       <Filter>Maze</Filter>
     </ClCompile>
-    <ClCompile Include="Maze\GridRef.cpp">
-      <Filter>Maze</Filter>
-    </ClCompile>
     <ClCompile Include="Maze\Direction.cpp">
       <Filter>Maze</Filter>
     </ClCompile>
@@ -93,9 +90,6 @@
     <ClInclude Include="Maze\Grid.h">
       <Filter>Maze</Filter>
     </ClInclude>
-    <ClInclude Include="Maze\GridRef.h">
-      <Filter>Maze</Filter>
-    </ClInclude>
     <ClInclude Include="Maze\Direction.h">
       <Filter>Maze</Filter>
     </ClInclude>
@@ -152,6 +146,9 @@
     </ClInclude>
     <ClInclude Include="Game\GlobalSettings.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Vector.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

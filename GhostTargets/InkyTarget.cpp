@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "InkyTarget.h"
 
+#include "Core/Vector.h"
 #include "Maze/Direction.h"
 #include "Maze/Movement.h"
 
@@ -10,32 +11,24 @@ InkyTarget::InkyTarget(Movement const& target, Movement const& partner) :
 {
 }
 
-GridRef InkyTarget::It()
+sf::Vector2i InkyTarget::It()
 {
     int const k_TargetDistance = 2;
 
     // Move target ahead
-    GridRef target = m_Target.GetPosition();
-    for (int i = 0; i < k_TargetDistance; ++i)
-    {
-        target.MoveWithoutWarp(m_Target.GetDirection());
-    }
+    sf::Vector2i target = Add(m_Target.GetPosition(), k_TargetDistance, m_Target.GetDirection());
 
     // Overflow bug from original pacman, if target is moving north, also aim west.
     if (m_Target.GetDirection() == Direction::North)
     {
-        for (int i = 0; i < k_TargetDistance; ++i)
-        {
-            target.MoveWithoutWarp(Direction::West);
-        }
+        target = Add(target, k_TargetDistance, Direction::West);
     }
 
     // Now grab the difference between the other position (Blinky) and the adjusted target
-    int const dx = target.X() - m_Partner.GetPosition().X();
-    int const dy = target.Y() - m_Partner.GetPosition().Y();
+    sf::Vector2i const delta = target - m_Partner.GetPosition();
 
     // Finally, move the target this distance in the other direction
-    target.MoveWithoutWarp(dx, dy);
+    target += delta;
 
     return target;
 }

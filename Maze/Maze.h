@@ -2,7 +2,6 @@
 
 #include "BaseMovement.h"
 #include "Grid.h"
-#include "GridRef.h"
 #include "Core/Sprite.h"
 
 class Maze
@@ -17,9 +16,9 @@ public:
 
     sf::Vector2f GetPlayerStart() const { return m_PlayerStart; }
     Base const& GetBase() const { return m_Base; }
-    GridRef GetBaseExit() const;
+    sf::Vector2i GetBaseExit() const;
 
-    GridRef GetGridRef(int x, int y) const;
+    Cell* GetCell(int x, int y) const;
     bool GetPillsRemaining() const;
 
     static float const k_CellSize;
@@ -30,7 +29,8 @@ private:
 
     void LoadGrid(char const* filename);
     void Parse(std::vector<char> const& data);
-    void BuildLinks(std::vector<char> const& data, int numRows, int numCols);
+    void BuildTunnelLinks(std::vector<char> const& data, int numRows, int numCols);
+    void BuildLinks();
     void BuildKitPartList();
 
     std::vector<Cell> m_CellStorage;

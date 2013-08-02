@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "Movement.h"
 
+#include "Cell.h"
 #include "Direction.h"
 #include "Maze.h"
 
 Movement::Movement(Maze const& maze, bool canTransition) :
     m_Maze(maze),
+    m_Cell(nullptr),
     m_CanTransition(canTransition),
     m_Direction(Direction::None),
     m_ExitDirection(Direction::None),
@@ -23,7 +25,8 @@ void Movement::Reset(float x, float y)
 {
     int const gridX = (int)x;
     int const gridY = (int)y;
-    m_Position = m_Maze.GetGridRef(gridX, gridY);
+    m_Cell = m_Maze.GetCell(gridX, gridY);
+    assert(m_Cell);
     m_Offset.x = x - (float)gridX;
     m_Offset.y = y - (float)gridY;
     m_Direction = Direction::None;
@@ -95,8 +98,8 @@ void Movement::Update(float dt)
         assert(!m_CanTransition || m_ExitDirection == Direction::None);
 
         // Normal movement
-        GridRef const nextRef = m_Position.GetNext(m_Direction);
-        bool const canContinue = nextRef.CanPlayerPass() && (m_ExitDirection == Direction::None || m_ExitDirection == m_Direction);
+        Cell* next = m_Cell->GetNext(m_Direction);
+        bool const canContinue = next && next->IsOpen() && (m_ExitDirection == Direction::None || m_ExitDirection == m_Direction);
 
         // Check for next cell or a wall
         bool nextCell = false;
@@ -196,7 +199,7 @@ void Movement::Update(float dt)
 
         if (nextCell)
         {
-            m_Position = nextRef;
+            m_Cell = next;
 
             // Determine direction to exit next cell.
             // Maybe none if no decisions has yet been taken.
@@ -205,9 +208,16 @@ void Movement::Update(float dt)
     }
 }
 
+sf::Vector2i Movement::GetPosition() const
+{
+    sf::Vector2i const position = m_Cell ? sf::Vector2i(m_Cell->X(), m_Cell->Y()) : sf::Vector2i();
+    return position;
+}
+
 sf::Vector2f Movement::GetAbsolutePosition() const
 {
-    sf::Vector2f const cellOrigin((float)m_Position.X(), (float)m_Position.Y());
+    sf::Vector2i const position = GetPosition();
+    sf::Vector2f const cellOrigin((float)position.x, (float)position.y);
     return (cellOrigin + m_Offset);
 }
 

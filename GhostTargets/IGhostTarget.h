@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Maze/GridRef.h"
-
 class IGhostTarget
 {
 public:
     virtual ~IGhostTarget() {}
-    virtual GridRef It() = 0;
+    virtual sf::Vector2i It() = 0;
 };

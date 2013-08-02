@@ -31,7 +31,7 @@ void Player::Load()
 void Player::Restart(float x, float y)
 {
     m_Movement.Reset(x, y);
-    assert(m_Movement.GetPosition().CanPlayerPass());
+    assert(m_Movement.GetCell() && m_Movement.GetCell()->IsOpen());
 
     m_PreviousOffset = m_Movement.GetOffset();
     m_StopTimer = 0.0f;
@@ -68,11 +68,12 @@ void Player::Update(float dt)
 
 void Player::UpdateControls()
 {
-    GridRef const& position = m_Movement.GetPosition();
-    bool const canGoNorth = position.North().CanPlayerPass();
-    bool const canGoSouth = position.South().CanPlayerPass();
-    bool const canGoEast = position.East().CanPlayerPass();
-    bool const canGoWest = position.West().CanPlayerPass();
+    Cell const* cell = m_Movement.GetCell();
+    sf::Vector2i const position = m_Movement.GetPosition();
+    bool const canGoNorth = cell->North() && cell->North()->IsOpen();
+    bool const canGoSouth = cell->South() && cell->South()->IsOpen();
+    bool const canGoEast = cell->East() && cell->East()->IsOpen();
+    bool const canGoWest = cell->West() && cell->West()->IsOpen();
 
     bool const upPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
     bool const downPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
@@ -200,10 +201,10 @@ void Player::UpdateNomming()
     float const k_PillStopTime = 1.0f / 60.0f;
     float const k_PowerPillStopTime = 3.0f / 60.0f;
 
-    GridRef const& position = m_Movement.GetPosition();
+    Cell* cell = m_Movement.GetCell();
     sf::Vector2f const offset = m_Movement.GetOffset();
 
-    if (position.GetCell()->GetPill() || position.GetCell()->GetPowerPill())
+    if (cell->GetPill() || cell->GetPowerPill())
     {
         bool nom = false;
         switch(m_Movement.GetDirection())
@@ -226,7 +227,7 @@ void Player::UpdateNomming()
 
         if (nom)
         {
-            if (position.GetCell()->GetPill())
+            if (cell->GetPill())
             {
                 m_AtePill = true;
                 m_StopTimer = k_PillStopTime;
@@ -239,7 +240,7 @@ void Player::UpdateNomming()
                 m_PowerPillSound.Play();
             }
 
-            position.GetCell()->Nom();
+            cell->Nom();
         }
     }
 

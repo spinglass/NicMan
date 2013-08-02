@@ -138,7 +138,7 @@ void Level::Load(char* filename)
     std::shared_ptr<IGhostTarget> eatenTarget = std::make_shared<FixedTarget>(m_Maze.GetBaseExit());
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<BlinkyTarget>(m_Player.GetMovement());
-        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(m_Maze.GetGridRef(25, 32));
+        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(sf::Vector2i(25, 32));
 
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[0]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
@@ -147,7 +147,7 @@ void Level::Load(char* filename)
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<PinkyTarget>(m_Player.GetMovement());
-        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(m_Maze.GetGridRef(2, 32));
+        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(sf::Vector2i(2, 32));
 
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[1]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
@@ -156,7 +156,7 @@ void Level::Load(char* filename)
     }
     {
         std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<InkyTarget>(m_Player.GetMovement(), m_Ghosts[0]->GetMovement());
-        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(m_Maze.GetGridRef(27, -1));
+        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(sf::Vector2i(27, -1));
 
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[2]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
@@ -164,8 +164,8 @@ void Level::Load(char* filename)
         m_Ghosts[2]->SetHomePosition(BaseMovement::HomePosition::Left);
     }
     {
-        std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<ClydeTarget>(m_Player.GetMovement(), m_Ghosts[3]->GetMovement(), m_Maze.GetGridRef(0, -1));
-        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(m_Maze.GetGridRef( 0, -1));
+        std::shared_ptr<IGhostTarget> chaseTarget = std::make_shared<ClydeTarget>(m_Player.GetMovement(), m_Ghosts[3]->GetMovement(), sf::Vector2i(0, -1));
+        std::shared_ptr<IGhostTarget> scatterTarget = std::make_shared<FixedTarget>(sf::Vector2i( 0, -1));
 
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Chase, chaseTarget);
         m_Ghosts[3]->SetTarget(Ghost::Behaviour::Scatter, scatterTarget);
@@ -327,7 +327,7 @@ void Level::UpdateEntities(float dt)
     for (std::shared_ptr<Ghost>& ghost : m_Ghosts)
     {
         float ghostSpeedFactor = m_Settings->GhostNormSpeedFactor;
-        if (ghost->GetMovement().GetPosition().GetCell() && ghost->GetMovement().GetPosition().GetCell()->IsTunnel())
+        if (ghost->GetMovement().GetCell() && ghost->GetMovement().GetCell()->IsTunnel())
         {
             ghostSpeedFactor = m_Settings->GhostTunnelSpeedFactor;
         }

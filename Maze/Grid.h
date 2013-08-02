@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "GridRef.h"
-
 class Cell;
 
 class Grid
@@ -21,7 +19,6 @@ public:
 
 private:
     std::vector<std::vector<Cell*>> m_Cells;
-    std::map<Cell const*, GridRef> m_WarpTarget;
     int m_Width;
     int m_Height;
 };

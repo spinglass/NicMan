@@ -53,9 +53,9 @@ void Cell::Parse(char c)
     }
 }
 
-Cell const* Cell::GetNext(Direction dir) const
+Cell* Cell::GetNext(Direction dir) const
 {
-    Cell const* cell = nullptr;
+    Cell* cell = nullptr;
     switch(dir)
     {
     default:
@@ -76,7 +76,7 @@ Cell const* Cell::GetNext(Direction dir) const
     return cell;
 }
 
-void Cell::SetNext(Direction dir, Cell const* next)
+void Cell::SetNext(Direction dir, Cell* next)
 {
     switch(dir)
     {

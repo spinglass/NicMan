@@ -8,7 +8,7 @@ BlinkyTarget::BlinkyTarget(Movement const& target) :
 {
 }
 
-GridRef BlinkyTarget::It()
+sf::Vector2i BlinkyTarget::It()
 {
     return m_Target.GetPosition();
 }

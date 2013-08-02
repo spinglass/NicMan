@@ -3,8 +3,8 @@
 #include <functional>
 
 #include "Direction.h"
-#include "GridRef.h"
 
+class Cell;
 class Maze;
 
 class Movement
@@ -18,7 +18,9 @@ public:
     void Reset(float x, float y);
     void Update(float dt);
 
-    GridRef const& GetPosition() const { return m_Position; }
+    Cell* GetCell() { return m_Cell; }
+    Cell const* GetCell() const { return m_Cell; }
+    sf::Vector2i GetPosition() const;
     sf::Vector2f GetOffset() const { return m_Offset; }
     Direction GetDirection() const { return m_Direction; }
     Direction GetExitDirection() const { return m_ExitDirection; }
@@ -37,8 +39,8 @@ private:
     static Direction NextCellDefault();
 
     Maze const& m_Maze;
+    Cell* m_Cell;
     bool const m_CanTransition;
-    GridRef m_Position;
     sf::Vector2f m_Offset;
     Direction m_Direction;
     Direction m_ExitDirection;

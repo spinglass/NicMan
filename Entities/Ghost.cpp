@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "Ghost.h"
 
+#include "Core/Vector.h"
 #include "Game/GlobalSettings.h"
 #include "GhostTargets\IGhostTarget.h"
+#include "Maze/Cell.h"
 #include "Maze/Direction.h"
 #include "Maze/Maze.h"
 
@@ -186,7 +188,7 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     {
         if (m_Behaviour != Behaviour::Fright)
         {
-            sf::Vector2f targetGridPos = sf::Vector2f((float)m_TargetRef.X(), (float)m_TargetRef.Y()) + sf::Vector2f(0.5f, 0.5f);
+            sf::Vector2f targetGridPos = sf::Vector2f((float)m_TargetRef.x, (float)m_TargetRef.y) + sf::Vector2f(0.5f, 0.5f);
             sf::Vector2f targetPos = transform.transformPoint(targetGridPos);
             sf::VertexArray lines(sf::LinesStrip, 2);
             lines[0].position = pos;
@@ -198,9 +200,9 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     }
 }
 
-Direction Ghost::SelectExitDirection(GridRef const ref, Direction const enterDirection)
+Direction Ghost::SelectExitDirection(Cell const& cell, Direction const enterDirection)
 {
-    assert(ref.CanPlayerPass());
+    assert(cell.IsOpen());
 
     // Can't exit the way we came in
     Direction const noExitDirection = Opposite(enterDirection);
@@ -208,17 +210,17 @@ Direction Ghost::SelectExitDirection(GridRef const ref, Direction const enterDir
     // Build set of available options
     // Search order set for preferred direction in case of two equal options.
     Direction const searchOrder[] = { Direction::North, Direction::West, Direction::South, Direction::East };
-    std::vector<std::pair<Direction, GridRef>> options;
+    std::vector<std::pair<Direction, Cell const*>> options;
     for (Direction dir : searchOrder)
     {
         // If it's not back the way we came...
         if (dir != noExitDirection)
         {
             // ...and we can pass, it's an option
-            GridRef const optionRef = ref.GetNext(dir);
-            if (optionRef.CanPlayerPass())
+            Cell const* option = cell.GetNext(dir);
+            if (option && option->IsOpen())
             {
-                options.push_back(std::make_pair(dir, optionRef));
+                options.push_back(std::make_pair(dir, option));
             }
         }
     }
@@ -244,7 +246,7 @@ Direction Ghost::SelectExitDirection(GridRef const ref, Direction const enterDir
             for (auto option : options)
             {
                 // Check the distance to the target
-                float const distSq = DistanceSq(m_TargetRef, option.second);
+                float const distSq = DistanceSq(m_TargetRef, option.second->GetPosition());
                 if (distSq < minDistSq)
                 {
                     exitDirection = option.first;
@@ -276,10 +278,11 @@ Direction Ghost::SelectNextDirection()
     }
 
     // Get the next cell we'll be entering, where the decision is required for exit.
-    GridRef const nextRef = m_Movement.GetPosition().GetNext(m_NextDirection);
+    Cell const* next = m_Movement.GetCell()->GetNext(m_NextDirection);
+    assert(next);
 
     // And select the exit direction from that cell
-    Direction nextDirection = SelectExitDirection(nextRef, m_NextDirection);
+    Direction nextDirection = SelectExitDirection(*next, m_NextDirection);
 
     // Return the previously selected next direction and save the new selected direction for next time
     std::swap(m_NextDirection, nextDirection);

@@ -3,13 +3,13 @@
 class FixedTarget : public IGhostTarget
 {
 public:
-    explicit FixedTarget(GridRef const& target);
+    explicit FixedTarget(sf::Vector2i target);
 
-    virtual GridRef It() override;
+    virtual sf::Vector2i It() override;
 
 private:
     FixedTarget(FixedTarget&);
     FixedTarget& operator=(FixedTarget&);
 
-    GridRef m_Target;
+    sf::Vector2i m_Target;
 };

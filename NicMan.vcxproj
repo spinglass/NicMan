@@ -88,6 +88,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\AnimatedSprite.h" />
+    <ClInclude Include="Core\Vector.h" />
     <ClInclude Include="Core\Sound.h" />
     <ClInclude Include="Core\Sprite.h" />
     <ClInclude Include="Entities\Entity.h" />
@@ -109,7 +110,6 @@
     <ClInclude Include="Maze\Cell.h" />
     <ClInclude Include="Maze\Direction.h" />
     <ClInclude Include="Maze\Grid.h" />
-    <ClInclude Include="Maze\GridRef.h" />
     <ClInclude Include="Maze\Maze.h" />
     <ClInclude Include="Maze\Movement.h" />
     <ClInclude Include="stdafx.h" />
@@ -137,7 +137,6 @@
     <ClCompile Include="Maze\Cell.cpp" />
     <ClCompile Include="Maze\Direction.cpp" />
     <ClCompile Include="Maze\Grid.cpp" />
-    <ClCompile Include="Maze\GridRef.cpp" />
     <ClCompile Include="Maze\Maze.cpp" />
     <ClCompile Include="Maze\Movement.cpp" />
     <ClCompile Include="stdafx.cpp">
