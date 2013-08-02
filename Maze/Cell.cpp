@@ -1,53 +1,97 @@
 #include "stdafx.h"
 #include "Cell.h"
 
-Cell::Cell(char c) :
-    m_GhostBase(false),
+#include "Direction.h"
+
+Cell::Cell(char c, int x, int y) :
+    m_X(x),
+    m_Y(y),
+    m_North(nullptr),
+    m_East(nullptr),
+    m_South(nullptr),
+    m_West(nullptr),
+    m_Open(false),
     m_Pill(false),
     m_WasPill(false),
     m_PowerPill(false),
     m_WasPowerPill(false),
-    m_Tunnel(false),
-    m_WarpId(0)
+    m_Tunnel(false)
 {
     Parse(c);
 }
 
 bool Cell::IsCell(char c)
 {
-    return (c == '+' || c == '=' || c == 'o' || c == '#' || c == 'x' || ('1' <= c && c <= '9'));
+    return (c != ' ');
 }
 
 void Cell::Parse(char c)
 {
-    if ('1' <= c && c <= '9')
+    switch(c)
     {
+    default:
+        m_Open = ('1' <= c && c <= '9');
+        break;
+    case '+':
+        // Empty cell
+        m_Open = true;
+        break;
+    case '=':
+        m_Open = true;
         m_Tunnel = true;
-        m_WarpId = (int)(c - '0');
+        break;
+    case 'o':
+        m_Open = true;
+        m_Pill = true;
+        m_WasPill = true;
+        break;
+    case '#':
+        m_Open = true;
+        m_PowerPill = true;
+        m_WasPowerPill = true;
+        break;
     }
-    else
+}
+
+Cell const* Cell::GetNext(Direction dir) const
+{
+    Cell const* cell = nullptr;
+    switch(dir)
     {
-        switch(c)
-        {
-        default:
-        case '+':
-            // Empty cell
-            break;
-        case '=':
-            m_Tunnel = true;
-            break;
-        case 'o':
-            m_Pill = true;
-            m_WasPill = true;
-            break;
-        case '#':
-            m_PowerPill = true;
-            m_WasPowerPill = true;
-            break;
-        case 'x':
-            m_GhostBase = true;
-            break;
-        }
+    default:
+        break;
+    case Direction::North:
+        cell = m_North;
+        break;
+    case Direction::East:
+        cell = m_East;
+        break;
+    case Direction::South:
+        cell = m_South;
+        break;
+    case Direction::West:
+        cell = m_West;
+        break;
+    }
+    return cell;
+}
+
+void Cell::SetNext(Direction dir, Cell const* next)
+{
+    switch(dir)
+    {
+    case Direction::North:
+        m_North = next;
+        break;
+    case Direction::East:
+        m_East = next;
+        break;
+    case Direction::South:
+        m_South = next;
+        break;
+    case Direction::West:
+        m_West = next;
+        break;
     }
 }
 

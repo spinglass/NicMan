@@ -2,8 +2,8 @@
 <Maze Grid="mazes/maze03.txt"
       Color="FFF328"
 	  Base="Mazes/KitBase03"
-      PlayerX="16"
+      PlayerX="17"
       PlayerY="29.5"
       >
-  <Base ExitX="16" ExitY="10.5" Top="9" Bottom="8" Exit="19.5" Left="14" Right="18" />
+  <Base ExitX="17" ExitY="10.5" Top="9" Bottom="8" Exit="19.5" Left="15" Right="19" />
 </Maze>

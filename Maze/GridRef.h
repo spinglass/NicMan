@@ -22,7 +22,6 @@ public:
     void Move(Direction dir);
     void MoveWithoutWarp(Direction dir);
 
-    void Move(int dx, int dy);
     void MoveWithoutWarp(int dx, int dy);
 
     GridRef GetNext(Direction dir) const;
@@ -33,8 +32,6 @@ public:
     GridRef West() const;
 
 private:
-    void Warp();
-
     Grid const* m_Grid;
     int m_X;
     int m_Y;

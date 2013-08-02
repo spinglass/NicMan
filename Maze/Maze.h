@@ -30,6 +30,7 @@ private:
 
     void LoadGrid(char const* filename);
     void Parse(std::vector<char> const& data);
+    void BuildLinks(std::vector<char> const& data, int numRows, int numCols);
     void BuildKitPartList();
 
     std::vector<Cell> m_CellStorage;

@@ -65,7 +65,6 @@ void Maze::LoadGrid(char const* filename)
 
         Parse(data);
         BuildKitPartList();
-        m_Grid.BuildWarpTargets();
     }
 }
 
@@ -130,12 +129,75 @@ void Maze::Parse(std::vector<char> const& data)
             {
                 if (Cell::IsCell(data[i]))
                 {
-                    m_CellStorage.emplace_back(data[i]);
+                    m_CellStorage.emplace_back(data[i], col, row);
                     m_Grid.AddCell(col, row, m_CellStorage.back());
                 }
                 ++i;
             }
             ++i;
+        }
+
+        BuildLinks(data, numRows, numCols);
+    }
+}
+
+void Maze::BuildLinks(std::vector<char> const& data, int numRows, int numCols)
+{
+    struct Link
+    {
+        int X;
+        int Y;
+        int Id;
+    };
+    std::vector<Link> links;
+
+    int i = 0;
+    for (int row = numRows - 1; row >= 0; --row)
+    {
+        for (int col = 0; col < numCols; ++col)
+        {
+            if ('1' <= data[i] && data[i] < '9')
+            {
+                Link link;
+                link.Id = (int)(data[i] - '0');
+                link.X = col;
+                link.Y = row;
+                links.push_back(link);
+            }
+            ++i;
+        }
+        ++i;
+    }
+
+    // Apply links to cells
+    Direction const dirs[] = { Direction::North, Direction::East, Direction::South, Direction::West };
+    for (int i = 0; i < links.size(); ++i)
+    {
+        Link const& l1 = links[i];
+
+        for (int j = i + 1; j < links.size(); ++j)
+        {
+            Link const& l2 = links[j];
+            if (l1.Id == l2.Id)
+            {
+                GridRef r1(&m_Grid, l1.X, l1.Y);
+                GridRef r2(&m_Grid, l2.X, l2.Y);
+
+                for (Direction dir : dirs)
+                {
+                    Direction opp = Opposite(dir);
+                    GridRef n1 = r1.GetNext(dir);
+                    GridRef n2 = r2.GetNext(opp);
+
+                    if (n1.GetCell() && n2.GetCell())
+                    {
+                        n1.GetCell()->SetNext(opp, n2.GetCell());
+                        n2.GetCell()->SetNext(dir, n1.GetCell());
+                    }
+                }
+
+                break;
+            }
         }
     }
 }
@@ -232,7 +294,6 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     path.setOrigin(0.5f * path.getSize());
     path.setOutlineThickness(-1.0f);
     path.setOutlineColor(sf::Color(50, 50, 50));
-    path.setFillColor(sf::Color(25, 25, 25));
 
     for (int col = 0; col < m_Grid.GetWidth(); ++col)
     {
@@ -248,6 +309,15 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
             {
                 if (GlobalSettings::It().DebugCells)
                 {
+                    if (cell->IsOpen())
+                    {
+                        path.setFillColor(sf::Color(0, 25, 0));
+                    }
+                    else
+                    {
+                        path.setFillColor(sf::Color(25, 0, 0));
+                    }
+
                     path.setPosition(cellPosition);
                     target.draw(path);
                 }
