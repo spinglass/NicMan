@@ -25,6 +25,6 @@
    o  o     o  o  o  o  o  o  o   
    oooooooooo  o  o  o  oooo  o   
    o     o     o  o  o     o  o   
-   o     o     o  o  o     o  o   
-   ooooooooooooo  oooooooooooo#   
+   +     o     o  o  o     o  o   
+   ++ooooooooooo  oooooooooooo#   
                                   

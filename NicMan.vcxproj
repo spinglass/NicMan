@@ -92,6 +92,7 @@
     <ClInclude Include="Core\Sound.h" />
     <ClInclude Include="Core\Sprite.h" />
     <ClInclude Include="Entities\Entity.h" />
+    <ClInclude Include="Entities\Fruit.h" />
     <ClInclude Include="Entities\Ghost.h" />
     <ClInclude Include="Entities\Player.h" />
     <ClInclude Include="Game\Game.h" />
@@ -119,6 +120,7 @@
     <ClCompile Include="Core\Sound.cpp" />
     <ClCompile Include="Core\Sprite.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
+    <ClCompile Include="Entities\Fruit.cpp" />
     <ClCompile Include="Entities\Ghost.cpp" />
     <ClCompile Include="Entities\Player.cpp" />
     <ClCompile Include="Game\Game.cpp" />
@@ -143,26 +145,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Output\Resources\Mazes\Maze01.txt" />
-    <Text Include="Output\Resources\Mazes\Maze02.txt" />
-    <Text Include="Output\Resources\Mazes\Maze03.txt" />
-    <Text Include="Output\Resources\Mazes\Maze04.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="Output\Resources\Game.xml">
-      <SubType>Designer</SubType>
-    </Xml>
-    <Xml Include="Output\Resources\Levels\Level01.xml" />
-    <Xml Include="Output\Resources\Levels\Level02.xml" />
-    <Xml Include="Output\Resources\Levels\Level03.xml" />
-    <Xml Include="Output\Resources\Mazes\Maze01.xml">
-      <SubType>Designer</SubType>
-    </Xml>
-    <Xml Include="Output\Resources\Mazes\Maze02.xml" />
-    <Xml Include="Output\Resources\Mazes\Maze03.xml" />
-    <Xml Include="Output\Resources\Mazes\Maze04.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

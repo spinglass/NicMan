@@ -80,6 +80,15 @@ void Level::Load(char* filename)
         }
 
         {
+            // Load fruit
+            if (tinyxml2::XMLElement* element = levelElement->FirstChildElement("Fruit"))
+            {
+                m_Fruit.Load(*element);
+                m_Fruit.SetPosition(m_Maze.GetFruitPosition());
+            }
+        }
+
+        {
             // Read settings
             tinyxml2::XMLElement* element = levelElement->FirstChildElement("Settings");
             assert(element);
@@ -369,6 +378,7 @@ void Level::UpdateEntities(float dt)
     else if (m_Player.AtePill())
     {
         m_ScoreManager.Add(10);
+        m_Fruit.NomPill();
     }
 
     if (m_Player.AtePowerPill() || m_Player.AtePill())
@@ -380,6 +390,18 @@ void Level::UpdateEntities(float dt)
             m_WaitTimer = s_CompletionWait;
         }
     }
+
+    // Check for player eating fruit
+    m_Fruit.Update(dt);
+    if (m_Fruit.IsVisible())
+    {
+        if (m_Fruit.GetPosition() == m_Player.GetMovement().GetPosition())
+        {
+            m_Fruit.Nom();
+            m_ScoreManager.Add(m_Fruit.GetScore());
+        }
+    }
+
 
     // Check for ghosts eating player
     if (!GlobalSettings::It().DebugImmortal)
@@ -440,6 +462,7 @@ void Level::Draw(sf::RenderTarget& target)
     transform.scale(Maze::k_CellSize, -Maze::k_CellSize);
 
     m_Maze.Draw(target, transform);
+    m_Fruit.Draw(target, transform);
 
     if (m_State == State::Eat)
     {

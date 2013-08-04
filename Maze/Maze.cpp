@@ -116,6 +116,9 @@ void Maze::Load(char const* filename)
             m_PlayerStart.x = mazeElement->FloatAttribute("PlayerX");
             m_PlayerStart.y = mazeElement->FloatAttribute("PlayerY");
 
+            m_FruitPosition.x = mazeElement->FloatAttribute("FruitX");
+            m_FruitPosition.y = mazeElement->FloatAttribute("FruitY");
+
             tinyxml2::XMLElement* baseElement = mazeElement->FirstChildElement("Base");
             assert(baseElement);
             m_Base.Load(*baseElement);

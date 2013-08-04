@@ -72,6 +72,9 @@
     <ClCompile Include="Game\GlobalSettings.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Entities\Fruit.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -150,11 +153,11 @@
     <ClInclude Include="Core\Vector.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Entities\Fruit.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{ac24b216-4509-45c2-b9ea-6546f2b555ba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Entities">
       <UniqueIdentifier>{3bda2118-01a2-4c4d-95b8-ff5df600944d}</UniqueIdentifier>
     </Filter>
@@ -170,51 +173,5 @@
     <Filter Include="Game">
       <UniqueIdentifier>{71eb6ffc-aea7-4541-bf18-77e1ab771474}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Mazes">
-      <UniqueIdentifier>{1abfb598-1df8-4ad3-9364-8392cf3ae137}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Levels">
-      <UniqueIdentifier>{63c9052a-2884-40c1-9e50-f23b2f4094ea}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Output\Resources\Mazes\Maze01.txt">
-      <Filter>Resources\Mazes</Filter>
-    </Text>
-    <Text Include="Output\Resources\Mazes\Maze02.txt">
-      <Filter>Resources\Mazes</Filter>
-    </Text>
-    <Text Include="Output\Resources\Mazes\Maze03.txt">
-      <Filter>Resources\Mazes</Filter>
-    </Text>
-    <Text Include="Output\Resources\Mazes\Maze04.txt">
-      <Filter>Resources\Mazes</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="Output\Resources\Mazes\Maze01.xml">
-      <Filter>Resources\Mazes</Filter>
-    </Xml>
-    <Xml Include="Output\Resources\Levels\Level01.xml">
-      <Filter>Resources\Levels</Filter>
-    </Xml>
-    <Xml Include="Output\Resources\Levels\Level02.xml">
-      <Filter>Resources\Levels</Filter>
-    </Xml>
-    <Xml Include="Output\Resources\Levels\Level03.xml">
-      <Filter>Resources\Levels</Filter>
-    </Xml>
-    <Xml Include="Output\Resources\Game.xml">
-      <Filter>Resources</Filter>
-    </Xml>
-    <Xml Include="Output\Resources\Mazes\Maze02.xml">
-      <Filter>Resources\Mazes</Filter>
-    </Xml>
-    <Xml Include="Output\Resources\Mazes\Maze03.xml">
-      <Filter>Resources\Mazes</Filter>
-    </Xml>
-    <Xml Include="Output\Resources\Mazes\Maze04.xml">
-      <Filter>Resources\Mazes</Filter>
-    </Xml>
   </ItemGroup>
 </Project>

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Level>
   <Maze Definition="Mazes/Maze01.xml" />
+  
+  <Fruit Sprite="Mazes/Fruit01" Score="200" Appear1="70" Appear2="170" Time="10" />
 
   <Settings FrightTime="6.0"
             FrightFlashTime="1.5"

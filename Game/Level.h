@@ -3,6 +3,7 @@
 #include <array>
 
 #include "Core/Sprite.h"
+#include "Entities/Fruit.h"
 #include "Entities/Ghost.h"
 #include "Entities/Player.h"
 #include "Maze/Maze.h"
@@ -64,6 +65,7 @@ private:
     Maze m_Maze;
     Player m_Player;
     std::vector<std::shared_ptr<Ghost>> m_Ghosts;
+    Fruit m_Fruit;
 
     std::vector<float> m_BehaviourChanges;
     int m_BehaviourCounter;

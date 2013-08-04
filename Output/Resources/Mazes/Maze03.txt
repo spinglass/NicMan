@@ -15,13 +15,13 @@
 1==oooo  o              o  oooo==1
    o  o  o              o  o  o   
    o  o  o              o  o  o   
-   o  oooooooooooooooooooooo  o   
+   o  oooooooooo++oooooooooo  o   
    o        o        o        o   
    o        o        o        o   
    o  ooooooo++++++++ooooooo  o   
    o  o      xxxxxxxx      o  o   
    o  o      xxxxxxxx      o  o   
-   o  oooooo#xxxxxxxx#oooooo  o   
+   o  oo#ooooxxxxxxxxoooo#oo  o   
    o  o      xxxxxxxx      o  o   
    o  o      xxxxxxxx      o  o   
    o  oooooooooooooooooooooo  o   

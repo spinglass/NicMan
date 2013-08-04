@@ -3,6 +3,8 @@
       Color="36D60A"
       PlayerX="14"
       PlayerY="7.5"
+	  FruitX="14"
+	  FruitY="13.5"
       >
   <Base ExitX="14" ExitY="19.5" Top="18" Bottom="17" Exit="19.5" Left="12" Right="16" />
 </Maze>

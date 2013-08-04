@@ -17,6 +17,7 @@ public:
     void Draw(sf::RenderTarget& target, sf::Transform const& transform);
 
     sf::Vector2f GetPlayerStart() const { return m_PlayerStart; }
+    sf::Vector2f GetFruitPosition() const { return m_FruitPosition; }
     Base const& GetBase() const { return m_Base; }
     sf::Vector2i GetBaseExit() const;
 
@@ -41,6 +42,7 @@ private:
     sf::Color m_Color;
     std::string m_BaseName;
     sf::Vector2f m_PlayerStart;
+    sf::Vector2f m_FruitPosition;
 
     std::map<int, Sprite> m_KitParts;
     std::vector<std::vector<Sprite*>> m_CellKitParts;

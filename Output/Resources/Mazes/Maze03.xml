@@ -4,6 +4,8 @@
 	  Base="Mazes/KitBase03"
       PlayerX="17"
       PlayerY="29.5"
+	  FruitX="17"
+	  FruitY="13.5"
       >
   <Base ExitX="17" ExitY="10.5" Top="9" Bottom="8" Exit="19.5" Left="15" Right="19" />
 </Maze>
