@@ -4,7 +4,7 @@
 
   <Fruit Sprite="Mazes/Fruit01" Score="800" Appear1="70" Appear2="170" Time="10" />
   
-  <Settings FrightTime="4.0"
+  <Settings FrightTime="6.0"
             FrightFlashTime="1.5"
             PlayerNormSpeedFactor="1.0"
             PlayerFrightSpeedFactor="1.0"
