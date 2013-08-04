@@ -201,6 +201,9 @@ void Level::Update(float dt)
     case State::Eat:
         UpdateEat(dt);
         break;
+    case State::EatFruit:
+        UpdateEatFruit(dt);
+        break;
     case State::Death:
         UpdateDeath(dt);
         break;
@@ -308,6 +311,19 @@ void Level::UpdateEat(float dt)
     }
 }
 
+void Level::UpdateEatFruit(float dt)
+{
+    m_WaitTimer -= dt;
+    if (m_WaitTimer < 0.0f)
+    {
+        // Hide the fruit
+        m_Fruit.Nom();
+        
+        // Return to previous state
+        m_State = m_EatFruitExitState;
+    }
+}
+
 void Level::UpdateDeath(float dt)
 {
     m_WaitTimer -= dt;
@@ -397,8 +413,12 @@ void Level::UpdateEntities(float dt)
     {
         if (m_Fruit.GetPosition() == m_Player.GetMovement().GetPosition())
         {
-            m_Fruit.Nom();
             m_ScoreManager.Add(m_Fruit.GetScore());
+
+            // Switch to eat state for a short while
+            m_EatFruitExitState = m_State;
+            m_State = State::EatFruit;
+            m_WaitTimer = 1.0f;
         }
     }
 
