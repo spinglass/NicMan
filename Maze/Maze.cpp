@@ -6,6 +6,81 @@
 #include "Direction.h"
 #include "Game/GlobalSettings.h"
 
+class MazeRawData
+{
+public:
+    MazeRawData(std::vector<char> const& data) : m_Data(data), m_Width(0), m_Height(0)
+    {
+        // Get width from first row
+        for (int i = 0; i < data.size(); ++i)
+        {
+            if (data[i] == '\n')
+            {
+                m_Width = i;
+                break;
+            }
+        }
+
+        if (m_Width > 0)
+        {
+            // Get height and check all widths match        
+            int x = 0;
+            for (int i = 0; i < data.size(); ++i)
+            {
+                if (data[i] == '\n')
+                {
+                    if (x != m_Width)
+                    {
+                        // Mismatch
+                        assert(false);
+                        m_Width = 0;
+                        m_Height = 0;
+                        break;
+                    }
+                    else
+                    {
+                        // Next row
+                        x = 0;
+                        ++m_Height;
+                    }
+                }
+                else
+                {
+                    // Next column
+                    ++x;
+                }
+            }
+        }
+    }
+
+    int Width() const { return m_Width; }
+    int Height() const { return m_Height; }
+
+    char Get(int x, int y) const
+    {
+        if (0 <= x && x < m_Width && 0 <= y && y < m_Height)
+        {
+            int const i = x + (m_Width + 1) * (m_Height - y - 1);
+            return m_Data[i];
+        }
+        return ' ';
+    }
+
+    bool CanPlayerPass(int x, int y) const
+    {
+        char const c = Get(x, y);
+        return (c == '+' || c == 'o' || c == '#' || c == '=' || ('1' <= c && c <= '9'));
+    }
+
+private:
+    MazeRawData(MazeRawData&);
+    MazeRawData& operator=(MazeRawData&);
+
+    std::vector<char> const& m_Data;
+    int m_Width;
+    int m_Height;
+};
+
 float const Maze::k_CellSize = 20.0f;
 
 Maze::Maze() :
@@ -64,82 +139,50 @@ void Maze::LoadGrid(char const* filename)
         fread_s(data.data(), size, sizeof(char), size, file);
         fclose(file);
 
-        Parse(data);
-        BuildKitPartList();
+        MazeRawData const mazeRawData(data);
+        Parse(mazeRawData);
+        BuildKitPartList(mazeRawData);
     }
 }
 
-void Maze::Parse(std::vector<char> const& data)
+void Maze::Parse(MazeRawData const& data)
 {
-    int numCols = 0;
-    int numRows = 0;
+    // Count cells
     int numCells = 0;
-
-    // Get row length
-    for (int i = 0; i < data.size(); ++i)
+    for (int x = 0; x < data.Width(); ++x)
     {
-        if (data[i] == '\n')
+        for (int y = 0; y < data.Height(); ++y)
         {
-            numCols = i;
-            break;
-        }
-    }
-
-    if (numCols > 0)
-    {
-        // Get number of rows and check all lengths and count cells        
-        int rowPos = 0;
-        for (int i = 0; i < data.size(); ++i)
-        {
-            if (data[i] == '\n')
+            char const c = data.Get(x, y);
+            if (Cell::IsCell(c))
             {
-                if (rowPos != numCols)
-                {
-                    numRows = 0;
-                    break;
-                }
-                else
-                {
-                    rowPos = 0;
-                    ++numRows;
-                }
-            }
-            else
-            {
-                if (Cell::IsCell(data[i]))
-                {
-                    ++numCells;
-                }
-                ++rowPos;
+                ++numCells;
             }
         }
     }
 
-    if (numCols > 0 && numRows > 0 && numCells > 0)
+    if (numCells > 0)
     {
         m_CellStorage.reserve(numCells);
 
         // Prepare the cells
-        m_Grid.Initialise(numCols, numRows);
+        m_Grid.Initialise(data.Width(), data.Height());
 
-        int i = 0;
-        // Not reverse iteration through rows, to get [0,0] to the bottom-left
-        for (int row = numRows - 1; row >= 0; --row)
+        for (int x = 0; x < data.Width(); ++x)
         {
-            for (int col = 0; col < numCols; ++col)
+            for (int y = 0; y < data.Height(); ++y)
             {
-                if (Cell::IsCell(data[i]))
+                char const c = data.Get(x, y);
+                if (Cell::IsCell(c))
                 {
-                    m_CellStorage.emplace_back(data[i], col, row);
-                    m_Grid.AddCell(col, row, m_CellStorage.back());
+                    m_CellStorage.emplace_back(c, x, y);
+                    m_Grid.AddCell(x, y, m_CellStorage.back());
                 }
-                ++i;
             }
-            ++i;
         }
 
         BuildLinks();
-        BuildTunnelLinks(data, numRows, numCols);
+        BuildTunnelLinks(data);
     }
 }
 
@@ -170,7 +213,7 @@ void Maze::BuildLinks()
     }
 }
 
-void Maze::BuildTunnelLinks(std::vector<char> const& data, int numRows, int numCols)
+void Maze::BuildTunnelLinks(MazeRawData const& data)
 {
     struct Link
     {
@@ -179,22 +222,20 @@ void Maze::BuildTunnelLinks(std::vector<char> const& data, int numRows, int numC
     };
     std::vector<Link> links;
 
-    int i = 0;
-    for (int row = numRows - 1; row >= 0; --row)
+    for (int x = 0; x < data.Width(); ++x)
     {
-        for (int col = 0; col < numCols; ++col)
+        for (int y = 0; y < data.Height(); ++y)
         {
-            if ('1' <= data[i] && data[i] < '9')
+            char const c = data.Get(x, y);
+            if ('1' <= c && c < '9')
             {
                 Link link;
-                link.Id = (int)(data[i] - '0');
-                link.pos.x = col;
-                link.pos.y = row;
+                link.Id = (int)(c - '0');
+                link.pos.x = x;
+                link.pos.y = y;
                 links.push_back(link);
             }
-            ++i;
         }
-        ++i;
     }
 
     // Apply links to cells
@@ -208,13 +249,14 @@ void Maze::BuildTunnelLinks(std::vector<char> const& data, int numRows, int numC
             Link const& l2 = links[j];
             if (l1.Id == l2.Id)
             {
-
                 for (Direction dir : dirs)
                 {
                     Direction opp = Opposite(dir);
+                    sf::Vector2i p1 = Add(l1.pos, 1, dir);
+                    sf::Vector2i p2 = Add(l2.pos, 1, opp);
 
-                    Cell* c1 = m_Grid.GetCell(l1.pos.x, l1.pos.y);
-                    Cell* c2 = m_Grid.GetCell(l2.pos.x, l2.pos.y);
+                    Cell* c1 = m_Grid.GetCell(p1.x, p1.y);
+                    Cell* c2 = m_Grid.GetCell(p2.x, p2.y);
                     if (c1 && c2)
                     {
                         c1->SetNext(opp, c2);
@@ -228,7 +270,7 @@ void Maze::BuildTunnelLinks(std::vector<char> const& data, int numRows, int numC
     }
 }
 
-void Maze::BuildKitPartList()
+void Maze::BuildKitPartList(MazeRawData const& data)
 {
     // Avialable kit parts.
     // Array ordered to find in correct order with bitwise compare.
@@ -248,45 +290,37 @@ void Maze::BuildKitPartList()
     m_KitBase.SetColor(m_Color);
 
     // Map the cells onto the correct parts
-    m_CellKitParts.resize(m_Grid.GetWidth());
-    for (int col = 0; col < m_Grid.GetWidth(); ++col)
+    m_CellKitParts.resize(data.Width());
+    for (int x = 0; x < data.Width(); ++x)
     {
-        m_CellKitParts[col].resize(m_Grid.GetHeight());
+        m_CellKitParts[x].resize(data.Height());
 
-        for (int row = 0; row < m_Grid.GetHeight(); ++row)
+        for (int y = 0; y < data.Height(); ++y)
         {
-            Cell* cell = m_Grid.GetCell(col, row);
-            if (!cell)
+            // If no mark-up
+            if (data.Get(x, y) == ' ')
             {
-                int x = col;
-                int y = row;
+                int x1 = x;
+                int y1 = y;
                 int val = 0;
 
                 // Value built based on surrounding pieces
-                ++y;
-                cell = m_Grid.GetCell(x, y);
-                if (cell && cell->IsOpen()) { val |= 2; }
-                ++x;
-                cell = m_Grid.GetCell(x, y);
-                if (cell && cell->IsOpen()) { val |= 4; }
-                --y;
-                cell = m_Grid.GetCell(x, y);
-                if (cell && cell->IsOpen()) { val |= 8; }
-                --y;
-                cell = m_Grid.GetCell(x, y);
-                if (cell && cell->IsOpen()) { val |= 16; }
-                --x;
-                cell = m_Grid.GetCell(x, y);
-                if (cell && cell->IsOpen()) { val |= 32; }
-                --x;
-                cell = m_Grid.GetCell(x, y);
-                if (cell && cell->IsOpen()) { val |= 64; }
-                ++y;
-                cell = m_Grid.GetCell(x, y);
-                if (cell && cell->IsOpen()) { val |= 128; }
-                ++y;
-                cell = m_Grid.GetCell(x, y);
-                if (cell && cell->IsOpen()) { val |= 1; }
+                ++y1;
+                if (data.CanPlayerPass(x1, y1)) { val |= 2; }
+                ++x1;
+                if (data.CanPlayerPass(x1, y1)) { val |= 4; }
+                --y1;
+                if (data.CanPlayerPass(x1, y1)) { val |= 8; }
+                --y1;
+                if (data.CanPlayerPass(x1, y1)) { val |= 16; }
+                --x1;
+                if (data.CanPlayerPass(x1, y1)) { val |= 32; }
+                --x1;
+                if (data.CanPlayerPass(x1, y1)) { val |= 64; }
+                ++y1;
+                if (data.CanPlayerPass(x1, y1)) { val |= 128; }
+                ++y1;
+                if (data.CanPlayerPass(x1, y1)) { val |= 1; }
 
                 if (val != 0)
                 {
@@ -300,7 +334,7 @@ void Maze::BuildKitPartList()
                         }
                     }
                     assert(foundPart);
-                    m_CellKitParts[col][row] = &m_KitParts[foundPart];
+                    m_CellKitParts[x][y] = &m_KitParts[foundPart];
                 }
             }
         }

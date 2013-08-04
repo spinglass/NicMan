@@ -4,6 +4,8 @@
 #include "Grid.h"
 #include "Core/Sprite.h"
 
+class MazeRawData;
+
 class Maze
 {
 public:
@@ -28,10 +30,10 @@ private:
     Maze& operator=(Maze&);
 
     void LoadGrid(char const* filename);
-    void Parse(std::vector<char> const& data);
-    void BuildTunnelLinks(std::vector<char> const& data, int numRows, int numCols);
+    void Parse(MazeRawData const& data);
+    void BuildTunnelLinks(MazeRawData const& data);
     void BuildLinks();
-    void BuildKitPartList();
+    void BuildKitPartList(MazeRawData const& data);
 
     std::vector<Cell> m_CellStorage;
     Grid m_Grid;

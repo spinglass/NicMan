@@ -22,7 +22,7 @@ Cell::Cell(char c, int x, int y) :
 
 bool Cell::IsCell(char c)
 {
-    return (c != ' ');
+    return (c == '+' || c == '=' || c == 'o' || c == '#' || c == 'x');
 }
 
 void Cell::Parse(char c)
@@ -30,7 +30,6 @@ void Cell::Parse(char c)
     switch(c)
     {
     default:
-        m_Open = ('1' <= c && c <= '9');
         break;
     case '+':
         // Empty cell
