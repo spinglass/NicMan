@@ -31,8 +31,6 @@ void Player::Load()
 void Player::Restart(float x, float y)
 {
     m_Movement.Reset(x, y);
-    assert(m_Movement.GetCell() && m_Movement.GetCell()->IsOpen());
-
     m_PreviousOffset = m_Movement.GetOffset();
     m_StopTimer = 0.0f;
     m_Sprite.Reset();
@@ -70,10 +68,10 @@ void Player::UpdateControls()
 {
     Cell const* cell = m_Movement.GetCell();
     sf::Vector2i const position = m_Movement.GetPosition();
-    bool const canGoNorth = cell->North() && cell->North()->IsOpen();
-    bool const canGoSouth = cell->South() && cell->South()->IsOpen();
-    bool const canGoEast = cell->East() && cell->East()->IsOpen();
-    bool const canGoWest = cell->West() && cell->West()->IsOpen();
+    bool const canGoNorth = (cell->North() != nullptr);
+    bool const canGoSouth = (cell->South() != nullptr);
+    bool const canGoEast = (cell->East() != nullptr);
+    bool const canGoWest = (cell->West() != nullptr);
 
     bool const upPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
     bool const downPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);

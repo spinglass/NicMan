@@ -202,8 +202,6 @@ void Ghost::Draw(sf::RenderTarget& target, sf::Transform const& transform)
 
 Direction Ghost::SelectExitDirection(Cell const& cell, Direction const enterDirection)
 {
-    assert(cell.IsOpen());
-
     // Can't exit the way we came in
     Direction const noExitDirection = Opposite(enterDirection);
 
@@ -217,8 +215,7 @@ Direction Ghost::SelectExitDirection(Cell const& cell, Direction const enterDire
         if (dir != noExitDirection)
         {
             // ...and we can pass, it's an option
-            Cell const* option = cell.GetNext(dir);
-            if (option && option->IsOpen())
+            if (Cell const* option = cell.GetNext(dir))
             {
                 options.push_back(std::make_pair(dir, option));
             }

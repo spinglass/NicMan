@@ -15,7 +15,6 @@ public:
 
     bool GetPill() const { return m_Pill; }
     bool GetPowerPill() const { return m_PowerPill; }
-    bool IsOpen() const { return m_Open; }
     bool IsTunnel() const { return m_Tunnel; }
 
     Cell* North() const { return m_North; }
@@ -46,6 +45,5 @@ private:
     bool m_PowerPill;
     bool m_WasPowerPill;
 
-    bool m_Open;
     bool m_Tunnel;
 };

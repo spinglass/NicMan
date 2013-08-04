@@ -20,7 +20,7 @@ public:
 
     Cell* GetCell() { return m_Cell; }
     Cell const* GetCell() const { return m_Cell; }
-    sf::Vector2i GetPosition() const;
+    sf::Vector2i GetPosition() const { return m_Position; }
     sf::Vector2f GetOffset() const { return m_Offset; }
     Direction GetDirection() const { return m_Direction; }
     Direction GetExitDirection() const { return m_ExitDirection; }
@@ -41,6 +41,7 @@ private:
     Maze const& m_Maze;
     Cell* m_Cell;
     bool const m_CanTransition;
+    sf::Vector2i m_Position;
     sf::Vector2f m_Offset;
     Direction m_Direction;
     Direction m_ExitDirection;

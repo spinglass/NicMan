@@ -10,7 +10,6 @@ Cell::Cell(char c, int x, int y) :
     m_East(nullptr),
     m_South(nullptr),
     m_West(nullptr),
-    m_Open(false),
     m_Pill(false),
     m_WasPill(false),
     m_PowerPill(false),
@@ -22,7 +21,7 @@ Cell::Cell(char c, int x, int y) :
 
 bool Cell::IsCell(char c)
 {
-    return (c == '+' || c == '=' || c == 'o' || c == '#' || c == 'x');
+    return (c == '+' || c == '=' || c == 'o' || c == '#');
 }
 
 void Cell::Parse(char c)
@@ -30,22 +29,19 @@ void Cell::Parse(char c)
     switch(c)
     {
     default:
+        assert(false);
         break;
     case '+':
         // Empty cell
-        m_Open = true;
         break;
     case '=':
-        m_Open = true;
         m_Tunnel = true;
         break;
     case 'o':
-        m_Open = true;
         m_Pill = true;
         m_WasPill = true;
         break;
     case '#':
-        m_Open = true;
         m_PowerPill = true;
         m_WasPowerPill = true;
         break;

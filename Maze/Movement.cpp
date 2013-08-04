@@ -26,7 +26,7 @@ void Movement::Reset(float x, float y)
     int const gridX = (int)x;
     int const gridY = (int)y;
     m_Cell = m_Maze.GetCell(gridX, gridY);
-    assert(m_Cell);
+    m_Position = sf::Vector2i(gridX, gridY);
     m_Offset.x = x - (float)gridX;
     m_Offset.y = y - (float)gridY;
     m_Direction = Direction::None;
@@ -36,6 +36,12 @@ void Movement::Reset(float x, float y)
 
 void Movement::Update(float dt)
 {
+    if (!m_Cell)
+    {
+        // Must have a valid cell to upate
+        return;
+    }
+
     // Move in current direction
     Move(m_Direction, dt);
 
@@ -99,7 +105,7 @@ void Movement::Update(float dt)
 
         // Normal movement
         Cell* next = m_Cell->GetNext(m_Direction);
-        bool const canContinue = next && next->IsOpen() && (m_ExitDirection == Direction::None || m_ExitDirection == m_Direction);
+        bool const canContinue = next && (m_ExitDirection == Direction::None || m_ExitDirection == m_Direction);
 
         // Check for next cell or a wall
         bool nextCell = false;
@@ -200,18 +206,14 @@ void Movement::Update(float dt)
         if (nextCell)
         {
             m_Cell = next;
+            m_Position = sf::Vector2i(m_Cell->X(), m_Cell->Y());
+
 
             // Determine direction to exit next cell.
             // Maybe none if no decisions has yet been taken.
             m_ExitDirection = m_NextCellFunc();
         }
     }
-}
-
-sf::Vector2i Movement::GetPosition() const
-{
-    sf::Vector2i const position = m_Cell ? sf::Vector2i(m_Cell->X(), m_Cell->Y()) : sf::Vector2i();
-    return position;
 }
 
 sf::Vector2f Movement::GetAbsolutePosition() const

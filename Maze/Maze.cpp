@@ -195,7 +195,7 @@ void Maze::BuildLinks()
         for (int y = 0; y < m_Grid.GetHeight(); ++y)
         {
             Cell* c1 = m_Grid.GetCell(x, y);
-            if (c1 && c1->IsOpen())
+            if (c1)
             {
                 sf::Vector2i const p1(x, y);
 
@@ -203,7 +203,7 @@ void Maze::BuildLinks()
                 {
                     sf::Vector2i const p2 = Add(p1, 1, dir);
                     Cell* c2 = m_Grid.GetCell(p2.x, p2.y);
-                    if (c2 && c2->IsOpen())
+                    if (c2)
                     {
                         c1->SetNext(dir, c2);
                     }
@@ -364,6 +364,7 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
     path.setOrigin(0.5f * path.getSize());
     path.setOutlineThickness(-1.0f);
     path.setOutlineColor(sf::Color(50, 50, 50));
+    path.setFillColor(sf::Color(0, 25, 0));
 
     for (int col = 0; col < m_Grid.GetWidth(); ++col)
     {
@@ -379,15 +380,6 @@ void Maze::Draw(sf::RenderTarget& target, sf::Transform const& transform)
             {
                 if (GlobalSettings::It().DebugCells)
                 {
-                    if (cell->IsOpen())
-                    {
-                        path.setFillColor(sf::Color(0, 25, 0));
-                    }
-                    else
-                    {
-                        path.setFillColor(sf::Color(25, 0, 0));
-                    }
-
                     path.setPosition(cellPosition);
                     target.draw(path);
                 }
