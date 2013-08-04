@@ -31,7 +31,6 @@ private:
         Normal,
         Fright,
         Eat,
-        EatFruit,
         Death,
         Complete,
     };
@@ -49,7 +48,6 @@ private:
     void UpdateNormal(float dt);
     void UpdateFright(float dt);
     void UpdateEat(float dt);
-    void UpdateEatFruit(float dt);
     void UpdateDeath(float dt);
     void UpdateComplete(float dt);
 
@@ -77,7 +75,6 @@ private:
     Ghost::Behaviour m_NormalBehaviour;
     float m_FrightTimer;
     bool m_Complete;
-    State m_EatFruitExitState;
 
     std::shared_ptr<LevelSettings> m_Settings;
 
